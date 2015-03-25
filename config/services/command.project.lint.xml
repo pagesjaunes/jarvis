@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.lint.enabled">false</parameter>
+    </parameters>
+
+    <services>
+        <service
+            id="command.project.lint.all"
+            class="Jarvis\Command\Project\LintAllCommand"
+            parent="command.project"
+        >
+            <argument>project:lint:all</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.lint.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.lint.php"
+            class="Jarvis\Command\Project\LintPhpCommand"
+            parent="command.project"
+        >
+            <argument>project:lint:php</argument>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.lint.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.lint.twig"
+            class="Jarvis\Command\Project\LintTwigCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:lint:twig</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.lint.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.lint.yaml"
+            class="Jarvis\Command\Project\LintYamlCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:lint:yaml</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.lint.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.lint.scss"
+            class="Jarvis\Command\Project\LintScssCommand"
+            parent="command.project"
+        >
+            <argument>project:lint:scss</argument>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.lint.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+    </services>
+</container>

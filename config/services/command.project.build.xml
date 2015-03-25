@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.build.enabled">false</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="command.project.build"
+            abstract="true"
+        >
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setRemoteBuildDir">
+                 <argument>%remote_build_dir%</argument>
+            </call>
+
+            <call method="setLocalBuildDir">
+                 <argument>%local_build_dir%</argument>
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setExec">
+                <argument type="service" id="local.exec" />
+            </call>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.enabled%</argument>
+            </call>
+        </service>
+
+        <service
+            id="command.project.php.metrics"
+            class="Jarvis\Command\Project\PhpMetricsCommand"
+            parent="command.project.build"
+        >
+            <argument>project:php:metrics</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.build.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.php.apidoc"
+            class="Jarvis\Command\Project\PhpDocCommand"
+            parent="command.project.build"
+        >
+            <argument>project:php:doc</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.build.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

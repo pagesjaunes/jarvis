@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="ForbiddenFunctionNames">
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <exclude-pattern>*/build/*</exclude-pattern>
+        <exclude-pattern>*/vendor/*</exclude-pattern>
+        <exclude-pattern>*/spec/*</exclude-pattern>
+        <exclude-pattern>*/web/*</exclude-pattern>
+        <properties>
+            <property name="forbiddenFunctions" type="array" value="debug=>NULL,dump=>NULL,var_dump=>NULL,var_export=>NULL,sizeof=>count,delete=>unset,print=>echo,is_null=>NULL,create_function=>NULL,header=>NULL,eval=>NULL,system=>NULL"/>
+        </properties>
+    </rule>
+</ruleset>

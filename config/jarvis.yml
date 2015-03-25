@@ -1,0 +1,69 @@
+imports:
+    - { resource: "services/command.composer.xml" }
+    - { resource: "services/command.core.xml" }
+    - { resource: "services/command.editor.xml" }
+    - { resource: "services/command.project.build.xml" }
+    - { resource: "services/command.project.composer.xml" }
+    - { resource: "services/command.project.config.xml" }
+    - { resource: "services/command.project.cs.xml" }
+    - { resource: "services/command.project.editor.xml" }
+    - { resource: "services/command.project.git.xml" }
+    - { resource: "services/command.project.lint.xml" }
+    - { resource: "services/command.project.symfony.xml" }
+    - { resource: "services/command.project.test.xml" }
+    - { resource: "services/command.project.xml" }
+    - { resource: "services/command.vagrant.xml" }
+    - { resource: "services/command.vm.xml" }
+    - { resource: "services/command.vm.blackfire.xml" }
+    - { resource: "services/services.xml" }
+
+parameters:
+    projects_config_file_path: "%working_dir%/config/projects.json"
+
+    editor_config_dir: "%working_dir%/config"
+    editor_project_external_folders_config:
+        - { name: "bundles", path: "%working_dir%/projects/bundles", follow_symlinks: "false" }
+    editor_skeleton_dir: "%jarvis_dir%/skeleton/editor"
+
+    local_projects_root_dir: "%working_dir%/projects"
+    remote_projects_root_dir: "/srv/www"
+
+    local_vendor_root_dir: "%working_dir%/vendor"
+    remote_vendor_root_dir: "/home/vagrant/vendor"
+
+    local_build_dir: "%working_dir%/build"
+    remote_build_dir: "/home/vagrant/build"
+
+    local_cdn_root_dir: "%working_dir%/assets"
+    remote_cdn_dir: "/srv/cdn"
+
+    local_tmp_staging_area_root_dir: "%working_dir%/.tmp_staging"
+    remote_tmp_staging_area_root_dir: "/home/vagrant/.tmp_staging"
+
+    local_vagrant_dir: "%working_dir%/vagrant"
+
+    local_phpcs_standard_dir: "%jarvis_dir%/skeleton/phpcs/Standards/php"
+    remote_phpcs_standard_dir: "/home/vagrant/jarvis/phpcs/Standards/php"
+
+    ssh_user: "vagrant"
+    ssh_host: "127.0.0.1"
+    ssh_port: 2222
+
+    git_hooks_skeleton_dir: "%jarvis_dir%/skeleton/git_hooks"
+
+    command.project.enabled: true
+    command.editor.enabled: true
+    command.project.build.enabled: true
+    command.project.cs.enabled: true
+    command.project.editor.enabled: true
+    command.project.git.enabled: true
+    command.project.php.enabled: true
+    command.project.composer.enabled: true
+    command.project.symfony.enabled: true
+    command.project.symfony.assets.enabled: true
+    command.project.test.enabled: true
+    command.project.lint.enabled: true
+    command.vagrant.enabled: true
+    command.vm.enabled: true
+    command.vm.blackfire.enabled: true
+    command.composer.enabled: true

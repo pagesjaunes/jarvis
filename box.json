@@ -1,0 +1,46 @@
+{
+    "alias": "box.phar",
+    "chmod": "0755",
+    "compactors": [
+        "Herrera\\Box\\Compactor\\Json",
+        "Herrera\\Box\\Compactor\\Php"
+    ],
+    "compression": "GZ",
+
+    "directories": ["config", "src"],
+    "files": [
+        "LICENSE"
+    ],
+    "finder": [
+        {
+            "name": "jarvis",
+            "in": "bin"
+        },
+        {
+            "name": "*.*",
+            "exclude": [
+                ".gitignore",
+                ".md",
+                "File",
+                "mikey179",
+                "Net",
+                "phpunit",
+                "phpunit-test-case",
+                "Tester",
+                "Tests",
+                "tests",
+                "yaml"
+            ],
+            "in": "vendor"
+        }
+    ],
+    "git-commit": "git-commit",
+    "git-version": "git-version",
+    "main": "bin/jarvis",
+    "output": "build/jarvis-@git-version@.phar",
+    "replacements": {
+        "manifest_url": "http://pagesjaunes.github.io/jarvis/manifest.json"
+    },
+    "stub": true,
+    "web": false
+}

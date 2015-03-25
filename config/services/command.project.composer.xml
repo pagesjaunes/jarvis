@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.composer.enabled">false</parameter>
+        <parameter key="composer.graph_composer.class">\Jarvis\Composer\GraphComposer</parameter>
+    </parameters>
+
+    <services>
+        <service
+            id="command.project.composer"
+            class="Jarvis\Command\Project\ComposerCommand"
+            abstract="true"
+        >
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.composer.enabled%</argument>
+            </call>
+        </service>
+
+        <service
+            id="command.project.composer.install"
+            class="Jarvis\Command\Project\ComposerCommand"
+            parent="command.project.composer"
+        >
+            <argument>project:composer:install</argument>
+
+            <call method="setDescription">
+                <argument>Installs the project dependencies from the composer.lock file if present, or falls back on the composer.json.</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.composer.update"
+            class="Jarvis\Command\Project\ComposerCommand"
+            parent="command.project.composer"
+        >
+            <argument>project:composer:update</argument>
+
+            <call method="setDescription">
+                <argument>Updates your dependencies to the latest version according to composer.json, and updates the composer.lock file.</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.composer.validate"
+            class="Jarvis\Command\Project\ComposerCommand"
+            parent="command.project.composer"
+        >
+            <argument>project:composer:validate</argument>
+
+            <call method="setDescription">
+                <argument>The validate command validates a project composer.json</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+
+        <service
+            id="composer.dependency_analyzer"
+            class="Jarvis\Composer\DependencyAnalyzer"
+        />
+
+        <service
+            id="command.project.composer.graph_dependencies"
+            class="Jarvis\Command\Project\ComposerGraphDependenciesCommand"
+            parent="command.project"
+        >
+            <argument>project:composer:graph-dependencies</argument>
+
+            <call method="setLocalBuildDir">
+                 <argument>%local_build_dir%</argument>
+            </call>
+
+            <call method="setDependencyAnalyzer">
+                 <argument type="service" id="composer.dependency_analyzer" />
+            </call>
+
+            <call method="setGraphComposerClass">
+                 <argument>%composer.graph_composer.class%</argument>
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+    </services>
+</container>

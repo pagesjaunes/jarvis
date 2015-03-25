@@ -1,0 +1,268 @@
+#!/usr/bin/env php
+<?php
+
+process($argv);
+
+/**
+ * processes the installer
+ */
+function process($argv)
+{
+    _writeln('<section>Synchronisation de la configuration pour Sublime Text 3</section>');
+
+    checkSublimeTextIsInstalled();
+    syncSublimeSettingsPreferences();
+    syncSublimeSettingsSublimeLinter();
+    syncSublimeSettingsPackageControl();
+    syncSublimeSettingsPhpCs();
+    syncSublimeSettingsGit();
+    exit(0);
+}
+
+function checkSublimeTextIsInstalled()
+{
+    // Sublime Text 3 est-il déjà installé
+    if (false === is_dir(getSublimeTextSettingDir())) {
+        _writeln("Sublime Text 3 n'est pas installé sur votre système");
+        _writeln("Veuillez consulter la documentation d'insatllation à cette adressse");
+        _writeln("http://sublime-text-unofficial-documentation.readthedocs.org/en/latest/getting_started/install.html");
+        exit(1);
+    }
+
+    if (false === is_dir(getSublimeTextSettingDir())) {
+        _writeln("Veuiller lancer une première fois Sublime Text 3 avant d'exécuter ce script.");
+    }
+}
+
+function syncSublimeSettingsPreferences()
+{
+    $filename = 'Preferences.sublime-settings';
+
+    $customConfig = array(
+        'color_scheme' => null,
+        'font_face' => null,
+        'font_size' => null
+    );
+
+    _syncFileSublimeSettings($filename, $customConfig);
+}
+
+function syncSublimeSettingsSublimeLinter()
+{
+    _syncFileSublimeSettings('SublimeLinter.sublime-settings');
+}
+
+function syncSublimeSettingsPhpCs()
+{
+    $customConfig = array(
+        'phpcs_php_path' => _getCommandPath('php'),
+        'phpcs_executable_path' => _getCommandPath('phpcs'),
+        'php_cs_fixer_executable_path' => _getCommandPath('php-cs-fixer'),
+        'phpmd_executable_path' => _getCommandPath('phpmd')
+    );
+
+    _syncFileSublimeSettings('phpcs.sublime-settings', $customConfig);
+}
+
+function syncSublimeSettingsPackageControl()
+{
+    _syncFileSublimeSettings('Package Control.sublime-settings');
+}
+
+function syncSublimeSettingsGit()
+{
+    _syncFileSublimeSettings('SublimeGit.sublime-settings');
+}
+
+function _syncFileSublimeSettings($filename, array $customConfig = array())
+{
+    _writeln(sprintf('Synchronisation du fichier de configuration <info>%s</info>', $filename));
+
+    $originFile = sprintf('%s/%s', getSublimeTextSettingDefaultDir(), $filename);
+    if (!file_exists($originFile)) {
+        throw new \RuntimeException(sprintf('File %s does not exist.', $originFile));
+    }
+
+    $targetFile = sprintf('%s/%s', getSublimeTextSettingUserDir(), $filename);
+
+    $backupFile = sprintf('%s/%s.backup', getSublimeTextSettingUserDir(), $filename);
+
+    if (file_exists($targetFile)) {
+        $oldConfig = _getConfigFromFile($targetFile);
+        foreach ($customConfig as $name => $value) {
+            if (null === $value && isset($oldConfig[$name])) {
+                $customConfig[$name] = $oldConfig[$name];
+            }
+        }
+    }
+
+    if (count($customConfig)) {
+        _writeln('');
+        _writeln('Conservation des paramètres personnels');
+        foreach ($customConfig as $name => $value) {
+            _writeln(sprintf('- %s: <comment>%s</comment>', $name, $value));
+        }
+        _writeln('');
+    }
+
+    $newConfig = _getConfigFromFile($originFile);
+
+    $mergeConfig = array_merge(
+        $newConfig,
+        $customConfig
+    );
+
+    // Backup
+    if (file_exists($targetFile)) {
+        _writeln(sprintf('Sauvegarde de la version précédante dans le fichier <comment>%s</comment>', $backupFile));
+        _copy($targetFile, $backupFile, true);
+    }
+
+    _writeln(sprintf('Mise à jour du fichier <comment>%s</comment>', $targetFile));
+
+    // var_export($mergeConfig);
+
+    _saveConfig($targetFile, $mergeConfig);
+
+    _writeln('');
+}
+
+function getSublimeTextSettingDefaultDir()
+{
+    return __DIR__.'/Packages/User';
+}
+
+function getSublimeTextSettingUserDir()
+{
+    return sprintf('%s/User', getSublimeTextSettingDir());
+}
+
+function getSublimeTextSettingDir()
+{
+    $dir = getenv('HOME').'/.config/sublime-text-3/Packages';
+
+    # Check environment OS (OSX, Linux)
+    if ('Darwin' == php_uname('s')) {
+        $dir = getenv('HOME').'/Library/Application Support/Sublime Text 3/Packages';
+    }
+
+    return $dir;
+}
+
+function _getConfigFromFile($path)
+{
+    $assoc = true;
+
+    $config = _cleanFileJsonDecode($path, $assoc);
+
+    return $config;
+}
+
+function _saveConfig($path, array $config)
+{
+    if (false == file_exists($path)) {
+        touch($path);
+    }
+
+    if (defined('JSON_UNESCAPED_SLASHES') && defined('JSON_PRETTY_PRINT')) {
+        $json = json_encode($config, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+    } else {
+        $json = str_replace('\/','/', json_encode($config));
+    }
+
+    file_put_contents($path, $json);
+}
+
+function _copy($originFile, $targetFile, $override = false, $mode = 0777)
+{
+    if (!is_file($originFile)) {
+        throw new \RuntimeException(sprintf('Failed to copy "%s" because file does not exist.', $originFile));
+    }
+
+    $dir = dirname($targetFile);
+    if (!is_dir($dir) && true !== @mkdir($dir, $mode, true)) {
+        throw new \RuntimeException(sprintf('Failed to create "%s".', $dir));
+    }
+
+    if (!$override && is_file($targetFile) && null === parse_url($originFile, PHP_URL_HOST)) {
+        $doCopy = filemtime($originFile) > filemtime($targetFile);
+    } else {
+        $doCopy = true;
+    }
+
+    if ($doCopy) {
+        // https://bugs.php.net/bug.php?id=64634
+        $source = fopen($originFile, 'r');
+        $target = fopen($targetFile, 'w');
+        stream_copy_to_stream($source, $target);
+        fclose($source);
+        fclose($target);
+        unset($source, $target);
+
+        if (!is_file($targetFile)) {
+            throw new \RuntimeException(sprintf('Failed to copy "%s" to "%s".', $originFile, $targetFile));
+        }
+    }
+}
+
+function _writeln($text)
+{
+    $text = strtr($text, array(
+        '<error>' => "\033[0;31m",
+        '</error>' => "\033[0;0m",
+        '<info>' => "\033[0;32m",
+        '</info>' => "\033[0;0m",
+        '<comment>' => "\033[0;33m",
+        '</comment>' => "\033[0;0m",
+        '<section>' => "\033[0;34m",
+        '</section>' => "\033[0;0m"
+    ));
+
+    echo $text.PHP_EOL;
+}
+
+function _cleanFileJsonDecode($path, $assoc = false, $depth = 512, $options = 0)
+{
+    $json = file_get_contents($path);
+    // search and remove comments like /* */ and //
+    $json = preg_replace("#(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|([\s\t]//.*)|(^//.*)#", '', $json);
+
+    $assoc = true;
+
+    $constants = get_defined_constants(true);
+
+    $json_errors = array();
+
+    foreach ($constants['json'] as $name => $value) {
+        if (!strncmp($name, 'JSON_ERROR_', 11)) {
+            $json_errors[$value] = $name;
+        }
+    }
+
+    if (version_compare(phpversion(), '5.4.0', '>=')) {
+        $json = json_decode($json, $assoc, $depth, $options);
+    } elseif (version_compare(phpversion(), '5.3.0', '>=')) {
+        $json = json_decode($json, $assoc, $depth);
+    } else {
+        $json = json_decode($json, $assoc);
+    }
+
+    if (JSON_ERROR_NONE != json_last_error()) {
+        _writeln(sprintf(
+            'Erreur de désérialisation du fichier <comment>%s</comment> json <error>%s</error>',
+            $path,
+            $json_errors[json_last_error()]
+        ));
+    }
+
+    return $json;
+}
+
+function _getCommandPath($cmd)
+{
+    $path = shell_exec("which $cmd");
+    if ($path) {
+        $path = trim($path);
+    }
+    return $path;
+}

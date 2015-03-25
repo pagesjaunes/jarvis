@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="name">Jarvis</parameter>
+        <parameter key="version">0.0.1</parameter>
+        <parameter key="ssh_identity_file"></parameter>
+        <parameter key="monolog.console_handler.verbosity_Level_map" type="collection">
+            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_NORMAL -->
+            <parameter key="1" type="constant">Monolog\Logger::NOTICE</parameter>
+            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERBOSE -->
+            <parameter key="2" type="constant">Monolog\Logger::INFO</parameter>
+            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE -->
+            <parameter key="3" type="constant">Monolog\Logger::DEBUG</parameter>
+            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG -->
+            <parameter key="4" type="constant">Monolog\Logger::DEBUG</parameter>
+        </parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="local.filesystem"
+            class="Symfony\Component\Filesystem\Filesystem"
+        />
+
+        <service
+            id="local.exec"
+            class="Jarvis\Process\Exec"
+        >
+            <call method="setLogger">
+                <argument type="service" id="monolog.logger" />
+            </call>
+        </service>
+
+        <service
+            id="ssh.exec"
+            class="Jarvis\Ssh\Exec"
+        >
+            <argument type="collection">
+                <argument key="ssh_user">%ssh_user%</argument>
+                <argument key="ssh_host">%ssh_host%</argument>
+                <argument key="ssh_port">%ssh_port%</argument>
+                <argument key="ssh_identity_file">%ssh_identity_file%</argument>
+            </argument>
+            <call method="setLogger">
+                <argument type="service" id="monolog.logger" />
+            </call>
+        </service>
+
+        <service
+            id="remote.php_cs_fixer"
+            class="Jarvis\Process\PhpCsFixer"
+        >
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <call method="setLocalPhpcsStandardDir">
+                <argument>%local_phpcs_standard_dir%</argument>
+            </call>
+
+            <call method="setRemotePhpcsStandardDir">
+                <argument>%remote_phpcs_standard_dir%</argument>
+            </call>
+        </service>
+
+        <service
+            id="remote.filesystem"
+            class="Jarvis\Filesystem\RemoteFilesystem"
+        >
+            <argument type="service" id="local.exec" />
+            <argument type="service" id="ssh.exec" />
+            <call method="setLogger">
+                <argument type="service" id="monolog.logger" />
+            </call>
+        </service>
+
+        <service
+            id="symfony.exec"
+            class="Jarvis\Symfony\RemoteConsoleExec"
+        >
+            <argument type="service" id="ssh.exec" />
+        </service>
+
+        <service
+            id="monolog.logger"
+            class="Monolog\Logger"
+            public="false"
+        >
+            <argument>default.logger</argument>
+            <call method="pushHandler">
+                 <argument type="service" id="monolog.console_handler" />
+            </call>
+        </service>
+
+        <service
+            id="monolog.console_handler"
+            class="Symfony\Bridge\Monolog\Handler\ConsoleHandler"
+            public="false"
+        >
+            <argument type="service" id="console.output" />
+            <argument key="bubble">true</argument>
+            <argument>%monolog.console_handler.verbosity_Level_map%</argument>
+            <call method="setFormatter">
+                 <argument type="service" id="console.formatter.output_formatter" />
+            </call>
+        </service>
+
+        <service
+            id="console.formatter.output_formatter"
+            class="Jarvis\Console\Formatter\OutputFormatter"
+            public="false"
+        />
+    </services>
+</container>

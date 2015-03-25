@@ -1,0 +1,9 @@
+<?php
+
+$finder = Symfony\Component\Finder\Finder::create()
+    ->files()
+    ->name('*Spec.php')
+    ->in(__DIR__.'/src')
+;
+
+return Symfony\CS\Config\Config::create()->finder($finder);

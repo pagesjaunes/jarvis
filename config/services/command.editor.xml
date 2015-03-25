@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.editor.enabled">false</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="command.project.editor.setup"
+            class="Jarvis\Command\Editor\SetupCommand"
+        >
+            <argument>editor:config:install</argument>
+
+            <call method="setEditorSkeletonDir">
+                 <argument>%editor_skeleton_dir%</argument>
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.editor.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

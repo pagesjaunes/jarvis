@@ -1,0 +1,411 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.symfony.enabled">false</parameter>
+        <parameter key="command.project.symfony.assets.enabled">false</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="command.project.symfony"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            abstract="true"
+        >
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setSymfonyRemoteConsoleExec">
+                <argument type="service" id="symfony.exec" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.symfony.enabled%</argument>
+            </call>
+        </service>
+
+        <service
+            id="command.project.symfony.assets"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            abstract="true"
+        >
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setSymfonyRemoteConsoleExec">
+                <argument type="service" id="symfony.exec" />
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.symfony.assets.enabled%</argument>
+            </call>
+        </service>
+
+        <service
+            id="command.project.symfony.cache_clear"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:cache:clear</argument>
+
+            <call method="setDescription">
+                 <argument>Clears the cache</argument>
+             </call>
+
+            <call method="addOption">
+                 <argument>no-warmup</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Do not warm up the cache</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>no-optional-warmers</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Skip optional cache warmers (faster)</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.symfony.cache_warmup"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:cache:warmup</argument>
+
+            <call method="setDescription">
+                 <argument>Warms up the cache</argument>
+             </call>
+
+            <call method="addOption">
+                 <argument>no-optional-warmers</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Skip optional cache warmers (faster)</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.symfony.assets.build"
+            class="Jarvis\Command\Project\SymfonyAssetsBuildCommand"
+            parent="command.project.symfony.assets"
+        >
+            <argument>project:assets:build</argument>
+
+            <call method="setDescription">
+                 <argument>Building assets</argument>
+            </call>
+
+            <call method="setLocalCdnRootDir">
+                 <argument>%local_cdn_root_dir%</argument>
+            </call>
+
+            <call method="setRemoteCdnRootDir">
+                 <argument>%remote_cdn_dir%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.symfony.debug.twig"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:debug:twig</argument>
+
+            <call method="setDescription">
+                 <argument>Shows a list of twig functions, filters, globals and tests</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>filter</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                 <argument>Show details for all entries matching this filter.</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>format</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED</argument>
+                 <argument>Output format: text or json</argument>
+                 <argument>text</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+          <service
+            id="command.project.symfony.debug.translation"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:debug:translation</argument>
+
+            <call method="setDescription">
+                 <argument>Displays translation messages informations</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>locale</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::REQUIRED</argument>
+                 <argument>The locale.</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addArgument">
+                 <argument>bundle</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::REQUIRED</argument>
+                 <argument>The bundle name.</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>domain</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL</argument>
+                 <argument>The messages domain</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>only-missing</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Displays only missing messages</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>only-unused</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Displays only unused messages</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+         <service
+            id="command.project.symfony.debug.debug_router"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:debug:router</argument>
+
+            <call method="setDescription">
+                 <argument>Displays current routes for an application</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>name</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                 <argument>A route name.</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>show-controllers</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Show assigned controllers in overview</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>format</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED</argument>
+                 <argument>To output description in other formats</argument>
+                 <argument>txt</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>raw</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>To output raw description</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+         <service
+            id="command.project.symfony.debug.event_dispatcher"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:debug:event-dispatcher</argument>
+
+            <call method="setDescription">
+                 <argument>Displays configured listeners for an application</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>event</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                 <argument>An event name (foo).</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>format</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED</argument>
+                 <argument>To output description in other formats</argument>
+                 <argument>txt</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>raw</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>To output raw description</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+         <service
+            id="command.project.symfony.debug.container"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:debug:container</argument>
+
+            <call method="setDescription">
+                 <argument>Displays current services for an application</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>name</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                 <argument>A service name (foo).</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>show-private</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Used to show public *and* private services</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>tags</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Shows all services with a specific tag</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>tag</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Displays tagged services for an application</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>parameter</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Displays a specific parameter for an application</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>parameters</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Displays parameters for an application</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>format</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED</argument>
+                 <argument>To output description in other formats</argument>
+                 <argument>txt</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>raw</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>To output raw description</argument>
+                 <argument>null</argument>
+            </call>
+
+<!--
+            <call method="addOption">
+                 <argument></argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument></argument>
+                 <argument>null</argument>
+            </call>
+ -->
+            <tag name="console.command" />
+        </service>
+
+         <service
+            id="command.project.symfony.monitor.health"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:monitor:health</argument>
+
+            <call method="setDescription">
+                 <argument>Runs Health Checks</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>checkName</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                 <argument>The name of the service to be used to perform the health check.</argument>
+                 <argument>null</argument>
+            </call>
+
+            <call method="addOption">
+                 <argument>reporter</argument>
+                 <argument>null</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument>Additional reporters to run. (multiple values allowed)</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+    </services>
+</container>

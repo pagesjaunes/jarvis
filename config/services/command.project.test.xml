@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.test.enabled">false</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="command.project.test"
+            abstract="true"
+        >
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.test.enabled%</argument>
+            </call>
+        </service>
+
+        <service
+            id="command.project.test.all"
+            class="Jarvis\Command\Project\TestAllCommand"
+            parent="command.project.test"
+        >
+            <argument>project:tests:all</argument>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.test.unit"
+            class="Jarvis\Command\Project\TestUnitCommand"
+            parent="command.project.test"
+        >
+            <argument>project:tests:unit</argument>
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+            <call method="setRemoteBuildDir">
+                 <argument>%remote_build_dir%</argument>
+            </call>
+            <call method="setLocalBuildDir">
+                 <argument>%local_build_dir%</argument>
+            </call>
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.test.integration"
+            class="Jarvis\Command\Project\TestIntegrationCommand"
+            parent="command.project.test"
+        >
+            <argument>project:tests:integration</argument>
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+            <call method="setRemoteBuildDir">
+                 <argument>%remote_build_dir%</argument>
+            </call>
+            <call method="setLocalBuildDir">
+                 <argument>%local_build_dir%</argument>
+            </call>
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+            <tag name="console.command" />
+        </service>
+
+    </services>
+</container>
