@@ -1,0 +1,12 @@
+#!/bin/bash
+
+FILES=$(git diff --name-only  HEAD^)
+
+for FILE in $FILES
+do
+        if [ $FILE = "composer.lock" ]; then
+                echo "Le fichier composer.lock a changé."
+                echo "Mise à jour des dépendances:"
+                {{jarvis_command_name}} project:composer:install --project-name={{project_name}}
+        fi
+done

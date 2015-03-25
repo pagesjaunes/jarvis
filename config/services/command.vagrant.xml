@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.vagrant.enabled">true</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="vagrant.exec"
+            class="Jarvis\Vagrant\Exec"
+        >
+            <argument>%local_vagrant_dir%</argument>
+
+            <call method="setLogger">
+                <argument type="service" id="monolog.logger" />
+            </call>
+        </service>
+
+        <service
+            id="command.vagrant"
+            abstract="true"
+        >
+            <call method="setVagrantExec">
+                 <argument type="service" id="vagrant.exec" />
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setExec">
+                <argument type="service" id="local.exec" />
+            </call>
+
+            <call method="setEnabled">
+                <argument>%command.vagrant.enabled%</argument>
+            </call>
+
+        </service>
+
+        <service
+            id="command.project.vagrant.start"
+            class="Jarvis\Command\Vagrant\StartCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.vagrant.stop"
+            class="Jarvis\Command\Vagrant\StopCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.vagrant.restart"
+            class="Jarvis\Command\Vagrant\RestartCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.vagrant.status"
+            class="Jarvis\Command\Vagrant\StatusCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.vagrant.provision"
+            class="Jarvis\Command\Vagrant\ProvisionCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.vagrant.ssh"
+            class="Jarvis\Command\Vagrant\SshCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
+    </services>
+</container>

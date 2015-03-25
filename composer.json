@@ -1,0 +1,47 @@
+{
+    "name": "pagesjaunes/jarvis-ci",
+    "description": "Vagrant, VirtualBox, Symfony Application managed PHP development stack:  Nginx, PHP-FPM, Varnish.",
+    "keywords": ["symfony", "console", "bootstraper", "installer", "php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tony Dubreil",
+            "email": "tonydubreil@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Jarvis\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "symfony/debug": "~2.6",
+        "symfony/config": "~2.6",
+        "symfony/yaml": "~2.6",
+        "symfony/console": "~2.6",
+        "symfony/property-access": "~2.6",
+        "symfony/dependency-injection": "~2.6",
+        "symfony/event-dispatcher": "~2.6",
+        "symfony/filesystem": "~2.6",
+        "symfony/process": "~2.6",
+        "symfony/var-dumper": "~2.6",
+        "symfony/options-resolver": "~2.6",
+        "monolog/monolog": "~1.12",
+        "symfony/monolog-bridge": "~2.6",
+        "kherge/amend": "~3.0",
+        "clue/graph": "0.7.*",
+        "jms/composer-deps-analyzer": "0.1.*",
+        "jakub-onderka/php-console-highlighter": "0.*"
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "bin": [
+        "bin/jarvis"
+    ]
+}

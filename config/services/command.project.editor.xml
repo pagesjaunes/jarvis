@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.editor.enabled">false</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="command.project.editor.open"
+            class="Jarvis\Command\Project\EditorOpenProjectCommand"
+        >
+            <argument>project:editor:open</argument>
+
+            <call method="setConfigDir">
+                 <argument>%editor_config_dir%</argument>
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="addDirectoriesConfig">
+                 <argument>%editor_project_external_folders_config%</argument>
+            </call>
+
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setLogger">
+                <argument type="service" id="monolog.logger" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.editor.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+    </services>
+</container>

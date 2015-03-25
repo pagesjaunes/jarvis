@@ -1,0 +1,16 @@
+{
+    "projects": {
+        "symfony-standard": {
+            "git_repository_url": "https://github.com/symfony/symfony-standard.git",
+            "git_target_branch": "develop",
+            "local_webapp_dir": "%local_projects_root_dir%/%project_name%",
+            "remote_webapp_dir": "%remote_projects_root_dir%/%project_name%",
+            "local_git_repository_dir": "%local_projects_root_dir%/symfony-standard",
+            "remote_git_repository_dir": "%remote_vendor_root_dir%",
+            "remote_vendor_dir": "/home/vagrant/projects/%project_name%/vendor",
+            "local_vendor_dir": "%local_vendor_root_dir%/%project_name%",
+            "remote_symfony_console_path": "%remote_vendor_root_dir%/app/console",
+            "remote_phpunit_configuration_xml_path": "%remote_vendor_root_dir%/app/phpunit.xml.dist"
+        }
+    }
+}

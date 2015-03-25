@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.enabled">false</parameter>
+    </parameters>
+
+    <services>
+        <service
+            id="command.project"
+            abstract="true"
+        >
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.enabled%</argument>
+            </call>
+        </service>
+        <service
+            id="command.project.install_dependencies_and_assets_command"
+            class="Jarvis\Command\Project\InstallDependenciesAndAssetsCommand"
+            parent="command.project"
+        >
+            <argument>project:install-dependencies-and-assets</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.build.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

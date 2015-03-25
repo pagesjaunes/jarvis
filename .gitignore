@@ -1,0 +1,5 @@
+/jarvis.phar
+/var/*
+/vendor
+/build
+*.phar

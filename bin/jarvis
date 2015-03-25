@@ -1,0 +1,132 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Jarvis\JarvisFactory;
+use Symfony\Component\Debug\Debug;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\Loader\LoaderResolver;
+use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+set_time_limit(0);
+error_reporting(-1);
+ini_set('display_errors', 1);
+
+//  It's use case should be a dist file in upstream repo, and an optional user file with always extends the dist.
+if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
+    system('composer install --optimize-autoloader --no-dev --no-interaction --ansi --no-progress');
+}
+
+$loader = require __DIR__.'/../vendor/autoload.php';
+
+$input = new ArgvInput();
+$debug = getenv('JARVIS_CLI_DEBUG') === '1';
+$workingDir = $input->getParameterOption(['--working-dir', '-d']);
+$containerCacheDir = $input->getParameterOption(['--cache-dir']);
+
+if (false !== $workingDir && !is_dir($workingDir)) {
+    throw new \RuntimeException('Invalid working directory specified.');
+}
+
+if (false === $workingDir) {
+    $workingDir = getcwd();
+}
+
+if (!$containerCacheDir) {
+    $containerCacheDir = $workingDir.'/var/cache';
+}
+
+if (!is_writable($containerCacheDir)) {
+    $output = new ConsoleOutput();
+    $output->writeln(sprintf(
+        '<error>Invalid cache directory specified "%s". It is not writable!</error>',
+        $containerCacheDir
+    ));
+    exit(1);
+}
+
+$workingJarvisDir = $workingDir.'/jarvis';
+if (file_exists($workingJarvisDir.'/autoload.json')) {
+    $config = \json_decode(
+        \file_get_contents($workingJarvisDir.'/autoload.json'),
+        true
+    );
+
+    $classMap = $loader->getClassMap();
+
+    if (isset($config['psr0'])) {
+        foreach ($config['psr0'] as $namespace => $rootPath) {
+            if (strpos($rootPath, '/') !== 0) {
+                $rootPath = $workingJarvisDir.'/'.$rootPath;
+            }
+            $loader->set($namespace, [$rootPath]);
+            foreach ($classMap as $classNamespace => $classPath) {
+                if (strpos($classNamespace, $namespace) !== false) {
+                    $classMap[$classNamespace] = null; // disable load by class path for current package
+                }
+            }
+        }
+    }
+
+    if (isset($config['psr4'])) {
+        foreach ($config['psr4'] as $namespace => $rootPath) {
+            if (strpos($rootPath, '/') !== 0) {
+                $rootPath = $workingJarvisDir.'/'.$rootPath;
+            }
+            $loader->setPsr4($namespace, [$rootPath]);
+            foreach ($classMap as $classNamespace => $classPath) {
+                if (strpos($classNamespace, $namespace) !== false) {
+                    $classMap[$classNamespace] = null; // disable load by class path for current package
+                }
+            }
+        }
+    }
+
+    $loader->addClassMap($classMap);
+}
+
+if ($debug) {
+    Debug::enable();
+}
+
+$containerCacheFilename = 'JarvisContainer.php';
+$containerCacheFilePath = $containerCacheDir.'/'.$containerCacheFilename;
+
+if ('core:container:cache-clear' == $input->getFirstArgument()) {
+    (new \Symfony\Component\Filesystem\Filesystem())->remove($containerCacheFilePath);
+}
+
+JarvisFactory::create(
+    $containerCacheFilePath,
+    function (ContainerBuilder $builder) use ($containerCacheDir, $workingDir) {
+        $configDir = __DIR__.'/../config';
+        $loader = new YamlFileLoader($builder, new FileLocator($configDir));
+        $resolver = new LoaderResolver(array(
+            new IniFileLoader($builder, new FileLocator($configDir)),
+            new XmlFileLoader($builder, new FileLocator($configDir)),
+            new PhpFileLoader($builder, new FileLocator($configDir)),
+            $loader,
+        ));
+        $loader->setResolver($resolver);
+        $loader->load('jarvis.yml');
+
+        $builder->setParameter('jarvis_dir', realpath(__DIR__.'/..'));
+        $builder->setParameter('working_dir', $workingDir);
+        $builder->setParameter('cache_dir', $containerCacheDir);
+
+        if ($workingDir !== $configDir) {
+            if (file_exists($workingDir.'/jarvis.yml')) {
+                $loader = new YamlFileLoader($builder, new FileLocator($workingDir));
+                $loader->setResolver($resolver);
+                $loader->load('jarvis.yml');
+            }
+        }
+    },
+    'CachedContainer',
+    $debug
+)->run();

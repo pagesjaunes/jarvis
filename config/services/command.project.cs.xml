@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.project.cs.enabled">false</parameter>
+    </parameters>
+
+    <services>
+<!--         <service
+            id="command.project.cs.all"
+            class="Jarvis\Command\Project\CheckStyleAllCommand"
+            parent="command.project"
+        >
+            <argument>project:cs:all</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.cs.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+ -->
+        <service
+            id="command.project.cs.php"
+            class="Jarvis\Command\Project\PhpCsCommand"
+            parent="command.project"
+        >
+            <argument>project:cs:php</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.cs.enabled%</argument>
+            </call>
+
+            <call method="setPhpCsFixer">
+                 <argument type="service" id="remote.php_cs_fixer" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+<!--         <service
+            id="command.project.cs.twig"
+            class="Jarvis\Command\Project\CheckStyleTwigCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:cs:twig</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.cs.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.cs.yaml"
+            class="Jarvis\Command\Project\CheckStyleYamlCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:cs:yaml</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.cs.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.cs.scss"
+            class="Jarvis\Command\Project\CheckStyleScssCommand"
+            parent="command.project"
+        >
+            <argument>project:cs:scss</argument>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.project.cs.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+ -->
+    </services>
+</container>

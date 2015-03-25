@@ -1,0 +1,32 @@
+# EditorConfig is awesome: http://EditorConfig.org
+# Helps developers maintain consistent coding styles between different editors - Sublime Text plugin
+# https://github.com/sindresorhus/editorconfig-sublime#readme
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+# Unix-style newlines
+end_of_line = LF
+# Space indentation
+indent_style = space
+# Whitespace chars
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.php]
+indent_size = 4
+
+[*.json]
+indent_size = 2
+
+[*.yml]
+indent_size = 4
+
+[*.feature]
+indent_size = 4
+
+[Makefile]
+indent_style = tab

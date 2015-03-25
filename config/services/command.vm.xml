@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.vm.enabled">false</parameter>
+    </parameters>
+
+    <services>
+
+        <service
+            id="command.vm"
+            abstract="true"
+        >
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+
+            <call method="setEnabled">
+                 <argument>%command.vm.enabled%</argument>
+            </call>
+
+        </service>
+
+         <service
+            id="command.vm.disable_php_extension_command"
+            class="Jarvis\Command\VirtualMachine\DisablePhpExtensionCommand"
+            parent="command.vm"
+        >
+            <argument>vm:php:extension:disable</argument>
+
+            <tag name="console.command" />
+        </service>
+
+         <service
+            id="command.composer.enable_php_extension_command"
+            class="Jarvis\Command\VirtualMachine\EnablePhpExtensionCommand"
+            parent="command.vm"
+        >
+            <argument>vm:php:extension:enable</argument>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.service"
+            class="Jarvis\Command\VirtualMachine\ServiceCommand"
+            parent="command.vm"
+        >
+            <argument>vm:service</argument>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.service.web_services"
+            class="Jarvis\Command\VirtualMachine\RestartWebServicesCommand"
+        >
+            <argument>vm:service:web-services:restart</argument>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.service.varnish"
+            class="Jarvis\Command\VirtualMachine\ServiceCommand"
+            parent="command.vm"
+        >
+            <argument>vm:service:varnish:restart</argument>
+
+            <call method="setServiceName">
+                <argument>varnish</argument>
+            </call>
+
+            <call method="setServiceCommandName">
+                <argument>restart</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.service.nginx"
+            class="Jarvis\Command\VirtualMachine\ServiceCommand"
+            parent="command.vm"
+        >
+            <argument>vm:service:nginx:restart</argument>
+
+            <call method="setServiceName">
+                <argument>nginx</argument>
+            </call>
+
+            <call method="setServiceCommandName">
+                <argument>restart</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.service.php_fpm"
+            class="Jarvis\Command\VirtualMachine\ServiceCommand"
+            parent="command.vm"
+        >
+            <argument>vm:service:php_fpm:restart</argument>
+
+            <call method="setServiceName">
+                <argument>php5-fpm</argument>
+            </call>
+
+            <call method="setServiceCommandName">
+                <argument>restart</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>
