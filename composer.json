@@ -33,7 +33,8 @@
         "kherge/amend": "~3.0",
         "clue/graph": "0.7.*",
         "jms/composer-deps-analyzer": "0.1.*",
-        "jakub-onderka/php-console-highlighter": "0.*"
+        "jakub-onderka/php-console-highlighter": "0.*",
+        "guzzlehttp/ringphp": "~1.0"
     },
     "minimum-stability": "stable",
     "extra": {

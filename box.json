@@ -37,7 +37,7 @@
     "git-commit": "git-commit",
     "git-version": "git-version",
     "main": "bin/jarvis",
-    "output": "build/jarvis-@git-version@.phar",
+    "output": "build/jarvis.phar",
     "replacements": {
         "manifest_url": "http://pagesjaunes.github.io/jarvis/manifest.json"
     },
