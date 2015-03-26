@@ -55,13 +55,13 @@ class ComposerCommand extends BaseCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->commandOptions = [];
-        if ($input->hasOption('optimize-autoloader')) {
+        if ($input->getOption('optimize-autoloader')) {
             $this->commandOptions['optimize-autoloader'] = '--optimize-autoloader';
         }
-        if ($input->hasOption('dry-run')) {
+        if ($input->getOption('dry-run')) {
             $this->commandOptions['dry-run'] = '--dry-run';
         }
-        if ($input->hasOption('no-dev')) {
+        if ($input->getOption('no-dev')) {
             $this->commandOptions['no-dev'] = '--no-dev';
         }
     }
