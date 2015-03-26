@@ -82,14 +82,15 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
     {
         return $this->getApplication()->executeCommand('project:symfony:cache:warmup', [
             '--project-name' => $projectName,
-            $this->symfonyEnv,
+            '--symfony-env' => $this->symfonyEnv,
         ], $output);
     }
 
     protected function buildAssets($projectName, OutputInterface $output)
     {
         return $this->getApplication()->executeCommand('project:assets:build', [
-            '--project-name' => $projectName
+            '--project-name' => $projectName,
+            '--symfony-env' => $this->symfonyEnv,
         ], $output);
     }
 }

@@ -72,13 +72,17 @@ class Application extends BaseApplication
     {
         if (('@' . 'git-version@') !== $this->getVersion()) {
             return sprintf(
-                '<info>%s</info> version <comment>%s</comment> build <comment>%s</comment>',
+                '<info>%s</info> version <comment>%s</comment>',
                 $this->getName(),
-                $this->getVersion(),
-                '@git-commit-short@'
+                $this->getVersion()
             );
         }
-        return '<info>' . $this->getName() . '</info> (repo)';
+        return sprintf(
+            '<info>%s</info> version <comment>%s</comment> build <comment>%s</comment>',
+            $this->getName(),
+            $this->getVersion(),
+            '@git-commit-short@'
+        );
     }
 
     /**

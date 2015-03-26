@@ -7,7 +7,7 @@
     ],
     "compression": "GZ",
 
-    "directories": ["config", "src"],
+    "directories": ["config", "skeleton", "src"],
     "files": [
         "LICENSE"
     ],
@@ -28,8 +28,7 @@
                 "phpunit-test-case",
                 "Tester",
                 "Tests",
-                "tests",
-                "yaml"
+                "tests"
             ],
             "in": "vendor"
         }
