@@ -212,7 +212,7 @@ class SetupCommand extends Command
      */
     private function saveConfigInFile($filepath, array $config)
     {
-        if (false == file_exists($filepath)) {
+        if (false === file_exists($filepath)) {
             touch($filepath);
         }
 
