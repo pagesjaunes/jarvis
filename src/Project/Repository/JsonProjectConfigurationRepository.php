@@ -32,11 +32,6 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
      */
     private $projectConfigurationFactory;
 
-    /**
-     * @var array
-     */
-    private $rows;
-
     public function __construct($filePath, ProjectConfigurationFactory $projectConfigurationFactory)
     {
         $this->filePath = $filePath;
