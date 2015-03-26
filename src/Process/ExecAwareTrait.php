@@ -29,7 +29,7 @@ trait ExecAwareTrait
      */
     public function getExec()
     {
-        if (null == $this->exec) {
+        if (null === $this->exec) {
             throw new \LogicException('The service "exec" is not initialize');
         }
         return $this->exec;

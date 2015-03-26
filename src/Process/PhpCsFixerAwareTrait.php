@@ -13,7 +13,7 @@ trait PhpCsFixerAwareTrait
      */
     public function getPhpCsFixer()
     {
-        if (null == $this->phpCsFixer) {
+        if (null === $this->phpCsFixer) {
             throw new \RuntimeException('Php CS fixer service is not injected');
         }
         return $this->phpCsFixer;

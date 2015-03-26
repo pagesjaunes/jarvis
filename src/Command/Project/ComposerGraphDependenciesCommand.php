@@ -165,7 +165,7 @@ class ComposerGraphDependenciesCommand extends BaseCommand
             $projectConfig->getRemoteVendorDir().'/composer/installed.json'
         );
 
-        if (null == $this->dependencyAnalyzer) {
+        if (null === $this->dependencyAnalyzer) {
             $this->dependencyAnalyzer = new DependencyAnalyzer();
         }
 
@@ -181,7 +181,7 @@ class ComposerGraphDependenciesCommand extends BaseCommand
 
     protected function getGraphComposerClass()
     {
-        return null == $this->graphComposerClass ? 'Jarvis\Composer\GraphComposer' : $this->graphComposerClass;
+        return null === $this->graphComposerClass ? 'Jarvis\Composer\GraphComposer' : $this->graphComposerClass;
     }
 
     protected function saveGraphInFile(GraphViz $graphviz, $targetFile)
