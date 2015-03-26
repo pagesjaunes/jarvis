@@ -89,7 +89,6 @@ class DependencyAnalyzer
         if (!empty($installedFileContent)) {
             foreach ($json->decode($installedFileContent, true) as $packageData) {
                 $package = $graph->createPackage($packageData['name'], $packageData);
-                // $package->setAttribute('dir', $vendorDir.'/'.$packageData['name']);
                 $this->processLockedData($graph, $packageData);
             }
         }
@@ -98,7 +97,6 @@ class DependencyAnalyzer
         if ($connectRequireDev && !empty($installedFileDevContent)) {
             foreach ($json->decode($installedFileDevContent, true) as $packageData) {
                 $package = $graph->createPackage($packageData['name'], $packageData);
-                // $package->setAttribute('dir', $vendorDir.'/'.$packageData['name']);
                 $this->processLockedData($graph, $packageData);
             }
         }
@@ -161,11 +159,6 @@ class DependencyAnalyzer
 
             return;
         }
-
-        // If we reach this, we have stumbled upon a package that is only available
-        // if the source package is installed with dev dependencies. We still add
-        // the connection, but we will not have any data about the dest package.
-        // $graph->connect($sourceName, $destName, $version);
     }
 
     private function processLockedData(DependencyGraph $graph, array $lockedPackageData)
