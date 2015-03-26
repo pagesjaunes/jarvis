@@ -123,7 +123,7 @@ abstract class BaseCommand extends Command
      */
     protected function getAllBundlesProjectConfig()
     {
-        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findInstalled()), function ($projectConfig) {
+        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findInstalled()), function (ProjectConfiguration $projectConfig) {
             return (false !== strpos($projectConfig->getProjectName(), '-bundle'));
         });
     }
