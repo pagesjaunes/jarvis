@@ -202,7 +202,6 @@ imports:
 
 parameters:
     app.name: pj-jarvis
-    app.version: 0.0.1
 
     vagrant_directory: "%working_dir%/vagrant"
     projects_config_file_path: "%working_dir%/config/projects.json"
