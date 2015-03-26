@@ -92,6 +92,10 @@
         >
             <argument>project:git:hooks:install</argument>
 
+            <call method="setWorkingDir">
+                <argument>%working_dir%</argument>
+            </call>
+
             <call method="setSkeletonGitHooksDir">
                 <argument>%git_hooks_skeleton_dir%</argument>
             </call>

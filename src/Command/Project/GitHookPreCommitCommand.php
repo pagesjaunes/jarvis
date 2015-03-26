@@ -542,35 +542,9 @@ class GitHookPreCommitCommand extends BaseCommand
             $output,
             [
                 'level' => $this->phpCsFixerLevel,
-                'dry-run' => true,
-                'self-update' => false
+                'dry-run' => true
             ]
         );
-
-        // ob_start();
-        // $this->getSshExec()->exec(
-        //     strtr(
-        //         'php-cs-fixer fix --level=%level% --no-interaction --dry-run --diff -vvv %dir%',
-        //         [
-        //             '%dir%' => $remoteTmpStaging,
-        //             '%level%' => $this->phpCsFixerLevel
-        //         ]
-        //     )
-        // );
-        // $report = ob_get_clean();
-
-        // // clean path without path temporary staging area for files with syntax errors
-        // foreach ($files as $file) {
-        //     if (pathinfo($file, PATHINFO_EXTENSION) == 'php') {
-        //         $report = str_replace($remoteTmpStaging, '', $report);
-        //     }
-        // }
-
-        // if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
-        //     $output->writeln($report, OutputInterface::OUTPUT_RAW);
-        // }
-
-        // return $this->getSshExec()->getLastReturnStatus();
     }
 
     protected function checkPhpMd(array $files, $remoteTmpStaging, $projectName, OutputInterface $output)
