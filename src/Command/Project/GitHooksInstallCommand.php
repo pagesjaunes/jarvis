@@ -29,9 +29,32 @@ class GitHooksInstallCommand extends BaseCommand
     private $skeletonGitHooksDir;
     private $workingDir;
 
+    /**
+     * Sets the value of workingDir.
+     *
+     * @param mixed $workingDir the working dir
+     *
+     * @return self
+     */
+    public function setWorkingDir($workingDir)
+    {
+        $this->workingDir = $workingDir;
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of skeletonGitHooksDir.
+     *
+     * @param mixed $skeletonGitHooksDir the skeleton git hooks dir
+     *
+     * @return self
+     */
     public function setSkeletonGitHooksDir($skeletonGitHooksDir)
     {
         $this->skeletonGitHooksDir = $skeletonGitHooksDir;
+
+        return $this;
     }
 
     /**
@@ -50,7 +73,6 @@ class GitHooksInstallCommand extends BaseCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->runningFile = realpath($_SERVER['argv'][0]);
-        $this->workingDir = $input->getParameterOption(['--working-dir', '-d']);
     }
 
     /**
@@ -93,7 +115,11 @@ class GitHooksInstallCommand extends BaseCommand
         return strtr(
             file_get_contents($filepath),
             [
-                '{{jarvis_command_name}}' => sprintf('%s --working-dir=%s', $this->runningFile, $this->workingDir),
+                '{{jarvis_command_name}}' => sprintf(
+                    '%s --working-dir=%s',
+                    $this->runningFile,
+                    $this->workingDir
+                ),
                 '{{project_name}}' => $projectName,
             ]
         );
