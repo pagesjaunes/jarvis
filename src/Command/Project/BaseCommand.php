@@ -162,7 +162,13 @@ abstract class BaseCommand extends Command
         $projectName = $input->getOption('project-name') ?
             $input->getOption('project-name')
             :
-            $this->askProjectName($output, $this->getAllProjectNames(), $this->getProjectNamesToExclude())
+            (
+                isset($_SERVER['SYMFONY_DEFAULT_PROJECT'])
+                ?
+                    $_SERVER['SYMFONY_DEFAULT_PROJECT']
+                    :
+                    $this->askProjectName($output, $this->getAllProjectNames(), $this->getProjectNamesToExclude())
+            )
         ;
 
         $projectConfig = $this->getProjectConfigurationRepository()->find($projectName);
