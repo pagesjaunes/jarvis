@@ -32,7 +32,7 @@ use Jarvis\DependencyInjection\Compiler\HelperCompilerPass;
 
 class JarvisFactory
 {
-    const ApplicationClass = 'Jarvis\Console\Application';
+    const APPLICATION_CLASS = 'Jarvis\Console\Application';
     /**
      * Loads a container and returns it.
      *
@@ -154,13 +154,13 @@ class JarvisFactory
      */
     protected static function getDefaultHelpers()
     {
-        $class = new \ReflectionClass(static::ApplicationClass);
+        $class = new \ReflectionClass(static::APPLICATION_CLASS);
 
         if (version_compare(PHP_VERSION, '5.4', '>=')) {
             $instance = $class->newInstanceWithoutConstructor();
         } else {
             $instance = unserialize(
-                'O:'.strlen(static::ApplicationClass).':"'.static::ApplicationClass.'":0:{}'
+                'O:'.strlen(static::APPLICATION_CLASS).':"'.static::APPLICATION_CLASS.'":0:{}'
             );
         }
 
@@ -185,7 +185,7 @@ class JarvisFactory
      */
     protected static function registerApplication(ContainerBuilder $builder)
     {
-        $definition = new Definition(static::ApplicationClass);
+        $definition = new Definition(static::APPLICATION_CLASS);
 
         $builder->setDefinition('console.application', $definition);
     }
