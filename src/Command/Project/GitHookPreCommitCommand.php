@@ -45,7 +45,6 @@ class GitHookPreCommitCommand extends BaseCommand
         $this->addOption('php-cs-fixer-level', null, InputOption::VALUE_REQUIRED, 'The level of fixes (can be psr0, psr1, psr2, or symfony (formerly all))', 'symfony');
 
         $this->addOption('pattern', null, InputOption::VALUE_REQUIRED, 'The pattern file', '/\.(php|yml|twig)$/i');
-        // TODO: |js|scss|yml
 
         parent::configure();
     }
