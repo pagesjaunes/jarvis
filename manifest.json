@@ -1,20 +1,8 @@
 [
     {
         "name": "jarvis.phar",
-        "sha1": "f1e1043b7cfe89130fc5477cf60a391d4bcb2f7a",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.0.0/jarvis.phar",
-        "version": "0.0.0"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "ad432e0d6430a0e58c73a826dc09b4552ed417d8",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.0/jarvis.phar",
-        "version": "0.1.0"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "a02952754f735307cad7053eb303f4e2cd5310e7",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.1/jarvis.phar",
-        "version": "0.1.0"
+        "sha1": "63ec2ae5762d1da1b4bbff39eea8a1a5b6f53e51",
+        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.3/jarvis.phar",
+        "version": "0.1.3"
     }
 ]
