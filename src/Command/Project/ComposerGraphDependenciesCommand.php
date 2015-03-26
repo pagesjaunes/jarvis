@@ -24,7 +24,7 @@ use Jarvis\Composer\DependencyAnalyzer;
 use Jarvis\Composer\GraphComposer;
 use Jarvis\Project\ProjectConfiguration;
 
-class ComposerGraphDependenciesCommand extends BaseCommand
+class ComposerGraphDependenciesCommand extends BaseBuildCommand
 {
     use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
 
@@ -149,6 +149,10 @@ class ComposerGraphDependenciesCommand extends BaseCommand
         $graphviz = new GraphViz($graph);
         $graphviz->setFormat($this->format);
         $this->saveGraphInFile($graphviz, $targetFile);
+
+        if (file_exists($targetFile)) {
+            $this->openFile($targetFile);
+        }
     }
 
     protected function getGraphComposer(ProjectConfiguration $projectConfig)

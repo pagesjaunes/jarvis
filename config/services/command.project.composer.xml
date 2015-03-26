@@ -87,7 +87,7 @@
         <service
             id="command.project.composer.graph_dependencies"
             class="Jarvis\Command\Project\ComposerGraphDependenciesCommand"
-            parent="command.project"
+            parent="command.project.build"
         >
             <argument>project:composer:graph-dependencies</argument>
 
