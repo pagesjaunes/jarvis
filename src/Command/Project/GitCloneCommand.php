@@ -95,7 +95,7 @@ class GitCloneCommand extends BaseGitCommand
      */
     protected function getAllBundlesProjectConfig()
     {
-        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findNotInstalled()), function ($projectConfig) {
+        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findNotInstalled()), function (ProjectConfiguration $projectConfig) {
             return (false !== strpos($projectConfig->getProjectName(), '-bundle'));
         });
     }
