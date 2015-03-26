@@ -15,7 +15,6 @@
 
 namespace Jarvis\Command\Project;
 
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Command\Project\ComposerCommand;
 use Jarvis\Command\Project\SymfonyAssetsBuildCommand;
