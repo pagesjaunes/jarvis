@@ -41,12 +41,9 @@ class PhpDocCommand extends BaseBuildCommand
 
         $this->getSshExec()->run(
             strtr(
-                // .($output->isDebug() ? ' --verbose' : '')
                 'cd %project_dir% && sami.php update sami_config.php',
                 [
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
-                    // getLocalDir
-                    // '%build_dir%' => $remoteBuildDir,
                 ]
             ),
             $output,
@@ -66,9 +63,7 @@ class PhpDocCommand extends BaseBuildCommand
         );
 
         if (file_exists($apiDocIndexFilepath)) {
-            if (file_exists($apiDocIndexFilepath)) {
-                $this->openFile($apiDocIndexFilepath);
-            }
+            $this->openFile($apiDocIndexFilepath);
         }
     }
 }
