@@ -78,7 +78,7 @@ class DependencyAnalyzer
         // Add regular packages.
         if (!empty($installedFileContent)) {
             foreach ($json->decode($installedFileContent, true) as $packageData) {
-                $package = $graph->createPackage($packageData['name'], $packageData);
+                $graph->createPackage($packageData['name'], $packageData);
                 $this->processLockedData($graph, $packageData);
             }
         }
@@ -86,7 +86,7 @@ class DependencyAnalyzer
         // Add development packages.
         if ($connectRequireDev && !empty($installedFileDevContent)) {
             foreach ($json->decode($installedFileDevContent, true) as $packageData) {
-                $package = $graph->createPackage($packageData['name'], $packageData);
+                $graph->createPackage($packageData['name'], $packageData);
                 $this->processLockedData($graph, $packageData);
             }
         }
