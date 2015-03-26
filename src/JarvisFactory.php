@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Dumper\XmlDumper;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Jarvis\DependencyInjection\Compiler\CommandCompilerPass;
 use Jarvis\DependencyInjection\Compiler\EventCompilerPass;
@@ -185,12 +186,6 @@ class JarvisFactory
     protected static function registerApplication(ContainerBuilder $builder)
     {
         $definition = new Definition(static::ApplicationClass);
-        // $definition->addArgument('%app.name%');
-        // $definition->addArgument('%app.version%');
-
-        // // default values
-        // $builder->setParameter('app.name', 'UNKNOWN');
-        // $builder->setParameter('app.version', 'UNKNOWN');
 
         $builder->setDefinition('console.application', $definition);
     }
