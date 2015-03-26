@@ -99,17 +99,6 @@ class Exec
 
         !$this->logger ?: $this->logger->debug($commandLine);
 
-        // if (null === $output) { // output buffering is disabled
-
-        //     passthru($commandLine, $returnStatus);
-
-        //     $this->lastReturnStatus = $returnStatus;
-
-        //     !$previousCwd ?: chdir($previousCwd);
-
-        //     return;
-        // }
-
         ob_start();
         passthru($commandLine, $returnStatus);
         if ($output instanceof OutputInterface) {

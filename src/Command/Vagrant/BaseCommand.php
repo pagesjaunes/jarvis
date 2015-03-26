@@ -83,10 +83,6 @@ class BaseCommand extends Command
     {
         $vagrantFilePath = sprintf('%s/Vagrantfile', $this->getVagrantExec()->getCwd());
 
-        // if (!$this->getLocalFilesystem()->exists($vagrantFilePath) && $this->getLocalFilesystem()->exists($vagrantFilePath.'.dist')) {
-        //     $this->getLocalFilesystem()->copy($vagrantFilePath.'.dist', $vagrantFilePath);
-        // }
-
         return $this->getLocalFilesystem()->exists($vagrantFilePath);
     }
 }

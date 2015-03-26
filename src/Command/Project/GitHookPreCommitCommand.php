@@ -67,7 +67,6 @@ class GitHookPreCommitCommand extends BaseCommand
     {
         $this->phpCsFixerLevel = $input->getOption('php-cs-fixer-level');
         $this->pattern = $input->getOption('pattern');
-        // $this->temporaryCopyStagingAreaName = $input->getOption('tmp-copy-staging-name');
     }
 
     /**
@@ -113,58 +112,34 @@ class GitHookPreCommitCommand extends BaseCommand
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->validatePhpSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'There are some PHP syntax errors!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->validateYamlSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectConfig, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'There are some YAML syntax errors!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->validateTwigSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectConfig, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'There are some TWIG syntax errors!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->validateScssSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectConfig, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'There are some SCSS syntax errors!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->checkPhpCodeStyle($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'There are coding standards violations!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->checkPhpMd($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'There are PHPMD violations!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->unitTests($projectConfig, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'Fix the unit tests!';
-            // }
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->integrationTests($projectConfig, $output);
-            // if (static::EXIT_SUCCESS !== $exitCodeStatus) {
-            //     $errorMessage = 'Fix the integration tests!';
-            // }
         }
 
         if ($errorMessage) {

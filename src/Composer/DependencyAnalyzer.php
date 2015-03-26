@@ -55,7 +55,6 @@ class DependencyAnalyzer
             }
 
             $graph = new DependencyGraph(new PackageNode($rootPackageData['name'], $rootPackageData));
-            // $graph->getRootPackage()->setAttribute('dir', $dir);
 
             // Connect built-in dependencies for example on the PHP version, or
             // on PHP extensions. For these, composer does not create a composer.lock.
@@ -74,16 +73,7 @@ class DependencyAnalyzer
             return $graph;
         }
 
-        // The vendor directory is also only created when a package has dependencies,
-        // but since we handle the no-dependency case already in the previous if, at
-        // this point there really must be a directory.
-        // $vendorDir = $dir.'/'.(isset($rootPackageData['config']['vendor-dir']) ? $rootPackageData['config']['vendor-dir'] : 'vendor');
-        // if ( ! is_dir($vendorDir)) {
-        //     throw new \RuntimeException(sprintf('The vendor directory "%s" could not be found.', $vendorDir));
-        // }
-
         $graph = new DependencyGraph(new PackageNode($rootPackageData['name'], $rootPackageData));
-        // $graph->getRootPackage()->setAttribute('dir', $dir);
 
         // Add regular packages.
         if (!empty($installedFileContent)) {
@@ -139,10 +129,6 @@ class DependencyAnalyzer
         if ('php' === $destName) {
             return;
         }
-
-        // if (0 === strpos($destName, 'ext-')) {
-        //     return;
-        // }
 
         // If the dest package is available, just connect it.
         if ($graph->hasPackage($destName)) {

@@ -53,8 +53,6 @@ class PhpDocCommand extends BaseBuildCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        // $this->getRemoteFilesystem()->mkdir($remoteBuildDir);
-        //
         (new Filesystem())->mkdir($localBuildDir);
 
         $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir);
