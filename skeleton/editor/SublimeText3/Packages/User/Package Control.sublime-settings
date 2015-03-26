@@ -1,9 +1,14 @@
 {
-    "installed_packages": [
+    "in_process_packages":
+    [],
+    "installed_packages":
+    [
+        "ApacheConf.tmLanguage",
         "BracketHighlighter",
         "Case Conversion",
         "Cucumber",
         "DocBlockr",
+        "Dockerfile Syntax Highlighting",
         "EditorConfig",
         "Emmet",
         "Gherkin (Cucumber) Formatter",
@@ -11,16 +16,18 @@
         "GitGutter",
         "INI",
         "Logs Colorize",
-        "Markdown Extended",
         "Markdown Preview",
         "nginx",
         "Package Control",
         "Path Tools",
         "PHP Getters and Setters",
+        "PHP-Twig",
         "Phpcs",
         "PhpNamespace",
         "PhpSpec Snippets",
         "PHPUnit Completions",
+        "plist",
+        "Pretty JSON",
         "Sass",
         "SassBeautify",
         "SideBarEnhancements",
@@ -36,9 +43,12 @@
         "SublimeLinter-php",
         "SublimeLinter-phpcs",
         "SublimeLinter-phpmd",
+        "SublimeLinter-pyyaml",
+        "SublimeLinter-xmllint",
         "SyncedSideBar",
         "TrailingSpaces",
         "Varnish VCL",
-        "Xdebug Client"
+        "Xdebug Client",
+        "Zen Tabs"
     ]
 }

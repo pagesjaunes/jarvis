@@ -1,6 +1,6 @@
 {
     "user": {
-        "debug": true,
+        "debug": false,
         "delay": 0.25,
         "error_color": "D02000",
         "gutter_theme": "Packages/SublimeLinter/gutter-themes/Blueberry/cross/Blueberry - cross.gutter-theme",
@@ -35,16 +35,27 @@
                 "excludes": []
             },
             "phpcs": {
-                "@disable": false,
-                "args": [],
-                "excludes": [],
+                "@disable": true,
+                "args": [
+                    "--warning-severity=0"
+                ],
+                "excludes": [
+                    "*Spec.php"
+                ],
                 "standard": "PSR2"
             },
             "phpmd": {
+                "@disable": true,
+                "args": [],
+                "excludes": [
+                    "*Spec.php"
+                ],
+                "rulesets": "cleancode,codesize,controversial,design,unusedcode"
+            },
+            "pyyaml": {
                 "@disable": false,
                 "args": [],
-                "excludes": [],
-                "rulesets": "cleancode,codesize,controversial,design,unusedcode"
+                "excludes": []
             },
             "scss": {
                 "@disable": false,
@@ -61,10 +72,16 @@
                 "ignore": "",
                 "limit": null,
                 "only": ""
+            },
+            "xmllint": {
+                "@disable": false,
+                "args": [],
+                "excludes": []
             }
         },
         "mark_style": "fill",
         "no_column_highlights_line": false,
+        "passive_warnings": false,
         "paths": {
             "linux": [],
             "osx": [],
@@ -77,7 +94,7 @@
         },
         "rc_search_limit": 3,
         "shell_timeout": 10,
-        "show_errors_on_save": true,
+        "show_errors_on_save": false,
         "show_marks_in_minimap": true,
         "syntax_map": {
             "html (django)": "html",
