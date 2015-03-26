@@ -36,16 +36,16 @@ class BlackfireInstallCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // $this->getSshExec()->run('wget -O - https://packagecloud.io/gpg.key | sudo apt-key add -', $output);
-        // if ($this->getSshExec()->getLastReturnStatus() == 0) {
-        //     $this->getSshExec()->run('echo "deb http://packages.blackfire.io/debian any main" | sudo tee /etc/apt/sources.list.d/blackfire.list', $output);
-        // }
-        // if ($this->getSshExec()->getLastReturnStatus() == 0) {
-        //     $this->getSshExec()->run('sudo apt-get update', $output);
-        // }
-        // if ($this->getSshExec()->getLastReturnStatus() == 0) {
-        //     $this->getSshExec()->run('sudo apt-get install blackfire-agent', $output);
-        // }
+        $this->getSshExec()->run('wget -O - https://packagecloud.io/gpg.key | sudo apt-key add -', $output);
+        if ($this->getSshExec()->getLastReturnStatus() == 0) {
+            $this->getSshExec()->run('echo "deb http://packages.blackfire.io/debian any main" | sudo tee /etc/apt/sources.list.d/blackfire.list', $output);
+        }
+        if ($this->getSshExec()->getLastReturnStatus() == 0) {
+            $this->getSshExec()->run('sudo apt-get update', $output);
+        }
+        if ($this->getSshExec()->getLastReturnStatus() == 0) {
+            $this->getSshExec()->run('sudo apt-get install blackfire-agent', $output);
+        }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
             $this->getSshExec()->exec('sudo blackfire-agent -config="/etc/blackfire/agent" -register');
         }

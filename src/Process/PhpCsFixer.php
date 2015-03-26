@@ -96,7 +96,7 @@ class PhpCsFixer
         );
         $jsonReport = ob_get_clean();
         $json = new Json();
-        // TODO: $json->validate($schema, $decoded); // throws Herrera\Json\Exception\JsonException
+
         try {
             $data = $json->decode($jsonReport);
         } catch (\Seld\JsonLint\ParsingException $e) {

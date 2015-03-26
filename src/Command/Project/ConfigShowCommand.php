@@ -12,7 +12,6 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Jarvis\Command\Project\AskProjectNameTrait;
 use Jarvis\Project\ProjectConfiguration;
-use Jarvis\Project\ProjectConfigurationFactory;
 use Jarvis\Project\Repository\ProjectConfigurationRepositoryAwareTrait;
 
 class ConfigShowCommand extends Command
@@ -20,25 +19,6 @@ class ConfigShowCommand extends Command
     use ProjectConfigurationRepositoryAwareTrait;
 
     use AskProjectNameTrait;
-
-    /**
-     * @var ProjectConfigurationFactory
-     */
-    private $projectConfigurationFactory;
-
-    /**
-     * Sets the value of projectConfigurationFactory.
-     *
-     * @param ProjectConfigurationFactory $projectConfigurationFactory the project configuration factory
-     *
-     * @return self
-     */
-    public function setProjectConfigurationFactory(ProjectConfigurationFactory $projectConfigurationFactory)
-    {
-        $this->projectConfigurationFactory = $projectConfigurationFactory;
-
-        return $this;
-    }
 
     /**
      * @{inheritdoc}
@@ -52,7 +32,7 @@ class ConfigShowCommand extends Command
 
     protected function getProjectNamesToExclude()
     {
-        return $this->getProjectConfigurationRepository()->getProjectNotAlreadyInstalledNames();
+        return [];
     }
 
     /**

@@ -89,7 +89,7 @@ class GitHooksInstallCommand extends BaseCommand
         $content = $this->renderTemplate($gitHookName, $projectConfig->getProjectName());
         $filename = $this->getTargetGitHookFile($gitHookName, $projectConfig);
 
-        $this->getLocalFilesystem()->dumpFile($filename, $content, $mode = 0666);
+        $this->getLocalFilesystem()->dumpFile($filename, $content);
         $this->getExec()->exec('chmod +x '.$filename);
 
         $output->writeln(sprintf(

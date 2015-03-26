@@ -1,30 +1,13 @@
 Jarvis
 ================
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/0d176b6e-0050-4288-b24a-49951e8b85ba/big.png)](https://insight.sensiolabs.com/projects/0d176b6e-0050-4288-b24a-49951e8b85ba)
+
 The Ultimate tool to manage php application in virtual machine.
 
 Jarvis is designed to assist you in developping Symfony application, by defining common tasks you run on your remote servers.
 
 Jarvis is meant to be your Swiss Army knife, so it features a modular design with multiple sub-commands to keep the codebase manageable and future-friendly.
-
-Installation
-------------
-
-First, install **Jarvis** using the Composer global command:
-
-```bash
-composer global require "pagesjaunes/jarvis=~0.0"
-```
-
-
-Updating
---------
-
-To update Jarvis, simply use Composer:
-
-```bash
-composer global update "pagesjaunes/jarvis"
-```
 
 What is it?
 -----------
@@ -113,7 +96,7 @@ You can use Jarvis in one of three ways:
 You may download a ready-to-use version of Box as a Phar:
 
 ```bash
-$ curl -LSs http://pagesjaunes.github.io/jarvis/installer.php | php
+$ curl -LSs http://pagesjaunes.github.io/jarvis/installer | php
 ```
 
 The command will check your PHP settings, warn you of any issues, and the download it to the current directory. From there, you may place it anywhere that will make it easier for you to access (such as /usr/local/bin) and chmod it to 755. You can even rename it to just jarvis to avoid having to type the .phar extension every time.
@@ -188,7 +171,7 @@ $ tree -L 1
 ├── jarvis (facultative for extending)
 ├── jarvis.yml
 ├── projects
-├── provisioning
+├── provisioning (facultative)
 ├── vagrant
 ├── var
 └── vendor
@@ -202,7 +185,6 @@ imports:
 
 parameters:
     app.name: pj-jarvis
-    app.version: 0.0.1
 
     vagrant_directory: "%working_dir%/vagrant"
     projects_config_file_path: "%working_dir%/config/projects.json"

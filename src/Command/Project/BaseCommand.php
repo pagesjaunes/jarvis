@@ -68,7 +68,7 @@ abstract class BaseCommand extends Command
      */
     protected function getProjectConfigurationRepository()
     {
-        if (null == $this->projectConfigurationRepository) {
+        if (null === $this->projectConfigurationRepository) {
             throw new \RuntimeException('The project configuration repository service does not injected.');
         }
 
@@ -123,7 +123,7 @@ abstract class BaseCommand extends Command
      */
     protected function getAllBundlesProjectConfig()
     {
-        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findInstalled()), function ($projectConfig) {
+        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findInstalled()), function (ProjectConfiguration $projectConfig) {
             return (false !== strpos($projectConfig->getProjectName(), '-bundle'));
         });
     }

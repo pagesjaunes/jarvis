@@ -26,7 +26,6 @@ class PhpCsCommand extends BaseBuildCommand
 
     private $fixCodingStandardProblems = false;
     private $level;
-    private $selfUpdate = false;
 
     /**
      * @{inheritdoc}

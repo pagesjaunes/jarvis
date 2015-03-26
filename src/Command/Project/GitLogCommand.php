@@ -16,7 +16,6 @@
 namespace Jarvis\Command\Project;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Jarvis\Process\ExecAwareTrait;
 use Jarvis\Project\ProjectConfiguration;
 
 class GitLogCommand extends BaseGitCommand

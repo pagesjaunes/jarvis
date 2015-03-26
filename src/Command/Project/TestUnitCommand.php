@@ -124,7 +124,7 @@ class TestUnitCommand extends BaseCommand
 
         $this->getRemoteFilesystem()->syncRemoteToLocal($this->remoteBuildDir, $this->localBuildDir);
 
-        $statusCode = $this->getSshExec()->getLastReturnStatus() == 0 && strpos($report, 'broken') == false ? 0 : 1;
+        $statusCode = $this->getSshExec()->getLastReturnStatus() == 0 && strpos($report, 'broken') === false ? 0 : 1;
 
         if ($this->displayStatusText) {
             $output->writeln(

@@ -50,8 +50,8 @@ class TestAllCommand extends BaseCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->isTestUnitEnabled = null == $input->getOption('no-unit');
-        $this->isTestIntegrationEnabled = null == $input->getOption('no-integration');
+        $this->isTestUnitEnabled = null === $input->getOption('no-unit');
+        $this->isTestIntegrationEnabled = null === $input->getOption('no-integration');
     }
 
     /**

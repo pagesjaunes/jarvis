@@ -55,47 +55,5 @@ class EnablePhpExtensionCommand extends BaseCommand
         }
 
         return $this->getSshExec()->getLastReturnStatus();
-
-        // $output->writeln($this->executeVagrantcommand('halt'), OutputInterface::OUTPUT_RAW);
-
-        // system('ls -lsa');
-
-        // passthru('ls -lsa');
-        // passthru('ssh vagrant@127.0.0.1 -p 2222 -i '.$cwd.'/.vagrant/machines/default/virtualbox/private_key -t -q "ls -lsa"');
-        // $commandLine = 'ssh vagrant@127.0.0.1 -p 2222 -i '.$cwd.'/.vagrant/machines/default/virtualbox/private_key -t -q "php /srv/www/front-pj-lr/front-pj-lr-webapp/app/console"';
-// $connection = ssh2_connect('127.0.0.1', 2222);
-// ssh2_auth_password($connection, 'vagrant', 'vagrant');
-
-// // $stream = ssh2_shell($connection, 'vt102', null, 80, 24, SSH2_TERM_UNIT_CHARS);
-// $stdout = ssh2_exec($connection, 'php /srv/www/front-pj-lr/front-pj-lr-webapp/app/console');
-// $stderr = ssh2_fetch_stream($stdout, SSH2_STREAM_STDERR);
-// stream_set_blocking($stderr, true);
-// stream_set_blocking($stdout, true);
-// $error = stream_get_contents($stderr);
-// if ($error !== '') {
-//     throw new RuntimeException($error);
-// }
-// echo stream_get_contents($stdout);
-        // echo $this->executeRemoteCommand('php /srv/www/front-pj-lr/front-pj-lr-webapp/app/console', $output);
-        // echo $this->executeRemoteCommand('php /srv/www/front-pj-lr/front-pj-lr-webapp/app/console');
-        // $this->executeRemoteCommand('php /srv/www/front-pj-lr/front-pj-lr-webapp/app/console');
-        // $this->executeRemoteCommand('php -i | grep "xdebug"', $output);
-
-// TODO: $this->get('remote_process_builder')->getProcess()->run();
-//
-        // $this->executeRemoteCommand('sudo php5dismod xdebug');
-        // echo $this->executeRemoteCommand('php -i | grep "xdebug"');
-        // echo $this->executeRemoteCommand('php5-fpm -i | grep "xdebug"');
-        // $this->executeRemoteCommand('sudo php5enmod xdebug');
-        // echo $this->executeRemoteCommand('php -i | grep "xdebug"');
-        // echo $this->executeRemoteCommand('php5-fpm -i | grep "xdebug"');
-        // $this->executeRemoteCommand('sudo php5dismod xdebug');
-        // echo $this->executeRemoteCommand('php -i | grep "xdebug"');
-        // echo $this->executeRemoteCommand('php5-fpm -i | grep "xdebug"');
-
-        // $builder = new ProcessBuilder(explode(' ', $commandLine));
-        // $process = $builder->getProcess();
-        // $process->run();
-        // $output->writeln($process->getOutput(), OutputInterface::OUTPUT_RAW);
     }
 }

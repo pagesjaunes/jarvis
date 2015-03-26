@@ -27,23 +27,13 @@ class GraphComposer
         'fontcolor' => '#314B5F',
     );
 
-    private $layoutVertexRoot = array(
-        'style' => 'filled, rounded, bold',
-    );
-
     private $layoutEdge = array(
         'fontcolor' => '#FFEBFF',
         'fontsize' => 10,
         'color' => '#1A2833',
     );
 
-    private $layoutEdgeDev = array(
-        'style' => 'dashed',
-    );
-
     private $dependencyGraph;
-
-    private $format = 'svg';
 
     /**
      *
@@ -94,15 +84,9 @@ class GraphComposer
 
                 $label = $requires->getVersionConstraint();
 
-                $edge = $start->createEdgeTo($target)->setLayout(array('label' => $label) + $this->layoutEdge);
-
-                // if ($requires->isDevDependency()) {
-                //     $edge->setLayout($this->layoutEdgeDev);
-                // }
+                $start->createEdgeTo($target)->setLayout(array('label' => $label) + $this->layoutEdge);
             }
         }
-
-        // $graph->getVertex($this->dependencyGraph->getRootPackage()->getName())->setLayout($this->layoutVertexRoot);
 
         return $graph;
     }

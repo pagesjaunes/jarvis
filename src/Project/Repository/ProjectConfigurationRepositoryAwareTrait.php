@@ -23,7 +23,7 @@ trait ProjectConfigurationRepositoryAwareTrait
      */
     protected function getProjectConfigurationRepository()
     {
-        if (null == $this->projectConfigurationRepository) {
+        if (null === $this->projectConfigurationRepository) {
             throw new \RuntimeException('The project configuration repository service does not injected.');
         }
 

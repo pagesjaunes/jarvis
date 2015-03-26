@@ -15,7 +15,6 @@
 
 namespace Jarvis\Command\Project;
 
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Command\Project\ComposerCommand;
 use Jarvis\Command\Project\SymfonyAssetsBuildCommand;
@@ -95,7 +94,7 @@ class GitCloneCommand extends BaseGitCommand
      */
     protected function getAllBundlesProjectConfig()
     {
-        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findNotInstalled()), function ($projectConfig) {
+        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findNotInstalled()), function (ProjectConfiguration $projectConfig) {
             return (false !== strpos($projectConfig->getProjectName(), '-bundle'));
         });
     }

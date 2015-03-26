@@ -26,7 +26,7 @@ trait CommandExistTrait
      */
     protected function commandExist($commandLine, $cwd = null)
     {
-        if (null == $cwd) {
+        if (null === $cwd) {
             $cwd = $this->getRootDir();
         }
 

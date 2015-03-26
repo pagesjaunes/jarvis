@@ -40,7 +40,6 @@ class DependencyAnalyzer
     public function analyze($composerJsonFileContent, $composerLockFileContent, $installedFileContent, $installedFileDevContent = null, $connectRequireDev = false)
     {
         $json = new Json();
-        // TODO: $json->validate($schema, $decoded); // throws Herrera\Json\Exception\JsonException
 
         $rootPackageData = $json->decode($composerJsonFileContent, true);
 
@@ -56,7 +55,6 @@ class DependencyAnalyzer
             }
 
             $graph = new DependencyGraph(new PackageNode($rootPackageData['name'], $rootPackageData));
-            // $graph->getRootPackage()->setAttribute('dir', $dir);
 
             // Connect built-in dependencies for example on the PHP version, or
             // on PHP extensions. For these, composer does not create a composer.lock.
@@ -75,22 +73,12 @@ class DependencyAnalyzer
             return $graph;
         }
 
-        // The vendor directory is also only created when a package has dependencies,
-        // but since we handle the no-dependency case already in the previous if, at
-        // this point there really must be a directory.
-        // $vendorDir = $dir.'/'.(isset($rootPackageData['config']['vendor-dir']) ? $rootPackageData['config']['vendor-dir'] : 'vendor');
-        // if ( ! is_dir($vendorDir)) {
-        //     throw new \RuntimeException(sprintf('The vendor directory "%s" could not be found.', $vendorDir));
-        // }
-
         $graph = new DependencyGraph(new PackageNode($rootPackageData['name'], $rootPackageData));
-        // $graph->getRootPackage()->setAttribute('dir', $dir);
 
         // Add regular packages.
         if (!empty($installedFileContent)) {
             foreach ($json->decode($installedFileContent, true) as $packageData) {
-                $package = $graph->createPackage($packageData['name'], $packageData);
-                // $package->setAttribute('dir', $vendorDir.'/'.$packageData['name']);
+                $graph->createPackage($packageData['name'], $packageData);
                 $this->processLockedData($graph, $packageData);
             }
         }
@@ -98,8 +86,7 @@ class DependencyAnalyzer
         // Add development packages.
         if ($connectRequireDev && !empty($installedFileDevContent)) {
             foreach ($json->decode($installedFileDevContent, true) as $packageData) {
-                $package = $graph->createPackage($packageData['name'], $packageData);
-                // $package->setAttribute('dir', $vendorDir.'/'.$packageData['name']);
+                $graph->createPackage($packageData['name'], $packageData);
                 $this->processLockedData($graph, $packageData);
             }
         }
@@ -143,10 +130,6 @@ class DependencyAnalyzer
             return;
         }
 
-        // if (0 === strpos($destName, 'ext-')) {
-        //     return;
-        // }
-
         // If the dest package is available, just connect it.
         if ($graph->hasPackage($destName)) {
             $graph->connect($sourceName, $destName, $version);
@@ -162,11 +145,6 @@ class DependencyAnalyzer
 
             return;
         }
-
-        // If we reach this, we have stumbled upon a package that is only available
-        // if the source package is installed with dev dependencies. We still add
-        // the connection, but we will not have any data about the dest package.
-        // $graph->connect($sourceName, $destName, $version);
     }
 
     private function processLockedData(DependencyGraph $graph, array $lockedPackageData)

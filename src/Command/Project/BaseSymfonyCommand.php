@@ -35,7 +35,6 @@ abstract class BaseSymfonyCommand extends BaseCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->symfonyEnv = $input->getOption('symfony-env');
-        // $this->displaySymfonyCommandHelp = $input->getOption('symfony-help');
     }
 
     /**
@@ -44,7 +43,6 @@ abstract class BaseSymfonyCommand extends BaseCommand
     protected function configure()
     {
         $this->addOption('--symfony-env', null, InputOption::VALUE_REQUIRED, 'The Symfony Environment name.', 'dev');
-        // $this->addOption('--symfony-help', null, InputOption::VALUE_NONE, 'Display the command help message.');
 
         parent::configure();
     }

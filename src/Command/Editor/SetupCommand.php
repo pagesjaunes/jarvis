@@ -177,6 +177,11 @@ class SetupCommand extends Command
         $this->setupSublimeTextFileSettings('SublimeGit.sublime-settings', [], $output);
     }
 
+    private function getSublimeTextSkeletonUserDir()
+    {
+        return sprintf('%s/SublimeText3/Packages/User', $this->editorSkeletonDir);
+    }
+
     private function getSublimeTextSettingUserDir()
     {
         return sprintf('%s/User', $this->getSublimeTextSettingDir());
@@ -212,7 +217,7 @@ class SetupCommand extends Command
      */
     private function saveConfigInFile($filepath, array $config)
     {
-        if (false == file_exists($filepath)) {
+        if (false === file_exists($filepath)) {
             touch($filepath);
         }
 
@@ -273,7 +278,7 @@ class SetupCommand extends Command
     {
         $output->writeln(sprintf('<comment>Updating the configuration file <info>%s</info></comment>', $filename));
 
-        $originFile = sprintf('%s/%s', $this->getSublimeTextSettingUserDir(), $filename);
+        $originFile = sprintf('%s/%s', $this->getSublimeTextSkeletonUserDir(), $filename);
         if (!file_exists($originFile)) {
             throw new \RuntimeException(sprintf('File %s does not exist.', $originFile));
         }
