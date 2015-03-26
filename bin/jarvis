@@ -26,6 +26,7 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 
 $input = new ArgvInput();
 $debug = getenv('JARVIS_CLI_DEBUG') === '1';
+$jarvisDir = __DIR__.'/..';
 $workingDir = $input->getParameterOption(['--working-dir', '-d']);
 $containerCacheDir = $input->getParameterOption(['--cache-dir']);
 
@@ -103,8 +104,8 @@ if ('core:container:cache-clear' == $input->getFirstArgument()) {
 
 JarvisFactory::create(
     $containerCacheFilePath,
-    function (ContainerBuilder $builder) use ($containerCacheDir, $workingDir) {
-        $configDir = __DIR__.'/../config';
+    function (ContainerBuilder $builder) use ($containerCacheDir, $jarvisDir, $workingDir) {
+        $configDir = $jarvisDir.'/config';
         $loader = new YamlFileLoader($builder, new FileLocator($configDir));
         $resolver = new LoaderResolver(array(
             new IniFileLoader($builder, new FileLocator($configDir)),
@@ -115,7 +116,7 @@ JarvisFactory::create(
         $loader->setResolver($resolver);
         $loader->load('jarvis.yml');
 
-        $builder->setParameter('jarvis_dir', realpath(__DIR__.'/..'));
+        $builder->setParameter('jarvis_dir', $jarvisDir);
         $builder->setParameter('working_dir', $workingDir);
         $builder->setParameter('cache_dir', $containerCacheDir);
 
