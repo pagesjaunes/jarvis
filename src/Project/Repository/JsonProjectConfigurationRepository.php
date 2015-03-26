@@ -252,7 +252,6 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     {
         if (file_exists($this->filePath)) {
             $json = new Json();
-            // TODO: $json->validate($schema, $decoded); // throws Herrera\Json\Exception\JsonException
             $data = $json->decode(file_get_contents($this->filePath));
 
             return (array) $data->projects;

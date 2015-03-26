@@ -40,7 +40,6 @@ class DependencyAnalyzer
     public function analyze($composerJsonFileContent, $composerLockFileContent, $installedFileContent, $installedFileDevContent = null, $connectRequireDev = false)
     {
         $json = new Json();
-        // TODO: $json->validate($schema, $decoded); // throws Herrera\Json\Exception\JsonException
 
         $rootPackageData = $json->decode($composerJsonFileContent, true);
 
