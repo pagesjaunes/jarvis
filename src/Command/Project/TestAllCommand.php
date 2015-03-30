@@ -15,7 +15,7 @@
 
 namespace Jarvis\Command\Project;
 
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Project\ProjectConfiguration;
@@ -41,8 +41,8 @@ class TestAllCommand extends BaseCommand
 
         parent::configure();
 
-        $this->addOption('no-unit', null, InputArgument::REQUIRED);
-        $this->addOption('no-integration', null, InputArgument::REQUIRED);
+        $this->addOption('no-unit', null, InputOption::VALUE_NONE);
+        $this->addOption('no-integration', null, InputOption::VALUE_NONE);
     }
 
     /**
@@ -50,8 +50,8 @@ class TestAllCommand extends BaseCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->isTestUnitEnabled = null === $input->getOption('no-unit');
-        $this->isTestIntegrationEnabled = null === $input->getOption('no-integration');
+        $this->isTestUnitEnabled = false === $input->getOption('no-unit');
+        $this->isTestIntegrationEnabled = false === $input->getOption('no-integration');
     }
 
     /**
@@ -71,6 +71,9 @@ class TestAllCommand extends BaseCommand
             '--no-display-status-text' => true
         ];
 
+        $testUnitStatusCode = 0;
+        $testIntegrationStatusCode = 0;
+
         if ($this->isTestUnitEnabled) {
             $testUnitStatusCode = $this->getApplication()->executeCommand('project:tests:unit', $parameters, $output);
         }
@@ -79,27 +82,31 @@ class TestAllCommand extends BaseCommand
             $testIntegrationStatusCode = $this->getApplication()->executeCommand('project:tests:integration', $parameters, $output);
         }
 
-        $output->writeln(
-            sprintf(
-                '<comment>Executes unit tests for project "<info>%s</info>"</comment>: %s',
-                $projectName,
-                $testUnitStatusCode == 0 ?
-                    '<info>SUCCESS</info>'
-                    :
-                    '<error>ERROR</error>'
-            )
-        );
+        if ($this->isTestUnitEnabled) {
+            $output->writeln(
+                sprintf(
+                    '<comment>Executes unit tests for project "<info>%s</info>"</comment>: %s',
+                    $projectName,
+                    $testUnitStatusCode == 0 ?
+                        '<info>SUCCESS</info>'
+                        :
+                        '<error>ERROR</error>'
+                )
+            );
+        }
 
-        $output->writeln(
-            sprintf(
-                '<comment>Executes integration tests for project "<info>%s</info>"</comment>: %s',
-                $projectName,
-                $testIntegrationStatusCode == 0 ?
-                    ' <info>SUCCESS</info>'
-                    :
-                    ' <error>ERROR</error>'
-            )
-        );
+        if ($this->isTestIntegrationEnabled) {
+            $output->writeln(
+                sprintf(
+                    '<comment>Executes integration tests for project "<info>%s</info>"</comment>: %s',
+                    $projectName,
+                    $testIntegrationStatusCode == 0 ?
+                        ' <info>SUCCESS</info>'
+                        :
+                        ' <error>ERROR</error>'
+                )
+            );
+        }
 
         return $testUnitStatusCode + $testIntegrationStatusCode;
     }
