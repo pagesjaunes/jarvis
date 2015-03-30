@@ -5,6 +5,7 @@
         <exclude-pattern>*/vendor/*</exclude-pattern>
         <exclude-pattern>*/spec/*</exclude-pattern>
         <exclude-pattern>*/web/*</exclude-pattern>
+        <exclude-pattern>*/Tests/ServiceTest.php</exclude-pattern>
         <properties>
             <property name="forbiddenFunctions" type="array" value="debug=>NULL,dump=>NULL,var_dump=>NULL,var_export=>NULL,sizeof=>count,delete=>unset,print=>echo,is_null=>NULL,create_function=>NULL,header=>NULL,eval=>NULL,system=>NULL"/>
         </properties>
