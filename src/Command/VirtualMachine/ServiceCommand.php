@@ -103,15 +103,12 @@ class ServiceCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ('status' == $this->serviceCommandName) {
-            $output->writeln(
-                $this->getSshExec()->run(
-                    sprintf(
-                        'sudo service %s %s',
-                        $this->serviceName,
-                        $this->serviceCommandName
-                    )
-                ),
-                OutputInterface::OUTPUT_RAW
+            $this->getSshExec()->exec(
+                sprintf(
+                    'sudo service %s %s',
+                    $this->serviceName,
+                    $this->serviceCommandName
+                )
             );
 
             return $this->getSshExec()->getLastReturnStatus();

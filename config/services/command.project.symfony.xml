@@ -128,6 +128,26 @@
 
             <tag name="console.command" />
         </service>
+        <service
+            id="command.project.symfony.debug.config"
+            class="Jarvis\Command\Project\SymfonyConsoleCommand"
+            parent="command.project.symfony"
+        >
+            <argument>project:symfony:debug:config</argument>
+
+            <call method="setDescription">
+                 <argument>Dumps the current configuration for an extension</argument>
+             </call>
+
+            <call method="addArgument">
+                 <argument>name</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                 <argument>The bundle name or the extension alias</argument>
+                 <argument>null</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
 
         <service
             id="command.project.symfony.debug.twig"
