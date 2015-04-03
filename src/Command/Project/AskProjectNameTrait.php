@@ -24,7 +24,7 @@ trait AskProjectNameTrait
         $dialog = $this->getHelperSet()->get('dialog');
 
         $projectNames = count($projectNamesToExclude) ?
-            array_intersect($projectNamesToExclude, $allProjectNames)
+            array_values(array_diff($allProjectNames, $projectNamesToExclude))
             :
             $allProjectNames
         ;
