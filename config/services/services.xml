@@ -59,8 +59,16 @@
                  <argument type="service" id="ssh.exec" />
             </call>
 
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
             <call method="setRemoteFilesystem">
                  <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <call method="setCacheDir">
+                <argument>%cache_dir%</argument>
             </call>
 
             <call method="setLocalPhpcsStandardDir">
