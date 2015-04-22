@@ -10,6 +10,18 @@
 
     <services>
         <service
+            id="command.project.list"
+            class="Jarvis\Command\Project\ListCommand"
+        >
+            <argument>project:list</argument>
+
+            <call method="setProjectConfigurationRepository">
+                 <argument type="service" id="repository.project_configuration" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
+        <service
             id="command.project"
             abstract="true"
         >

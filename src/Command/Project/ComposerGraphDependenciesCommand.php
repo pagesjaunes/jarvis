@@ -16,20 +16,14 @@
 namespace Jarvis\Command\Project;
 
 use Fhaculty\Graph\GraphViz;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Composer\DependencyAnalyzer;
-use Jarvis\Composer\GraphComposer;
 use Jarvis\Project\ProjectConfiguration;
 
 class ComposerGraphDependenciesCommand extends BaseBuildCommand
 {
-    use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
-
-    use \Jarvis\Filesystem\RemoteFilesystemAwareTrait;
-
     /**
      * @var DependencyAnalyzer
      */
@@ -128,11 +122,11 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
+        $targetFile = $this->getTargetFilePath($projectName);
+
         $this->getApplication()->executeCommand('project:composer:install', [
             '--project-name' => $projectName
         ], $output);
-
-        $targetFile = $this->getTargetFilePath($projectName);
 
         $output->writeln(
             sprintf(

@@ -91,24 +91,12 @@
         >
             <argument>project:composer:graph-dependencies</argument>
 
-            <call method="setLocalBuildDir">
-                 <argument>%local_build_dir%</argument>
-            </call>
-
             <call method="setDependencyAnalyzer">
                  <argument type="service" id="composer.dependency_analyzer" />
             </call>
 
             <call method="setGraphComposerClass">
                  <argument>%composer.graph_composer.class%</argument>
-            </call>
-
-            <call method="setLocalFilesystem">
-                 <argument type="service" id="local.filesystem" />
-            </call>
-
-            <call method="setRemoteFilesystem">
-                 <argument type="service" id="remote.filesystem" />
             </call>
 
             <tag name="console.command" />

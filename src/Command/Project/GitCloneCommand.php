@@ -78,7 +78,7 @@ class GitCloneCommand extends BaseGitCommand
      */
     protected function getProjectNamesToExclude()
     {
-        return $this->getProjectConfigurationRepository()->getProjectNotAlreadyInstalledNames();
+        return $this->getProjectConfigurationRepository()->getProjectAlreadyInstalledNames();
     }
 
     /**

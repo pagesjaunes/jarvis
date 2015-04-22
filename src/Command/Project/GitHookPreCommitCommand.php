@@ -130,10 +130,6 @@ class GitHookPreCommitCommand extends BaseCommand
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
-            $exitCodeStatus = $this->checkPhpMd($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
-        }
-
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->unitTests($projectConfig, $output);
         }
 
@@ -519,25 +515,6 @@ class GitHookPreCommitCommand extends BaseCommand
                 'dry-run' => true
             ]
         );
-    }
-
-    protected function checkPhpMd(array $files, $remoteTmpStaging, $projectName, OutputInterface $output)
-    {
-        $output->writeln(sprintf(
-            '<comment>Checking code mess with PHPMD for project "<info>%s</info>"</comment>',
-            $projectName
-        ));
-
-        $this->getSshExec()->exec(
-            strtr(
-                'phpmd %dir% text controversial,naming',
-                [
-                    '%dir%' => $remoteTmpStaging,
-                ]
-            )
-        );
-
-        return $this->getSshExec()->getLastReturnStatus();
     }
 
     protected function unitTests(ProjectConfiguration $projectConfig, OutputInterface $output)

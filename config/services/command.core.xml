@@ -30,6 +30,18 @@
             id="command.container.self_update"
             class="Jarvis\Command\Core\SelfUpdateCommand"
         >
+            <call method="setPharUpdateManifestUrl">
+                <argument>%phar_update_manifest_url%</argument>
+            </call>
+
+            <call method="setLogger">
+                <argument type="service" id="monolog.logger" />
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
             <tag name="console.command" />
         </service>
     </services>

@@ -99,7 +99,7 @@ abstract class BaseCommand extends Command
      */
     protected function getProjectNamesToExclude()
     {
-        return $this->getProjectConfigurationRepository()->getProjectAlreadyInstalledNames();
+        return $this->getProjectConfigurationRepository()->getProjectNotAlreadyInstalledNames();
     }
 
     /**
@@ -163,9 +163,9 @@ abstract class BaseCommand extends Command
             $input->getOption('project-name')
             :
             (
-                isset($_SERVER['JARVIS_SYMFONY_DEFAULT_PROJECT'])
+                isset($_SERVER['JARVIS_SYMFONY_PROJECT'])
                 ?
-                    $_SERVER['JARVIS_SYMFONY_DEFAULT_PROJECT']
+                    $_SERVER['JARVIS_SYMFONY_PROJECT']
                     :
                     $this->askProjectName($output, $this->getAllProjectNames(), $this->getProjectNamesToExclude())
             )

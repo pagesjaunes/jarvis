@@ -25,6 +25,16 @@ class RemoteFilesystem
     use \Psr\Log\LoggerAwareTrait;
 
     /**
+     * @var Exec
+     */
+    protected $exec;
+
+    /**
+     * @var SshExec
+     */
+    protected $sshExec;
+
+    /**
      * Constructor.
      *
      * @param Exec $exec
@@ -201,7 +211,7 @@ class RemoteFilesystem
     public function syncRemoteToLocal($remoteDir, $localDir, $options = array())
     {
         $commandLine = strtr(
-            'rsync --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
+            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),

@@ -71,7 +71,7 @@ class PhpMetricsCommand extends BaseBuildCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir);
+        $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir, ['delete' => true]);
 
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
             $reportFile = strtr('%build_dir%/phpmetrics/%project_name%.html', [

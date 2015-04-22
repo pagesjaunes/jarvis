@@ -11,10 +11,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class PhpCsFixer
 {
     use \Jarvis\Ssh\SshExecAwareTrait;
+    use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
     use \Jarvis\Filesystem\RemoteFilesystemAwareTrait;
 
     private $localPhpcsStandardDir;
     private $remotePhpcsStandardDir;
+
+    private $cacheDir;
+
+    /**
+     * Sets the value of cacheDir.
+     *
+     * @param mixed $cacheDir the cache dir
+     *
+     * @return self
+     */
+    public function setCacheDir($cacheDir)
+    {
+        $this->cacheDir = $cacheDir;
+
+        return $this;
+    }
 
     /**
      * Sets the value of localPhpcsStandardDir.
@@ -75,8 +92,11 @@ class PhpCsFixer
 
         $this->getRemoteFilesystem()->mkdir($this->remotePhpcsStandardDir);
 
+        $tmpDir = sprintf('%s/jarvis/phpcs_standard_dir', $this->cacheDir);
+        $this->getLocalFilesystem()->mirror($this->localPhpcsStandardDir, $tmpDir);
+
         $this->getRemoteFilesystem()->syncLocalToRemote(
-            $this->localPhpcsStandardDir,
+            $tmpDir,
             $this->remotePhpcsStandardDir,
             [
                 'delete' => true
@@ -105,6 +125,8 @@ class PhpCsFixer
         }
 
         if ($data->totals->errors > 0) {
+            $highlighter = new Highlighter(new ConsoleColor());
+
             $output->writeln(sprintf('<error>%s errors detected</error>', $data->totals->errors));
             foreach ($data->files as $filepath => $metadata) {
                 if ($metadata->errors > 0) {
@@ -116,10 +138,11 @@ class PhpCsFixer
                             $error->line
                         ));
 
-                        $highlighter = new Highlighter(new ConsoleColor());
-
                         $fileContent = $this->getRemoteFilesystem()->getRemoteFileContent($filepath);
-                        echo $highlighter->getCodeSnippet($fileContent, $error->line);
+                        $output->writeln(
+                            $highlighter->getCodeSnippet($fileContent, $error->line),
+                            OutputInterface::OUTPUT_RAW
+                        );
                     }
                 }
             }

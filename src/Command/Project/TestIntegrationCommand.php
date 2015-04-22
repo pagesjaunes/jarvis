@@ -113,7 +113,8 @@ class TestIntegrationCommand extends BaseCommand
 
         $this->getRemoteFilesystem()->syncRemoteToLocal(
             $this->remoteBuildDir,
-            $this->localBuildDir
+            $this->localBuildDir,
+            ['delete' => true]
         );
 
         if ($this->displayStatusText) {
