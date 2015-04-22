@@ -139,7 +139,7 @@ class Manager
 
             $update = $this->manifest->find($newVersion);
 
-            if (null == $update) {
+            if (null === $update) {
                 $this->logger->error(sprintf(
                     'No update found for version "%s".',
                     (string) $newVersion
@@ -155,7 +155,7 @@ class Manager
             );
         }
 
-        if (null == $update) {
+        if (null === $update) {
             $this->logger->error(sprintf(
                 'You are already using jarvis version "%s".',
                 (string) $version
