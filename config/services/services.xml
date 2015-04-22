@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="name">Jarvis</parameter>
-        <parameter key="version">0.0.1</parameter>
+        <parameter key="phar_update_manifest_url">http://pagesjaunes.github.io/jarvis/manifest.json</parameter>
         <parameter key="ssh_identity_file"></parameter>
         <parameter key="monolog.console_handler.verbosity_Level_map" type="collection">
             <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_NORMAL -->

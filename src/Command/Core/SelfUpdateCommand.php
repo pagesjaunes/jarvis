@@ -15,44 +15,83 @@
 
 namespace Jarvis\Command\Core;
 
-use Herrera\Phar\Update\Manager;
-use Herrera\Phar\Update\Manifest;
+use GuzzleHttp\Ring;
+use Herrera\Version;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use GuzzleHttp\Ring\Client\CurlHandler;
-use GuzzleHttp\Ring\Core;
+use Jarvis\Phar\Manager;
+use Jarvis\Phar\Manifest;
 
 class SelfUpdateCommand extends Command
 {
+    use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
+
+    use \Psr\Log\LoggerAwareTrait;
+
+    /**
+     * @var string
+     */
+    private $pharUpdateManifestUrl;
+
+    /**
+     * Sets the value of pharUpdateManifestUrl.
+     *
+     * @param string $pharUpdateManifestUrl the phar update manifest url
+     *
+     * @return self
+     */
+    public function setPharUpdateManifestUrl($pharUpdateManifestUrl)
+    {
+        $this->pharUpdateManifestUrl = $pharUpdateManifestUrl;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
             ->setName('self-update')
             ->setDescription('Updates manifest.phar to the latest version')
+            ->setDefinition([
+                new InputArgument('version', InputArgument::OPTIONAL, 'The version to update to'),
+                new InputOption('major', null, InputOption::VALUE_NONE, 'Lock to current major version?')
+            ])
         ;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabled()
+    {
+        return Version\Validator::isVersion($this->getApplication()->getVersion());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $handler = new CurlHandler();
-        $response = $handler([
-            'http_method' => 'GET',
-            'uri'         => '/jarvis/manifest.json',
-            'headers'     => [
-                'host'  => ['pagesjaunes.github.io'],
-            ]
-        ]);
+        $runningFile = realpath($_SERVER['argv'][0]);
 
-        $response->wait();
+        $manifest = Manifest::download($this->pharUpdateManifestUrl);
 
-        if ($response['status'] != 200) {
-            throw new \RuntimeException(sprintf('%s: %s',
-                $response['effective_url'],
-                $response['reason']
-            ));
-        }
+        $manager = new Manager($manifest, $this->getLocalFilesystem());
+        !$this->logger ?: $manager->setLogger($this->logger);
 
-        $manager = new Manager(Manifest::load(Core::body($response)));
-        $manager->update($this->getApplication()->getVersion(), true);
+        $currentVersion = $this->getApplication()->getVersion();
+
+        $newVersion = (null !== $input->getArgument('version')) ? $input->getArgument('version') : null;
+
+        $major = $input->getOption('major'); // Lock to current major version?
+        $pre = true; //Allow pre-releases?
+
+        $manager->update($currentVersion, $major, $pre, $newVersion);
     }
 }
