@@ -52,7 +52,7 @@ class PhpDocCommand extends BaseBuildCommand
 
         (new Filesystem())->mkdir($localBuildDir);
 
-        $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir);
+        $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir, ['delete' => true]);
 
         $apiDocIndexFilepath = strtr(
             '%build_dir%/index.html',

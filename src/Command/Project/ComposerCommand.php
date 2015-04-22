@@ -193,7 +193,8 @@ class ComposerCommand extends BaseCommand
 
         return $this->getRemoteFilesystem()->syncRemoteToLocal(
             $projectConfig->getRemoteVendorDir(),
-            $projectConfig->getLocalVendorDir()
+            $projectConfig->getLocalVendorDir(),
+            ['delete' => true]
         );
     }
 }

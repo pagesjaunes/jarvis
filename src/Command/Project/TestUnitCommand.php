@@ -122,7 +122,7 @@ class TestUnitCommand extends BaseCommand
             )
         );
 
-        $this->getRemoteFilesystem()->syncRemoteToLocal($this->remoteBuildDir, $this->localBuildDir);
+        $this->getRemoteFilesystem()->syncRemoteToLocal($this->remoteBuildDir, $this->localBuildDir, ['delete' => true]);
 
         $statusCode = $this->getSshExec()->getLastReturnStatus() == 0 && strpos($report, 'broken') === false ? 0 : 1;
 
