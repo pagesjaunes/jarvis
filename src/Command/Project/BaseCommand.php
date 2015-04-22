@@ -99,7 +99,7 @@ abstract class BaseCommand extends Command
      */
     protected function getProjectNamesToExclude()
     {
-        return $this->getProjectConfigurationRepository()->getProjectAlreadyInstalledNames();
+        return $this->getProjectConfigurationRepository()->getProjectNotAlreadyInstalledNames();
     }
 
     /**
