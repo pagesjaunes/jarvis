@@ -26,10 +26,6 @@ use Jarvis\Project\ProjectConfiguration;
 
 class ComposerGraphDependenciesCommand extends BaseBuildCommand
 {
-    use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
-
-    use \Jarvis\Filesystem\RemoteFilesystemAwareTrait;
-
     /**
      * @var DependencyAnalyzer
      */
@@ -128,11 +124,11 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
+        $targetFile = $this->getTargetFilePath($projectName);
+
         $this->getApplication()->executeCommand('project:composer:install', [
             '--project-name' => $projectName
         ], $output);
-
-        $targetFile = $this->getTargetFilePath($projectName);
 
         $output->writeln(
             sprintf(
