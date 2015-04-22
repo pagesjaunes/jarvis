@@ -16,12 +16,10 @@
 namespace Jarvis\Command\Project;
 
 use Fhaculty\Graph\GraphViz;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Composer\DependencyAnalyzer;
-use Jarvis\Composer\GraphComposer;
 use Jarvis\Project\ProjectConfiguration;
 
 class ComposerGraphDependenciesCommand extends BaseBuildCommand

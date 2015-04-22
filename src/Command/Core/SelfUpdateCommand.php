@@ -78,8 +78,6 @@ class SelfUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $runningFile = realpath($_SERVER['argv'][0]);
-
         $manifest = Manifest::download($this->pharUpdateManifestUrl);
 
         $manager = new Manager($manifest, $this->getLocalFilesystem());

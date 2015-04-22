@@ -31,25 +31,6 @@ class ListCommand extends Command
     use ProjectConfigurationRepositoryAwareTrait;
 
     /**
-     * @var ProjectConfigurationFactory
-     */
-    private $projectConfigurationFactory;
-
-    /**
-     * Sets the value of projectConfigurationFactory.
-     *
-     * @param ProjectConfigurationFactory $projectConfigurationFactory the project configuration factory
-     *
-     * @return self
-     */
-    public function setProjectConfigurationFactory(ProjectConfigurationFactory $projectConfigurationFactory)
-    {
-        $this->projectConfigurationFactory = $projectConfigurationFactory;
-
-        return $this;
-    }
-
-    /**
      * @{inheritdoc}
      */
     protected function configure()
