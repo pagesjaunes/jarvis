@@ -50,6 +50,7 @@ parameters:
     ssh_port: 2222
 
     git_hooks_skeleton_dir: "%jarvis_dir%/skeleton/git_hooks"
+    php_cs_fixer_skeleton_dir: "%jarvis_dir%/skeleton/php_cs_fixer"
 
     command.project.enabled: true
     command.editor.enabled: true

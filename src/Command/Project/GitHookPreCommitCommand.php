@@ -34,6 +34,7 @@ class GitHookPreCommitCommand extends BaseCommand
 
     private $localTmpStagingAreaRootDir = '';
     private $remoteTmpStagingAreaRootDir;
+    private $skeletonPhpCsFixerDir;
 
     /**
      * @{inheritdoc}
@@ -47,6 +48,13 @@ class GitHookPreCommitCommand extends BaseCommand
         $this->addOption('pattern', null, InputOption::VALUE_REQUIRED, 'The pattern file', '/\.(php|yml|twig)$/i');
 
         parent::configure();
+    }
+
+    public function setSkeletonPhpCsFixerDir($skeletonPhpCsFixerDir)
+    {
+        $this->skeletonPhpCsFixerDir = $skeletonPhpCsFixerDir;
+
+        return $this;
     }
 
     public function setLocalTmpStagingAreaRootDir($dir)
@@ -166,6 +174,10 @@ class GitHookPreCommitCommand extends BaseCommand
         }
         $this->getLocalFilesystem()->remove($localDir);
         $this->getLocalFilesystem()->mkdir($localDir);
+
+        if ($this->skeletonPhpCsFixerDir) {
+            $this->getLocalFilesystem()->copy($this->skeletonPhpCsFixerDir.'/.php_cs', $localDir.'/.php_cs');
+        }
 
         if ($output->isDebug()) {
             $output->writeln(sprintf(
