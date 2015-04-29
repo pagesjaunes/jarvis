@@ -33,7 +33,7 @@ class Manifest extends BaseManifest
         $handler = new Ring\Client\CurlHandler();
         $response = $handler([
             'http_method' => 'GET',
-            'uri'         => parse_url($url, PHP_URL_PATH),
+            'uri'         => sprintf(':%s/%s', parse_url($url, PHP_URL_PORT), parse_url($url, PHP_URL_PATH)),
             'headers'     => [
                 'scheme' => [parse_url($url, PHP_URL_SCHEME)],
                 'host' => [parse_url($url, PHP_URL_HOST)],
@@ -43,9 +43,10 @@ class Manifest extends BaseManifest
         $response->wait();
 
         if ($response['status'] != 200) {
-            throw new \RuntimeException(sprintf('%s: %s',
+            throw new \RuntimeException(sprintf('%s: %s (%s)',
                 $response['effective_url'],
-                $response['reason']
+                $response['reason'],
+                $response['status']
             ));
         }
 

@@ -188,7 +188,7 @@ class Manager
         $handler = new Ring\Client\CurlHandler();
         $response = $handler([
             'http_method' => 'GET',
-            'uri'         => parse_url($url, PHP_URL_PATH),
+            'uri'         => sprintf(':%s/%s', parse_url($url, PHP_URL_PORT), parse_url($url, PHP_URL_PATH)),
             'headers'     => [
                 'scheme' => [parse_url($url, PHP_URL_SCHEME)],
                 'host'  => [parse_url($url, PHP_URL_HOST)],
@@ -201,7 +201,7 @@ class Manager
         $response->wait();
 
         if (! $this->filesystem->exists($targetFile)) {
-            $this->logger->error('The download of the new composer version failed for an unexpected reason');
+            $this->logger->error('The download of the new jarvis version failed for an unexpected reason');
 
             return false;
         }
