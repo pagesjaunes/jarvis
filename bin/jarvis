@@ -38,8 +38,15 @@ if (false === $workingDir) {
     $workingDir = getcwd();
 }
 
-if (!$containerCacheDir) {
-    $containerCacheDir = $workingDir.'/var/cache';
+if (empty($containerCacheDir)) {
+    if (is_dir($workingDir.'/var/cache')) {
+        $containerCacheDir = $workingDir.'/var/cache';
+    } else {
+        $containerCacheDir = sprintf('%s/jarvis/%s/var/cache', sys_get_temp_dir(), md5($workingDir));
+        if (!is_dir($containerCacheDir)) {
+            mkdir($containerCacheDir, 0777, true);
+        }
+    }
 }
 
 if (!is_writable($containerCacheDir)) {
