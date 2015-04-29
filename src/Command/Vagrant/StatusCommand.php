@@ -34,6 +34,6 @@ class StatusCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getVagrantExec()->run('status', $output, OutputInterface::VERBOSITY_NORMAL);
+        $this->getVagrantExec()->exec('status', $output, OutputInterface::VERBOSITY_NORMAL);
     }
 }
