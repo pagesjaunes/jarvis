@@ -50,7 +50,7 @@ class StartCommand extends BaseCommand
             $this->getVagrantExec()->run('halt', $output);
         }
 
-        $this->getVagrantExec()->run(sprintf(
+        $this->getVagrantExec()->exec(sprintf(
             'up --provider=%s',
             $input->getOption('provider')
         ), $output);

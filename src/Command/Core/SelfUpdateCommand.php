@@ -91,5 +91,7 @@ class SelfUpdateCommand extends Command
         $pre = true; //Allow pre-releases?
 
         $manager->update($currentVersion, $major, $pre, $newVersion);
+
+        exit(0); // return immediately without use ConsoleTerminateEvent and EventDispatcher
     }
 }

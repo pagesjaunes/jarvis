@@ -114,6 +114,10 @@
         >
             <argument>project:git:pre-commit</argument>
 
+            <call method="setSkeletonPhpCsFixerDir">
+                 <argument>%php_cs_fixer_skeleton_dir%</argument>
+            </call>
+
             <call method="setLocalFilesystem">
                  <argument type="service" id="local.filesystem" />
             </call>

@@ -53,6 +53,34 @@ class Exec
     }
 
     /**
+     * Execute a command using vagrant.
+     *
+     * @param  string $commandLine
+     *
+     * @return array  The array will be filled with every line of output from the command
+     */
+    public function exec($commandLine)
+    {
+        $commandLine = sprintf('vagrant %s', escapeshellcmd($commandLine));
+
+        $previousCwd = getcwd();
+
+        $cwd = realpath($this->cwd);
+        if ($cwd) {
+            chdir($this->cwd);
+            !$this->logger ?: $this->logger->debug(sprintf('Changed CWD to %s', $cwd));
+        }
+
+        !$this->logger ?: $this->logger->debug($commandLine);
+
+        passthru($commandLine, $returnStatus);
+
+        $this->lastReturnStatus = $returnStatus;
+
+        !$previousCwd ?: chdir($previousCwd);
+    }
+
+    /**
      * Runs command using vagrant.
      *
      * @param  string $commandLine

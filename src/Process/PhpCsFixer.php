@@ -146,9 +146,9 @@ class PhpCsFixer
                     }
                 }
             }
-        }
 
-        $returnStatus += $this->getSshExec()->getLastReturnStatus();
+            $returnStatus += 1;
+        }
 
         return $returnStatus;
     }

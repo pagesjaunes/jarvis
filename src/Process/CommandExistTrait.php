@@ -26,16 +26,15 @@ trait CommandExistTrait
      */
     protected function commandExist($commandLine, $cwd = null)
     {
-        if (null === $cwd) {
-            $cwd = $this->getRootDir();
+        $previousCwd = null;
+        if (null !== $cwd) {
+            $previousCwd = getcwd();
+            chdir($cwd);
         }
-
-        $previousCwd = getcwd();
-        chdir($cwd);
 
         $returnVal = shell_exec('which '.$commandLine);
 
-        !$previousCwd ?: chdir($previousCwd);
+        $previousCwd && chdir($previousCwd);
 
         return null === $returnVal ? false : true;
     }
