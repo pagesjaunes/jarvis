@@ -36,7 +36,7 @@ class GitUpdateCommand extends BaseCommand
     {
         $this->setDescription('Updates all branches that are tracking a remote branch for to one or all projects, install dependencies with composer and build assets.');
 
-        $this->addOption('install-git-up-if-not-installed', null, InputOption::VALUE_REQUIRED, 'Checks for installed git up command and if not installed install PyGitUp (https://github.com/msiemens/PyGitUp).');
+        $this->addOption('no-auto-install-git-up', null, InputOption::VALUE_NONE, 'Checks for installed git up command and if not installed install PyGitUp (https://github.com/msiemens/PyGitUp).');
 
         parent::configure();
     }
@@ -46,7 +46,8 @@ class GitUpdateCommand extends BaseCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->installGitUpIfNotInstalled = $input->getOption('install-git-up-if-not-installed');
+        $this->input = $input;
+        $this->installGitUpIfNotInstalled = !$input->getOption('no-auto-install-git-up');
     }
 
     /**
@@ -84,7 +85,7 @@ class GitUpdateCommand extends BaseCommand
     protected function updateGitProject(ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         if ($this->installGitUpIfNotInstalled && !$this->commandExist('git-up')) {
-            $this->installCommandGitUp($output);
+            $this->installCommandGitUp($projectConfig, $output);
         }
 
         $output->writeln(
@@ -99,15 +100,19 @@ class GitUpdateCommand extends BaseCommand
         return $this->getExec()->getLastReturnStatus();
     }
 
-    protected function installCommandGitUp(OutputInterface $output)
+    protected function installCommandGitUp(ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         // Il faut utiliser l'option --user pour forcer l'installation en mode user only
         $output->writeln('<error>git up command doesn\'t exist.</error>');
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion('Do you want to install git up?', false);
+        $question = new ConfirmationQuestion('Do you want to install git up? (y/n)', false);
 
-        if (!$helper->ask($input, $output, $question)) {
+        if (!$helper->ask($this->input, $output, $question)) {
             return;
+        }
+
+        if (!$this->commandExist('pip')) {
+            $this->getExec()->run('sudo easy_install pip');
         }
 
         $this->getExec()->run('pip install --user git-up', $output, $projectConfig->getLocalGitRepositoryDir());
