@@ -175,8 +175,8 @@ class GitHookPreCommitCommand extends BaseCommand
         $this->getLocalFilesystem()->remove($localDir);
         $this->getLocalFilesystem()->mkdir($localDir);
 
-        if ($this->skeletonPhpCsFixerDir) {
-            $this->getLocalFilesystem()->copy($this->skeletonPhpCsFixerDir.'/.php_cs', $localDir.'/.php_cs');
+        if ($this->skeletonPhpCsFixerDir && $this->getLocalFilesystem()->exists($this->skeletonPhpCsFixerDir.'/php_cs')) {
+            $this->getLocalFilesystem()->copy($this->skeletonPhpCsFixerDir.'/php_cs', $localDir.'/.php_cs');
         }
 
         if ($output->isDebug()) {
