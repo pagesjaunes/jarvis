@@ -153,5 +153,14 @@
             <tag name="console.command" />
         </service>
 
+        <service
+            id="command.project.git.commit"
+            class="Jarvis\Command\Project\GitCommitCommand"
+            parent="command.project.git"
+        >
+            <argument>project:git:commit</argument>
+
+            <tag name="console.command" />
+        </service>
     </services>
 </container>
