@@ -91,5 +91,12 @@
             <tag name="console.command" />
         </service>
 
+        <service
+            id="command.project.vagrant.upgrade"
+            class="Jarvis\Command\Vagrant\UpgradeCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
     </services>
 </container>
