@@ -103,8 +103,10 @@ if ($debug) {
 }
 
 $containerCacheFilename = 'JarvisContainer.php';
+if ('' != Phar::running(false)) {
+    $containerCacheFilename .= '-'.sha1_file(Phar::running(false));
+}
 $containerCacheFilePath = $containerCacheDir.'/'.$containerCacheFilename;
-
 if ('core:container:cache-clear' == $input->getFirstArgument()) {
     (new \Symfony\Component\Filesystem\Filesystem())->remove($containerCacheFilePath);
 }
