@@ -116,7 +116,7 @@ $ jarvis self-update
 This is probably the best way when you have other tools like phpunit and other tools installed in this way:
 
 ```bash
-$ composer global require pagesjaunes/jarvis --prefer-dist
+$ composer global require pagesjaunes/jarvis-ci --prefer-dist
 ```
 
 Make sure to place the **~/.composer/vendor/bin** directory in your PATH so the **jarvis** executable is found when you run the **jarvis** command in your terminal.
