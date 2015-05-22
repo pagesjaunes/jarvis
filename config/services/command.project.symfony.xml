@@ -357,9 +357,8 @@
             <call method="addOption">
                  <argument>parameter</argument>
                  <argument>null</argument>
-                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_NONE</argument>
+                 <argument type="constant">Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED</argument>
                  <argument>Displays a specific parameter for an application</argument>
-                 <argument>null</argument>
             </call>
 
             <call method="addOption">
