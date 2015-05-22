@@ -118,14 +118,6 @@
                  <argument>Building assets</argument>
             </call>
 
-            <call method="setLocalCdnRootDir">
-                 <argument>%local_cdn_root_dir%</argument>
-            </call>
-
-            <call method="setRemoteCdnRootDir">
-                 <argument>%remote_cdn_dir%</argument>
-            </call>
-
             <tag name="console.command" />
         </service>
         <service
