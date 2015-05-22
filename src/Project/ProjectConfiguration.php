@@ -85,6 +85,7 @@ class ProjectConfiguration
     protected function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault('local_assets_dir', null);
+        $resolver->setDefault('remote_assets_dir', '%remote_webapp_dir%');
 
         $resolver->setRequired([
             'project_name',
@@ -173,6 +174,14 @@ class ProjectConfiguration
     public function getLocalAssetsDir()
     {
         return $this->data['local_assets_dir'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemoteAssetsDir()
+    {
+        return $this->data['remote_assets_dir'];
     }
 
     /**

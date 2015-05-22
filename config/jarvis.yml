@@ -35,7 +35,6 @@ parameters:
     remote_build_dir: "/home/vagrant/build"
 
     local_cdn_root_dir: "%working_dir%/assets"
-    remote_cdn_dir: "/srv/cdn"
 
     local_tmp_staging_area_root_dir: "%working_dir%/.tmp_staging"
     remote_tmp_staging_area_root_dir: "/home/vagrant/.tmp_staging"
