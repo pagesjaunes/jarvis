@@ -21,6 +21,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Jarvis\Console\Helper;
 
 class Application extends BaseApplication
 {
@@ -206,6 +207,8 @@ class Application extends BaseApplication
         if (('@' . 'git-version@') !== $this->getVersion()) {
             $helperSet->set(new Amend\Helper());
         }
+
+        $helperSet->set(new Helper\AutocompleteHelper());
 
         return $helperSet;
     }
