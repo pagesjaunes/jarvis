@@ -70,7 +70,7 @@ class SelfUpdateCommand extends Command
      */
     public function isEnabled()
     {
-        return Version\Validator::isVersion($this->getApplication()->getVersion());
+        return '' != \Phar::running(false) && Version\Validator::isVersion($this->getApplication()->getVersion());
     }
 
     /**
