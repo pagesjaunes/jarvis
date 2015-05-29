@@ -162,5 +162,16 @@
 
             <tag name="console.command" />
         </service>
+
+
+        <service
+            id="command.project.git.push"
+            class="Jarvis\Command\Project\GitPushCommand"
+            parent="command.project.git"
+        >
+            <argument>project:git:push</argument>
+
+            <tag name="console.command" />
+        </service>
     </services>
 </container>
