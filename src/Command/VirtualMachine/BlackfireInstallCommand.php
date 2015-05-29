@@ -61,6 +61,9 @@ class BlackfireInstallCommand extends BaseCommand
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
             $this->getSshExec()->run('sudo apt-get install blackfire-php', $output);
         }
+        if ($this->getSshExec()->getLastReturnStatus() == 0) {
+            $this->getSshExec()->run('sudo service php5-fpm restart', $output);
+        }
 
         return $this->getSshExec()->getLastReturnStatus();
     }
