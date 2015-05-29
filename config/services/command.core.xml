@@ -44,5 +44,19 @@
 
             <tag name="console.command" />
         </service>
+        <service
+            id="command.core.autocomplete"
+            class="Jarvis\Command\Core\AutocompleteCommand"
+        >
+            <call method="setCacheDir">
+                <argument>%cache_dir%</argument>
+            </call>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
     </services>
 </container>
