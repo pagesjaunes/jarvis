@@ -83,11 +83,15 @@ function %%COMPLETE_FUNCTION_NAME%%() {
 
     if [[ \${cur} == *:* ]] ; then
         COMPREPLY=(\$(compgen -W "\${coms}" -S ' ' -- \${cur}))
-        __ltrim_colon_completions "\$cur"
+        if [[ "\$OSTYPE" != "darwin"* ]]; then
+            __ltrim_colon_completions "\$cur"
+        fi
         return 0
     elif [[ \${COMP_CWORD} = 1 ]] ; then
         COMPREPLY=(\$(compgen -W "\${coms}" -- \${cur}))
-        __ltrim_colon_completions "\$cur"
+        if [[ "\$OSTYPE" != "darwin"* ]]; then
+            __ltrim_colon_completions "\$cur"
+        fi
         return 0
     fi
 
@@ -97,7 +101,9 @@ function %%COMPLETE_FUNCTION_NAME%%() {
 
     COMPREPLY=($(compgen -W "\${opts}" -- \${cur}))
 
-    __ltrim_colon_completions "\$cur"
+    if [[ "\$OSTYPE" != "darwin"* ]]; then
+        __ltrim_colon_completions "\$cur"
+    fi
 
     return 0;
 }
