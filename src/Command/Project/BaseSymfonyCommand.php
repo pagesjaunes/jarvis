@@ -90,7 +90,9 @@ abstract class BaseSymfonyCommand extends BaseCommand
                         continue;
                     }
 
-                    $commandOptions[] = sprintf('--%s=%s', $name, $value);
+                    if (!empty($value)) {
+                        $commandOptions[] = sprintf('--%s=%s', $name, $value);
+                    }
                     break;
             }
         }
