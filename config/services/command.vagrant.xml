@@ -98,5 +98,14 @@
         >
             <tag name="console.command" />
         </service>
+
+        <service
+            id="command.project.vagrant.ssh_add_private_key"
+            class="Jarvis\Command\Vagrant\SshAddPrivateKeyCommand"
+            parent="command.vagrant"
+        >
+            <tag name="console.command" />
+        </service>
+
     </services>
 </container>
