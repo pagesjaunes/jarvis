@@ -28,6 +28,9 @@ abstract class BaseCommand extends Command
 {
     use AskProjectNameTrait;
 
+    const EXIT_SUCCESS = 0;
+    const EXIT_ERROR = 0;
+
     /**
      * @var bool
      */
@@ -159,30 +162,7 @@ abstract class BaseCommand extends Command
             return $statusCode;
         }
 
-        if ($input->getOption('project-name')) {
-            $projectName = $input->getOption('project-name');
-            if (!$this->getProjectConfigurationRepository()->has($projectName)) {
-                throw new \InvalidArgumentException(sprintf('This project "%s" is not configured', $projectName));
-            }
-        } else {
-            if (isset($_SERVER['JARVIS_SYMFONY_PROJECT'])) {
-                $projectName = $_SERVER['JARVIS_SYMFONY_PROJECT'];
-            } else {
-                // project name deducted from current directory if option "project-name" and variable environment "JARVIS_SYMFONY_PROJECT" are not used.
-                $currentProjectName = isset($_SERVER['PWD']) ? basename($_SERVER['PWD']) : null;
-                if ($this->getProjectConfigurationRepository()->has($currentProjectName)) {
-                    $projectName = $currentProjectName;
-                }
-            }
-
-            if (empty($projectName)) {
-                $projectName = $this->askProjectName(
-                    $output,
-                    $this->getAllProjectNames(),
-                    $this->getProjectNamesToExclude()
-                );
-            }
-        }
+        $projectName = $this->getCurrentProjectName($input, $output);
 
         $projectConfig = $this->getProjectConfigurationRepository()->find($projectName);
         if (!$projectConfig) {
@@ -190,5 +170,45 @@ abstract class BaseCommand extends Command
         }
 
         return $this->executeCommandByProject($projectName, $projectConfig, $output);
+    }
+
+    /**
+     * Retrieves current project name.
+     *
+     * @param  InputInterface $input
+     *
+     * @return string
+     */
+    protected function getCurrentProjectName(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->getOption('project-name')) {
+            $projectName = $input->getOption('project-name');
+
+            if (!$this->getProjectConfigurationRepository()->has($projectName)) {
+                throw new \InvalidArgumentException(sprintf('This project "%s" is not configured', $projectName));
+            }
+
+            return $projectName;
+        }
+
+        if (isset($_SERVER['JARVIS_SYMFONY_PROJECT'])) {
+            $projectName = $_SERVER['JARVIS_SYMFONY_PROJECT'];
+        } else {
+            // project name deducted from current directory if option "project-name" and variable environment "JARVIS_SYMFONY_PROJECT" are not used.
+            $currentProjectName = isset($_SERVER['PWD']) ? basename($_SERVER['PWD']) : null;
+            if ($this->getProjectConfigurationRepository()->has($currentProjectName)) {
+                $projectName = $currentProjectName;
+            }
+        }
+
+        if (empty($projectName)) {
+            $projectName = $this->askProjectName(
+                $output,
+                $this->getAllProjectNames(),
+                $this->getProjectNamesToExclude()
+            );
+        }
+
+        return $projectName;
     }
 }
