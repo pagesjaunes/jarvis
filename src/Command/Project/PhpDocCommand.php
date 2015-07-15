@@ -36,8 +36,8 @@ class PhpDocCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $remoteBuildDir = sprintf('%s/build/apidoc', $projectConfig->getRemoteWebappDir());
-        $localBuildDir = sprintf('%s/apidoc/%s', $this->getLocalBuildDir(), $projectConfig->getProjectName());
+        $remoteBuildDir = sprintf('%s/apidoc', $this->getRemoteBuildDir());
+        $localBuildDir = sprintf('%s/apidoc', $this->getLocalBuildDir());
 
         $this->getSshExec()->run(
             strtr(
@@ -50,8 +50,8 @@ class PhpDocCommand extends BaseBuildCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        (new Filesystem())->mkdir($localBuildDir);
-
+        $this->getRemoteFilesystem()->mkdir($remoteBuildDir);
+        $this->getLocalFilesystem()->mkdir($localBuildDir);
         $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir, ['delete' => true]);
 
         $apiDocIndexFilepath = strtr(
