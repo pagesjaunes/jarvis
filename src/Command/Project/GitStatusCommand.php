@@ -56,7 +56,7 @@ class GitStatusCommand extends BaseGitCommand
                 'is behind' => '<info>is behind</info>',
                 'can be fast-forwarded' => '<info>can be fast-forwarded</info>',
                 'modified:' => '<info>modified:</info>',
-                'both modified' => '<info>both modified:</info>',
+                'both modified' => '<error>both modified:</error>',
                 'deleted:' => '<error>deleted:</error>', // red color
                 'deleted by us' => '<error>deleted by us</error>', // red color
                 ]
