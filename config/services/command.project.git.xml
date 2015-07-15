@@ -163,13 +163,21 @@
             <tag name="console.command" />
         </service>
 
-
         <service
             id="command.project.git.push"
             class="Jarvis\Command\Project\GitPushCommand"
             parent="command.project.git"
         >
             <argument>project:git:push</argument>
+
+            <tag name="console.command" />
+        </service>
+        <service
+            id="command.project.git.gui"
+            class="Jarvis\Command\Project\GitGuiCommand"
+            parent="command.project.git"
+        >
+            <argument>project:git:gui</argument>
 
             <tag name="console.command" />
         </service>
