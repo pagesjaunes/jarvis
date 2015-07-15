@@ -30,7 +30,7 @@ class StartCommand extends BaseCommand
         $this->setName('vagrant:start');
         $this->setDescription('Starts and provisions the virtual machine');
 
-        $this->addOption('provider', null, InputOption::VALUE_REQUIRED, 'Vagrant provider', 'virtualbox');
+        $this->addOption('provider', null, InputOption::VALUE_REQUIRED, 'Vagrant provider');
         $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Vagrant virtual machine name', 'default');
         $this->addOption('force', null, InputOption::VALUE_NONE, 'Shut it down forcefully virtual machine name before start it');
         $this->addOption('no-ssh-add-private-key', null, InputOption::VALUE_NONE, '');
@@ -51,10 +51,14 @@ class StartCommand extends BaseCommand
             $this->getVagrantExec()->exec('halt', $output);
         }
 
-        $this->getVagrantExec()->exec(sprintf(
-            'up --provider=%s',
-            $input->getOption('provider')
-        ), $output);
+        $commandLine = 'up';
+        if (null !== $input->getOption('provider')) {
+            $commandLine .= sprintf(
+                ' --provider=%s',
+                $input->getOption('provider')
+            );
+        }
+        $this->getVagrantExec()->exec($commandLine, $output);
 
         if (false === $input->getOption('no-ssh-add-private-key')) {
             $this->getApplication()->executeCommand(
