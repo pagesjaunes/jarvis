@@ -15,6 +15,7 @@
 
 namespace Jarvis\Command\Project;
 
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Command\Project\ComposerCommand;
 use Jarvis\Command\Project\SymfonyAssetsBuildCommand;
@@ -64,6 +65,42 @@ class GitCloneCommand extends BaseGitCommand
 
         parent::configure();
     }
+
+    /**
+     * @{inheritdoc}
+     */
+    protected function getCurrentProjectName(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->getOption('project-name')) {
+            $projectName = $input->getOption('project-name');
+            if (!$this->getProjectConfigurationRepository()->has($projectName)) {
+                throw new \InvalidArgumentException(sprintf('This project "%s" is not configured', $projectName));
+            }
+
+            return $projectName;
+        }
+
+        return $this->askProjectName(
+            $output,
+            $this->getAllProjectNames(),
+            $this->getProjectNamesToExclude()
+        );
+    }
+
+    /**
+     * @{inheritdoc}
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        if (false === $input->getOption('project-name')) {
+            $projectName = $this->askProjectName(
+                $output,
+                $this->getAllProjectNames(),
+                $this->getProjectNamesToExclude()
+            );
+        }
+    }
+
 
     /**
      * {@inheritdoc}
