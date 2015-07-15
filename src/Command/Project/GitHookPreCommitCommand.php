@@ -23,9 +23,6 @@ use Jarvis\Project\ProjectConfiguration;
 class GitHookPreCommitCommand extends BaseCommand
 {
     use \Jarvis\Process\PhpCsFixerAwareTrait;
-
-    const EXIT_SUCCESS = 0;
-
     use \Jarvis\Process\ExecAwareTrait;
     use \Jarvis\Ssh\SshExecAwareTrait;
     use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
@@ -82,7 +79,6 @@ class GitHookPreCommitCommand extends BaseCommand
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         $exitCodeStatus = static::EXIT_SUCCESS;
-        $errorMessage = null;
 
         $localTemporaryCopyStagingAreaDir = $this->localTmpStagingAreaRootDir.'/'.$projectName;
         $remoteTmpStagingAreaRootDir = $this->remoteTmpStagingAreaRootDir.'/'.$projectName;
@@ -104,7 +100,21 @@ class GitHookPreCommitCommand extends BaseCommand
                 $output
             );
 
-            return static::EXIT_SUCCESS;
+            if (static::EXIT_SUCCESS == $exitCodeStatus) {
+                $exitCodeStatus = $this->unitTests($projectConfig, $output);
+            }
+
+            if (static::EXIT_SUCCESS == $exitCodeStatus) {
+                $exitCodeStatus = $this->integrationTests($projectConfig, $output);
+            }
+
+            if (static::EXIT_SUCCESS == $exitCodeStatus) {
+                $output->writeln('<info>Good job dude!</info>');
+            } else {
+                $output->writeln('<error>Please fix errors and type "git add"</error>');
+            }
+
+            return $exitCodeStatus;
         }
 
         $this->synchronizeLocalStagingAreaToRemote(
@@ -143,10 +153,6 @@ class GitHookPreCommitCommand extends BaseCommand
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
             $exitCodeStatus = $this->integrationTests($projectConfig, $output);
-        }
-
-        if ($errorMessage) {
-            $output->writeln(sprintf('<error>%s</error>', $errorMessage));
         }
 
         if (static::EXIT_SUCCESS == $exitCodeStatus) {
