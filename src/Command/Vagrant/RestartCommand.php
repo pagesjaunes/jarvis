@@ -21,7 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RestartCommand extends BaseCommand
 {
-
     /**
      * {@inheritdoc}
      */
