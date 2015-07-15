@@ -47,6 +47,21 @@ class RemoteFilesystem
     }
 
     /**
+     * Returns the home directory for ssh user.
+     *
+     * @return string
+     */
+    public function getHomeDirectory()
+    {
+        return strtr(
+            '/home/%ssh_username%',
+            [
+                '%ssh_username%' => $this->sshExec->getOption('ssh_user')
+            ]
+        );
+    }
+
+    /**
      * Checks the existence of files or directories.
      *
      * @param string|array|\Traversable $files A filename, an array of files, or a \Traversable instance to check
@@ -194,6 +209,73 @@ class RemoteFilesystem
         }
 
         return $this->sshExec->getLastReturnStatus() === 0;
+    }
+
+    /**
+     * Copies a file.
+     *
+     * This method only copies the file if the local file is newer than the target file.
+     *
+     *
+     * @param string $remoteFile The remote filename
+     * @param string $localFile The local filename
+     *
+     * @throws FileNotFoundException When localFile doesn't exist
+     * @return exit code
+     */
+    public function copyRemoteFileToLocal($remoteFile, $localFile)
+    {
+        if (!$this->isFileExist($remoteFile)) {
+            throw new FileNotFoundException(sprintf('Failed to copy "%s" because file does not exist.', $remoteFile), 0, null, $remoteFile);
+        }
+
+        $this->exec->run(strtr(
+            'scp -P %ssh_port% %ssh_username%@%ssh_host%:%remoteFile% %localFile%',
+            [
+                '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
+                '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
+                '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%remoteFile%' => $remoteFile,
+                '%localFile%' => $localFile,
+            ]
+        ));
+
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $localFile, $remoteFile));
+        }
+
+        return $this->exec->getLastReturnStatus() === 0;
+    }
+
+    /**
+     * Copies a file.
+     *
+     * This method only copies the file if the local file is newer than the target file.
+     *
+     * @param string $localFile The local filename
+     * @param string $remoteFile The remote filename
+     *
+     * @throws FileNotFoundException When localFile doesn't exist
+     * @return exit code
+     */
+    public function copyLocalFileToRemote($localFile, $remoteFile)
+    {
+        $this->exec->run(strtr(
+            'test -f %localFile% && scp -P %ssh_port% %localFile% %ssh_username%@%ssh_host%:%remoteFile%',
+            [
+                '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
+                '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
+                '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%localFile%' => $localFile,
+                '%remoteFile%' => $remoteFile
+            ]
+        ));
+
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $localFile, $remoteFile));
+        }
+
+        return $this->exec->getLastReturnStatus() === 0;
     }
 
     /**

@@ -15,6 +15,7 @@
 
 namespace Jarvis\Command\Project;
 
+use Fhaculty\Graph\Graph;
 use Fhaculty\Graph\GraphViz;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,6 +25,13 @@ use Jarvis\Project\ProjectConfiguration;
 
 class ComposerGraphDependenciesCommand extends BaseBuildCommand
 {
+    use \Jarvis\Ssh\SshExecAwareTrait;
+
+    /**
+     * @var string
+     */
+    private $cacheDir;
+
     /**
      * @var DependencyAnalyzer
      */
@@ -35,32 +43,64 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
     private $graphComposerClass;
 
     /**
+     * Either the name of full path to GraphViz layout.
+     *
      * @var string
      */
-    private $localBuildDir;
+    private $graphVizExecutable = 'dot';
 
     /**
      * @var string
      */
-    protected $format;
+    private $format;
 
     /**
      * @var null|string
      */
-    protected $vendorName;
+    private $vendorName;
 
     /**
-     * Sets the value of localBuildDir.
+     * @var bool
+     */
+    private $composerInstallRequired;
+
+    /**
+     * Sets the Either the name of full path to GraphViz layout.
      *
-     * @param string $localBuildDir the local build dir
+     * @param string $graphVizExecutable the graphVizExecutable
      *
      * @return self
      */
-    public function setLocalBuildDir($localBuildDir)
+    public function setGraphVizExecutable($graphVizExecutable)
     {
-        $this->localBuildDir = $localBuildDir;
+        $this->graphVizExecutable = $graphVizExecutable;
 
         return $this;
+    }
+
+    /**
+     * Sets the value of cacheDir.
+     *
+     * @param mixed $cacheDir the cache dir
+     *
+     * @return self
+     */
+    public function setCacheDir($cacheDir)
+    {
+        $this->cacheDir = $cacheDir;
+
+        return $this;
+    }
+
+    protected function getCacheDir()
+    {
+        if (!$this->cacheDir) {
+            $this->cacheDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'jarvis';
+        }
+
+        $this->getLocalFilesystem()->mkdir($this->cacheDir);
+
+        return $this->cacheDir;
     }
 
     /**
@@ -97,6 +137,7 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
 
         $this->addOption('only-vendor-name', null, InputOption::VALUE_REQUIRED, 'Only display graph for package with this vendor name');
         $this->addOption('format', null, InputOption::VALUE_REQUIRED, 'File format (pdf, svg, png, jpeg)', 'pdf');
+        $this->addOption('no-composer-install', null, InputOption::VALUE_NONE, 'Not execute composer install before generation graph');
 
         parent::configure();
     }
@@ -108,13 +149,7 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
     {
         $this->format = $input->getOption('format');
         $this->vendorName = $input->getOption('only-vendor-name');
-
-        $this->buildDir = sprintf(
-            '%s/graph_dependencies',
-            $this->localBuildDir
-        );
-
-        $this->getLocalFilesystem()->mkdir($this->buildDir);
+        $this->composerInstallRequired = !$input->getOption('no-composer-install');
     }
 
     /**
@@ -122,30 +157,26 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $targetFile = $this->getTargetFilePath($projectName);
+        if ($this->composerInstallRequired) {
+            $this->getApplication()->executeCommand('project:composer:install', [
+                '--project-name' => $projectName
+            ], $output);
+        }
 
-        $this->getApplication()->executeCommand('project:composer:install', [
-            '--project-name' => $projectName
-        ], $output);
+        $graphComposer = $this->getGraphComposer($projectConfig);
+        $graph = $graphComposer->createGraph($this->vendorName);
+        $localTargetFile = $this->saveGraphInFile($graph, $projectName);
 
         $output->writeln(
             sprintf(
                 '<comment>Generates composer graph dependencies file <info>%s</info> for project "<info>%s</info>"</comment>',
-                $targetFile,
+                $localTargetFile,
                 $projectConfig->getProjectName()
             )
         );
 
-        $graphComposer = $this->getGraphComposer($projectConfig);
-
-        $graph = $graphComposer->createGraph($this->vendorName);
-
-        $graphviz = new GraphViz($graph);
-        $graphviz->setFormat($this->format);
-        $this->saveGraphInFile($graphviz, $targetFile);
-
-        if (file_exists($targetFile)) {
-            $this->openFile($targetFile);
+        if (file_exists($localTargetFile)) {
+            $this->openFile($localTargetFile);
         }
     }
 
@@ -182,20 +213,81 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
         return null === $this->graphComposerClass ? 'Jarvis\Composer\GraphComposer' : $this->graphComposerClass;
     }
 
-    protected function saveGraphInFile(GraphViz $graphviz, $targetFile)
+    protected function saveGraphInFile(Graph $graph, $projectName)
     {
-        $this->getLocalFilesystem()->rename(
-            $graphviz->createImageFile(),
-            $targetFile,
-            true // overwrite
+        $localTargetFile = $this->getLocalTargetFile($projectName);
+        $remoteTargetFile = $this->getRemoteTargetFile($projectName);
+
+        $graphviz = new GraphViz($graph);
+        $graphviz->setFormat($this->format);
+
+        $tmpDir = sprintf('%s/jarvis/composer_graph_dependencies', $this->getCacheDir());
+
+        $tmpFile = tempnam($tmpDir, 'composer_graph_dependencies');
+        if ($tmpFile === false) {
+            throw new UnexpectedValueException('Unable to get temporary file name for graphviz script');
+        }
+
+        $ret = file_put_contents($tmpFile, $graphviz->createScript(), LOCK_EX);
+        if ($ret === false) {
+            throw new UnexpectedValueException(sprintf(
+                'Unable to write graphviz script to temporary file in %s',
+                $tmpDir
+            ));
+        }
+
+        $remoteGraphvizScriptFile = sprintf(
+            '%s/%s.%s',
+            pathinfo($remoteTargetFile, PATHINFO_DIRNAME),
+            pathinfo($remoteTargetFile, PATHINFO_FILENAME),
+            'dot'
+        );
+
+        $this->getRemoteFilesystem()->copyLocalFileToRemote($tmpFile, $remoteGraphvizScriptFile);
+
+        $commandLine = sprintf(
+            '%s -T %s %s -o %s',
+            $this->graphVizExecutable,
+            $this->format,
+            $remoteGraphvizScriptFile,
+            $remoteTargetFile
+        );
+        $this->getSshExec()->exec($commandLine);
+
+        $this->getRemoteFilesystem()->copyRemoteFileToLocal($remoteTargetFile, $localTargetFile);
+
+        return $localTargetFile;
+    }
+
+    /**
+     * @param  string $projectName
+     *
+     * @return string
+     */
+    protected function getLocalTargetFile($projectName)
+    {
+        $localBuildDir = sprintf('%s/graph_dependencies', $this->getLocalBuildDir());
+        $this->getLocalFilesystem()->mkdir($localBuildDir);
+        return sprintf(
+            '%s/%s.%s',
+            $localBuildDir,
+            $projectName,
+            $this->format
         );
     }
 
-    protected function getTargetFilePath($projectName)
+    /**
+     * @param  string $projectName
+     *
+     * @return string
+     */
+    protected function getRemoteTargetFile($projectName)
     {
+        $remoteBuildDir = sprintf('%s/graph_dependencies', $this->getRemoteBuildDir());
+        $this->getRemoteFilesystem()->mkdir($remoteBuildDir);
         return sprintf(
             '%s/%s.%s',
-            $this->buildDir,
+            $remoteBuildDir,
             $projectName,
             $this->format
         );

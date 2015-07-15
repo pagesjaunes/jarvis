@@ -91,12 +91,20 @@
         >
             <argument>project:composer:graph-dependencies</argument>
 
+            <call method="setCacheDir">
+                <argument>%cache_dir%</argument>
+            </call>
+
             <call method="setDependencyAnalyzer">
                  <argument type="service" id="composer.dependency_analyzer" />
             </call>
 
             <call method="setGraphComposerClass">
                  <argument>%composer.graph_composer.class%</argument>
+            </call>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
             </call>
 
             <tag name="console.command" />
