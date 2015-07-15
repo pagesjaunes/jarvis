@@ -181,5 +181,14 @@
 
             <tag name="console.command" />
         </service>
+        <service
+            id="command.project.git.open"
+            class="Jarvis\Command\Project\GitOpenCommand"
+            parent="command.project.git"
+        >
+            <argument>project:git:open</argument>
+
+            <tag name="console.command" />
+        </service>
     </services>
 </container>
