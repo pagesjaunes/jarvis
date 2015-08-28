@@ -62,6 +62,9 @@ class PhpMetricsCommand extends BaseBuildCommand
 
         $this->remoteBuildDir = sprintf('%s/metrics', $this->getRemoteBuildDir());
         $this->localBuildDir = sprintf('%s/metrics', $this->getLocalBuildDir());
+
+        $this->getRemoteFilesystem()->mkdir($this->remoteBuildDir);
+        $this->getLocalFilesystem()->mkdir($this->localBuildDir);
     }
 
     /**
@@ -69,7 +72,7 @@ class PhpMetricsCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $remoteReportFilePath = strtr('%build_dir%/phpmetrics/%project_name%.html', [
+        $remoteReportFilePath = strtr('%build_dir%/%project_name%.html', [
             '%project_name%' => $projectConfig->getProjectName(),
             '%build_dir%' => $this->remoteBuildDir
         ]);
