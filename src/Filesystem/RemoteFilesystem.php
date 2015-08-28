@@ -241,7 +241,7 @@ class RemoteFilesystem
         ));
 
         if ($this->exec->getLastReturnStatus() !== 0) {
-            !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $localFile, $remoteFile));
+            !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $remoteFile, $localFile));
         }
 
         return $this->exec->getLastReturnStatus() === 0;
