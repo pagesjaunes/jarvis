@@ -43,6 +43,6 @@ class StopCommand extends BaseCommand
             return;
         }
 
-        $this->getVagrantExec()->exec('halt', $output);
+        $this->getVagrantExec()->exec('halt');
     }
 }

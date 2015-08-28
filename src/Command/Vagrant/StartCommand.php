@@ -48,17 +48,14 @@ class StartCommand extends BaseCommand
         }
 
         if ($input->hasOption('force')) {
-            $this->getVagrantExec()->exec('halt', $output);
+            $this->getVagrantExec()->exec('halt');
         }
 
-        $commandLine = 'up';
+        $options = [];
         if (null !== $input->getOption('provider')) {
-            $commandLine .= sprintf(
-                ' --provider=%s',
-                $input->getOption('provider')
-            );
+            $options['provider'] = $input->getOption('provider');
         }
-        $this->getVagrantExec()->exec($commandLine, $output);
+        $this->getVagrantExec()->exec('up', $options);
 
         if (false === $input->getOption('no-ssh-add-private-key')) {
             $this->getApplication()->executeCommand(

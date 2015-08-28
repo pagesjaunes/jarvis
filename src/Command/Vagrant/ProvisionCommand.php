@@ -39,8 +39,10 @@ class ProvisionCommand extends BaseCommand
     {
         $this->getVagrantExec()->run('destroy', $output);
 
-        $this->getApplication()->executeCommand('vagrant:start', [
-            '--provider' => $input->getOption('provider')
-        ], $output);
+        $options = [];
+        if (null !== $input->getOption('provider')) {
+            $options['provider'] = $input->getOption('provider');
+        }
+        $this->getApplication()->executeCommand('vagrant:start', $options, $output);
     }
 }
