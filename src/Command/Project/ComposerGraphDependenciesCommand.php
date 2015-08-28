@@ -175,7 +175,7 @@ class ComposerGraphDependenciesCommand extends BaseBuildCommand
             )
         );
 
-        if (file_exists($localTargetFile)) {
+        if ($this->getLocalFilesystem()->exists($localTargetFile)) {
             $this->openFile($localTargetFile);
         }
     }
