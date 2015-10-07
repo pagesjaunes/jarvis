@@ -230,11 +230,12 @@ class RemoteFilesystem
         }
 
         $this->exec->run(strtr(
-            'scp -P %ssh_port% %ssh_username%@%ssh_host%:%remoteFile% %localFile%',
+            'scp -P %ssh_port% %ssh_identity_file_option% %ssh_username%@%ssh_host%:%remoteFile% %localFile%',
             [
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
                 '%remoteFile%' => $remoteFile,
                 '%localFile%' => $localFile,
             ]
@@ -261,11 +262,12 @@ class RemoteFilesystem
     public function copyLocalFileToRemote($localFile, $remoteFile)
     {
         $this->exec->run(strtr(
-            'test -f %localFile% && scp -P %ssh_port% %localFile% %ssh_username%@%ssh_host%:%remoteFile%',
+            'test -f %localFile% && scp -P %ssh_port% %ssh_identity_file_option% %localFile% %ssh_username%@%ssh_host%:%remoteFile%',
             [
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
                 '%localFile%' => $localFile,
                 '%remoteFile%' => $remoteFile
             ]
@@ -293,19 +295,29 @@ class RemoteFilesystem
     public function syncRemoteToLocal($remoteDir, $localDir, $options = array())
     {
         $commandLine = strtr(
-            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
+            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
                 '%extra_rsync_options%' => '--verbose --human-readable --progress',
                 '%remote_dir%' => $remoteDir,
                 '%local_dir%' => $localDir
             ]
         );
+        $this->exec->exec($commandLine);
 
-        return $this->exec->run($commandLine) == 0;
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf(
+                'Error sync remote to  %s to local %s',
+                $remoteDir,
+                $localDir
+            ));
+        }
+
+        return $this->exec->getLastReturnStatus() === 0;
     }
 
     /**
@@ -322,20 +334,29 @@ class RemoteFilesystem
      */
     public function syncLocalToRemote($localDir, $remoteDir, $options = array())
     {
-        $commandLine = strtr(
-            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port%\' %local_dir%/ %ssh_username%@%ssh_host%:%remote_dir%',
+        $this->exec->run(strtr(
+            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %local_dir%/ %ssh_username%@%ssh_host%:%remote_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->getOption('ssh_identity_file') : '',
                 '%extra_rsync_options%' => '--verbose --human-readable --progress',
                 '%remote_dir%' => $remoteDir,
                 '%local_dir%' => $localDir
             ]
-        );
+        ));
 
-        return $this->exec->run($commandLine) == 0;
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf(
+                'Error sync local to  %s to remote %s',
+                $localDir,
+                $remoteDir
+            ));
+        }
+
+        return $this->exec->getLastReturnStatus() === 0;
     }
 
     /**
