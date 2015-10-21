@@ -18,12 +18,9 @@ namespace Jarvis\Command\VirtualMachine;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Jarvis\Ssh\SshExecAwareTrait;
 
 class EnablePhpExtensionCommand extends BaseCommand
 {
-    use SshExecAwareTrait;
-
     /**
      * {@inheritdoc}
      */

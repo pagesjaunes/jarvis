@@ -15,17 +15,24 @@
 
 namespace Jarvis\Command\VirtualMachine;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BlackfireRestartCommand extends BaseCommand
+class SshCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setDescription('Installing Blackfire');
+        $this->setName('vm:ssh');
+        $this->setDescription('Connects to machine via SSH');
+
+        $this->addArgument('remote_command', InputArgument::OPTIONAL, 'Execute an SSH command directly');
+
+        $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Vagrant virtual machine name', 'default');
     }
 
     /**
@@ -33,13 +40,6 @@ class BlackfireRestartCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $this->getSshExec()->run('sudo /etc/init.d/blackfire-agent restart', $output);
-        }
-        if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $this->getSshExec()->run('sudo service php5-fpm restart', $output);
-        }
-
-        return $this->getSshExec()->getLastReturnStatus();
+        $this->getSshExec()->exec($input->getArgument('remote_command'));
     }
 }

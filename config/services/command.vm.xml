@@ -130,5 +130,15 @@
             <tag name="console.command" />
         </service>
 
+        <service
+            id="command.vm.ssh"
+            class="Jarvis\Command\VirtualMachine\SshCommand"
+            parent="command.vm"
+        >
+            <argument>vm:ssh</argument>
+
+            <tag name="console.command" />
+        </service>
+
     </services>
 </container>
