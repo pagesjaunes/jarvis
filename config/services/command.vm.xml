@@ -55,16 +55,7 @@
         </service>
 
         <service
-            id="command.vm.service.web_services"
-            class="Jarvis\Command\VirtualMachine\RestartWebServicesCommand"
-        >
-            <argument>vm:service:web-services:restart</argument>
-
-            <tag name="console.command" />
-        </service>
-
-        <service
-            id="command.vm.service.varnish"
+            id="command.vm.service.varnish.restart"
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
@@ -82,7 +73,7 @@
         </service>
 
         <service
-            id="command.vm.service.nginx"
+            id="command.vm.service.nginx.restart"
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
@@ -100,11 +91,11 @@
         </service>
 
         <service
-            id="command.vm.service.php_fpm"
+            id="command.vm.service.php_fpm.restart"
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
-            <argument>vm:service:php_fpm:restart</argument>
+            <argument>vm:service:php-fpm:restart</argument>
 
             <call method="setServiceName">
                 <argument>php5-fpm</argument>
@@ -116,5 +107,28 @@
 
             <tag name="console.command" />
         </service>
+
+        <service
+            id="command.vm.service.stack_web.restart"
+            class="Jarvis\Command\VirtualMachine\ServiceCommand"
+            parent="command.vm"
+        >
+            <argument>vm:service:stack-web:restart</argument>
+
+            <call method="setServicesName">
+                <argument type="collection">
+                    <argument>php5-fpm</argument>
+                    <argument>nginx</argument>
+                    <argument>varnish</argument>
+                </argument>
+            </call>
+
+            <call method="setServiceCommandName">
+                <argument>restart</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
     </services>
 </container>
