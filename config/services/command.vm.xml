@@ -140,5 +140,23 @@
             <tag name="console.command" />
         </service>
 
+        <service
+            id="command.vm.sync.remote_to_local"
+            class="Jarvis\Command\VirtualMachine\SyncRemoteToLocalCommand"
+            parent="command.vm"
+        >
+            <argument>vm:sync:remote_to_local</argument>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
     </services>
 </container>
