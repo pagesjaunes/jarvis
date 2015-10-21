@@ -16,11 +16,9 @@
 namespace Jarvis\Command\Project;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Jarvis\Command\Project\AskProjectNameTrait;
 use Jarvis\Project\ProjectConfiguration;
 use Jarvis\Project\Repository\ProjectConfigurationRepository;
 
@@ -66,8 +64,9 @@ abstract class BaseCommand extends Command
     {
         $this->projectConfigurationRepository = $repository;
     }
+
     /**
-     * @return string
+     * @return ProjectConfigurationRepository
      */
     protected function getProjectConfigurationRepository()
     {
@@ -76,6 +75,35 @@ abstract class BaseCommand extends Command
         }
 
         return $this->projectConfigurationRepository;
+    }
+
+    /**
+     * @param  string $projectName
+     *
+     * @return Jarvis\Project\ProjectConfiguration
+     */
+    protected function getProjectConfiguration($projectName)
+    {
+        if (!$this->getProjectConfigurationRepository()->has($projectName)) {
+            $projectName = $this->getAlternativeProjectName($projectName);
+            if ($projectName === null) {
+                throw new \InvalidArgumentException(sprintf(
+                    'This project "%s" is not configured',
+                    $projectName
+                ));
+            }
+        }
+
+        $projectConfig = $this->getProjectConfigurationRepository()->find($projectName);
+
+        if (!$projectConfig) {
+            throw new \InvalidArgumentException(sprintf(
+                'This project "%s" is not configured',
+                $projectName
+            ));
+        }
+
+        return $projectConfig;
     }
 
     /**
@@ -88,17 +116,32 @@ abstract class BaseCommand extends Command
     abstract protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output);
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->addOption('project-name', null, InputOption::VALUE_OPTIONAL, 'The project name');
-        $this->addOption('all-projects', null, InputOption::VALUE_NONE, 'Apply the command to all projects');
-        $this->addOption('all-bundles', null, InputOption::VALUE_NONE, 'Apply the command to all bundles');
+        $this->addOption(
+            'project-name',
+            'p',
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'The project name or many project names'
+        );
+        $this->addOption(
+            'all-projects',
+            null,
+            InputOption::VALUE_NONE,
+            'Apply the command to all projects'
+        );
+        $this->addOption(
+            'all-bundles',
+            null,
+            InputOption::VALUE_NONE,
+            'Apply the command to all bundles'
+        );
     }
 
     /**
-     * Gets project names configured to exclude
+     * Gets project names configured to exclude.
      */
     protected function getProjectNamesToExclude()
     {
@@ -106,7 +149,20 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * Gets all project names configured
+     * Gets all project names configured.
+     */
+    protected function countProjects()
+    {
+        return $this->getProjectConfigurationRepository()->count();
+    }
+
+    protected function getFirstProjectName()
+    {
+        return $this->getProjectConfigurationRepository()->getProjectNames()[0];
+    }
+
+    /**
+     * Gets all project names configured.
      */
     protected function getAllProjectNames()
     {
@@ -132,7 +188,7 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -162,12 +218,23 @@ abstract class BaseCommand extends Command
             return $statusCode;
         }
 
-        $projectName = $this->getCurrentProjectName($input, $output);
+        // Many projects names given
+        if (count($input->getOption('project-name')) > 1) {
+            foreach ($input->getOption('project-name') as $projectName) {
+                $projectConfig = $this->getProjectConfiguration($projectName);
 
-        $projectConfig = $this->getProjectConfigurationRepository()->find($projectName);
-        if (!$projectConfig) {
-            throw new \InvalidArgumentException(sprintf('This project "%s" is not configured', $projectName));
+                $statusCode += $this->executeCommandByProject(
+                    $projectName,
+                    $projectConfig,
+                    $output
+                );
+            }
+
+            return $statusCode;
         }
+
+        $projectName = $this->getCurrentProjectName($input, $output);
+        $projectConfig = $this->getProjectConfiguration($projectName);
 
         return $this->executeCommandByProject($projectName, $projectConfig, $output);
     }
@@ -175,40 +242,88 @@ abstract class BaseCommand extends Command
     /**
      * Retrieves current project name.
      *
-     * @param  InputInterface $input
+     * @param InputInterface $input
      *
      * @return string
      */
     protected function getCurrentProjectName(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('project-name')) {
-            $projectName = $input->getOption('project-name');
+        if (!empty($input->getOption('project-name'))) {
+            $projectName = is_array($input->getOption('project-name')) ?
+                $input->getOption('project-name')[0]
+                :
+                $input->getOption('project-name');
 
             if (!$this->getProjectConfigurationRepository()->has($projectName)) {
-                throw new \InvalidArgumentException(sprintf('This project "%s" is not configured', $projectName));
+
+                $projectName = $this->getAlternativeProjectName($projectName);
+                if ($projectName === null) {
+                    throw new \InvalidArgumentException(sprintf(
+                        'This project "%s" is not configured',
+                        $projectName
+                    ));
+                }
             }
 
             return $projectName;
         }
 
         if (isset($_SERVER['JARVIS_SYMFONY_PROJECT'])) {
-            $projectName = $_SERVER['JARVIS_SYMFONY_PROJECT'];
-        } else {
-            // project name deducted from current directory if option "project-name" and variable environment "JARVIS_SYMFONY_PROJECT" are not used.
-            $currentProjectName = isset($_SERVER['PWD']) ? basename($_SERVER['PWD']) : null;
-            if ($this->getProjectConfigurationRepository()->has($currentProjectName)) {
-                $projectName = $currentProjectName;
+            return $_SERVER['JARVIS_SYMFONY_PROJECT'];
+        }
+
+        // project name deducted from current directory if option "project-name" and variable environment "JARVIS_SYMFONY_PROJECT" are not used.
+        $currentProjectName = isset($_SERVER['PWD']) ? basename($_SERVER['PWD']) : null;
+        if (!empty($currentProjectName) && $this->getProjectConfigurationRepository()->has($currentProjectName)) {
+            return $currentProjectName;
+        }
+
+        if ($this->countProjects() == 1) {
+            return $this->getFirstProjectName();
+        }
+
+        return $this->askProjectName(
+            $output,
+            $this->getAllProjectNames(),
+            $this->getProjectNamesToExclude()
+        );
+    }
+
+    /**
+     * @param  string $input
+     *
+     * @return array
+     */
+    protected function getAlternativeProjectNames($input)
+    {
+        $alternatives = [];
+        foreach ($this->getAllProjectNames() as $projectName) {
+            $lev = levenshtein($input, $projectName);
+            if ($lev <= strlen($input) / 3 || false !== strpos($projectName, $input)) {
+                $alternatives[] = $projectName;
             }
         }
 
-        if (empty($projectName)) {
-            $projectName = $this->askProjectName(
-                $output,
-                $this->getAllProjectNames(),
-                $this->getProjectNamesToExclude()
-            );
+        return $alternatives;
+    }
+
+    /**
+     * @param  string $input
+     *
+     * @return null|string
+     */
+    protected function getAlternativeProjectName($input)
+    {
+        $alternatives = $this->getAlternativeProjectNames($input);
+
+        if (count($alternatives) == 0) {
+            throw new \InvalidArgumentException(sprintf('No project found with %s', $input));
         }
 
-        return $projectName;
+        if (count($alternatives) > 1) {
+            throw new \InvalidArgumentException(sprintf('Many projects found with %s', $input));
+        }
+
+        return $alternatives[0];
     }
 }

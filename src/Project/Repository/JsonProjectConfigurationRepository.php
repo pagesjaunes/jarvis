@@ -49,6 +49,14 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     /**
      * {@inheritDoc}
      */
+    public function count()
+    {
+        return count($this->getProjectConfigurationCollection());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function find($projectName)
     {
         return isset($this->getProjectConfigurationCollection()[$projectName]) ?
