@@ -100,21 +100,17 @@ class TestIntegrationCommand extends BaseCommand
             '--symfony-env' => 'test'
         ], $output);
 
+        $buildReportHtmlPath = !empty($this->remoteBuildDir) ? '--testdox-html '.$this->remoteBuildDir.'/tests/integration.html' : null;
+
         $this->getSshExec()->exec(
             strtr(
-                'cd %project_dir% && phpunit --configuration %remote_phpunit_configuration_xml_path%  --colors --testdox-html %build_dir%/tests/integration.html '.($output->isDebug() ? ' --verbose --debug' : ''),
+                'phpunit --configuration %remote_phpunit_configuration_xml_path%  --colors %build_report_html% '.($output->isDebug() ? ' --verbose --debug' : ''),
                 [
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                     '%remote_phpunit_configuration_xml_path%' => $projectConfig->getRemotePhpunitConfigurationXmlPath(),
-                    '%build_dir%' => $this->remoteBuildDir,
+                    '%build_report_html%' => $buildReportHtmlPath,
                 ]
             )
-        );
-
-        $this->getRemoteFilesystem()->syncRemoteToLocal(
-            $this->remoteBuildDir,
-            $this->localBuildDir,
-            ['delete' => true]
         );
 
         if ($this->displayStatusText) {
