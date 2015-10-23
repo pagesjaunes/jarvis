@@ -76,11 +76,14 @@ class ConfigShowCommand extends Command
             'remote_symfony_console_path',
             'remote_phpunit_configuration_xml_path',
         ] as $propertyPath) {
-            $output->writeln(sprintf(
-                '<comment>%s: <info>%s</info></comment>',
-                $propertyPath,
-                $accessor->getValue($config, $propertyPath)
-            ));
+            $propertyValue = $accessor->getValue($config, $propertyPath);
+            if (null !== $propertyValue) {
+                $output->writeln(sprintf(
+                    '<comment>%s: <info>%s</info></comment>',
+                    $propertyPath,
+                    $propertyValue
+                ));
+            }
         }
     }
 

@@ -255,7 +255,6 @@ abstract class BaseCommand extends Command
                 $input->getOption('project-name');
 
             if (!$this->getProjectConfigurationRepository()->has($projectName)) {
-
                 $projectName = $this->getAlternativeProjectName($projectName);
                 if ($projectName === null) {
                     throw new \InvalidArgumentException(sprintf(

@@ -22,7 +22,7 @@ abstract class BaseBuildCommand extends BaseCommand
     use \Jarvis\Process\ExecAwareTrait;
     use \Jarvis\Ssh\SshExecAwareTrait;
 
-/**
+    /**
      * @var string
      */
     private $remoteBuildDir;
