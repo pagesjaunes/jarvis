@@ -117,6 +117,11 @@ class GitHookPreCommitCommand extends BaseCommand
             return $exitCodeStatus;
         }
 
+        $extensionsFound = [];
+        foreach ($files as $file) {
+            $extensionsFound[pathinfo($file, PATHINFO_EXTENSION)] = 1;
+        }
+
         $this->synchronizeLocalStagingAreaToRemote(
             $localTemporaryCopyStagingAreaDir,
             $remoteTmpStagingAreaRootDir,
@@ -127,31 +132,31 @@ class GitHookPreCommitCommand extends BaseCommand
             $exitCodeStatus = $this->checkComposerFiles($files, $projectName, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
             $exitCodeStatus = $this->validatePhpSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['yml'])) {
             $exitCodeStatus = $this->validateYamlSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectConfig, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['twig'])) {
             $exitCodeStatus = $this->validateTwigSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectConfig, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['scss'])) {
             $exitCodeStatus = $this->validateScssSyntaxCheck($files, $remoteTmpStagingAreaRootDir, $projectConfig, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
             $exitCodeStatus = $this->checkPhpCodeStyle($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
             $exitCodeStatus = $this->unitTests($projectConfig, $output);
         }
 
-        if (static::EXIT_SUCCESS == $exitCodeStatus) {
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
             $exitCodeStatus = $this->integrationTests($projectConfig, $output);
         }
 
@@ -355,7 +360,7 @@ class GitHookPreCommitCommand extends BaseCommand
         ob_start();
         $this->getSshExec()->exec(
             strtr(
-                'parallel-lint -e php -j 10 %dir%',
+                'php-parallel-lint -e php -j 10 %dir%', // TODO: variable command name
                 [
                     '%dir%' => $remoteTmpStaging
                 ]
@@ -379,142 +384,106 @@ class GitHookPreCommitCommand extends BaseCommand
 
     protected function validateYamlSyntaxCheck(array $files, $remoteTmpStaging, $projectConfig, OutputInterface $output)
     {
-        $found = false;
+        $output->writeln(sprintf(
+            '<comment>%s for project "<info>%s</info>"</comment>',
+            'Validate YAML code on syntax errors',
+            $projectConfig->getProjectName()
+        ));
+
+        ob_start();
+        $this->getSymfonyRemoteConsoleExec()->exec(
+            $projectConfig->getRemoteSymfonyConsolePath(),
+            strtr(
+                'yaml:lint %dir%',
+                [
+                '%dir%' => $remoteTmpStaging
+            ]),
+            'dev'
+        );
+        $report = ob_get_clean();
+
+        // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
             if (pathinfo($file, PATHINFO_EXTENSION) == 'yml') {
-                $found = true;
-                break;
+                $report = str_replace($remoteTmpStaging, '', $report);
             }
         }
 
-        if ($found) {
-            $output->writeln(sprintf(
-                '<comment>%s for project "<info>%s</info>"</comment>',
-                'Validate YAML code on syntax errors',
-                $projectConfig->getProjectName()
-            ));
-
-            ob_start();
-            $this->getSymfonyRemoteConsoleExec()->exec(
-                $projectConfig->getRemoteSymfonyConsolePath(),
-                strtr(
-                    'yaml:lint %dir%',
-                    [
-                    '%dir%' => $remoteTmpStaging
-                ]),
-                'dev'
-            );
-            $report = ob_get_clean();
-
-            // clean path without path temporary staging area for files with syntax errors
-            foreach ($files as $file) {
-                if (pathinfo($file, PATHINFO_EXTENSION) == 'yml') {
-                    $report = str_replace($remoteTmpStaging, '', $report);
-                }
-            }
-
-            if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
-                $output->writeln($report, OutputInterface::OUTPUT_RAW);
-            }
-
-            return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+        if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
+            $output->writeln($report, OutputInterface::OUTPUT_RAW);
         }
 
-        return 0;
+        return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
     }
 
     protected function validateTwigSyntaxCheck(array $files, $remoteTmpStaging, $projectConfig, OutputInterface $output)
     {
-        $found = false;
+        $output->writeln(sprintf(
+            '<comment>%s for project "<info>%s</info>"</comment>',
+            'Validate TWIG code on syntax errors',
+            $projectConfig->getProjectName()
+        ));
+
+        ob_start();
+        $this->getSymfonyRemoteConsoleExec()->exec(
+            $projectConfig->getRemoteSymfonyConsolePath(),
+            strtr(
+                'twig:lint %dir%', // TODO: manage symfony version >= 2.7 lint:twig
+                [
+                '%dir%' => $remoteTmpStaging
+            ]),
+            'dev'
+        );
+        $report = ob_get_clean();
+
+        // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
             if (pathinfo($file, PATHINFO_EXTENSION) == 'twig') {
-                $found = true;
-                break;
+                $report = str_replace($remoteTmpStaging, '', $report);
             }
         }
 
-        if ($found) {
-            $output->writeln(sprintf(
-                '<comment>%s for project "<info>%s</info>"</comment>',
-                'Validate TWIG code on syntax errors',
-                $projectConfig->getProjectName()
-            ));
-
-            ob_start();
-            $this->getSymfonyRemoteConsoleExec()->exec(
-                $projectConfig->getRemoteSymfonyConsolePath(),
-                strtr(
-                    'lint:twig %dir%',
-                    [
-                    '%dir%' => $remoteTmpStaging
-                ]),
-                'dev'
-            );
-            $report = ob_get_clean();
-
-            // clean path without path temporary staging area for files with syntax errors
-            foreach ($files as $file) {
-                if (pathinfo($file, PATHINFO_EXTENSION) == 'twig') {
-                    $report = str_replace($remoteTmpStaging, '', $report);
-                }
-            }
-
-            if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
-                $output->writeln($report, OutputInterface::OUTPUT_RAW);
-            }
-
-            return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+        if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
+            $output->writeln($report, OutputInterface::OUTPUT_RAW);
         }
 
-        return 0;
+        return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
     }
 
     protected function validateScssSyntaxCheck(array $files, $remoteTmpStaging, $projectConfig, OutputInterface $output)
     {
-        $found = false;
+        $output->writeln(sprintf(
+            '<comment>%s for project "<info>%s</info>"</comment>',
+            'Validate SCSS code on syntax errors',
+            $projectConfig->getProjectName()
+        ));
+
+        ob_start();
+
+        $this->getSshExec()->exec('which scss-lint || gem install scss-lint');
+
+        $this->getSshExec()->exec(
+            strtr(
+                'scss-lint %project_dir%/src',
+                [
+                    '%project_dir%' => $projectConfig->getRemoteWebappDir(),
+                ]
+            )
+        );
+        $report = ob_get_clean();
+
+        // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
             if (pathinfo($file, PATHINFO_EXTENSION) == 'scss') {
-                $found = true;
-                break;
+                $report = str_replace($remoteTmpStaging, '', $report);
             }
         }
 
-        if ($found) {
-            $output->writeln(sprintf(
-                '<comment>%s for project "<info>%s</info>"</comment>',
-                'Validate SCSS code on syntax errors',
-                $projectConfig->getProjectName()
-            ));
-
-            ob_start();
-
-            $this->getSshExec()->exec('which scss-lint || gem install scss-lint');
-
-            $this->getSshExec()->exec(
-                strtr(
-                    'scss-lint %project_dir%/src',
-                    [
-                        '%project_dir%' => $projectConfig->getRemoteWebappDir(),
-                    ]
-                )
-            );
-            $report = ob_get_clean();
-
-            // clean path without path temporary staging area for files with syntax errors
-            foreach ($files as $file) {
-                if (pathinfo($file, PATHINFO_EXTENSION) == 'scss') {
-                    $report = str_replace($remoteTmpStaging, '', $report);
-                }
-            }
-
-            if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
-                $output->writeln($report, OutputInterface::OUTPUT_RAW);
-            }
-
-            return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+        if (static::EXIT_SUCCESS !== $this->getSshExec()->getLastReturnStatus()) {
+            $output->writeln($report, OutputInterface::OUTPUT_RAW);
         }
 
-        return 0;
+        return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
     }
 
     protected function checkPhpCodeStyle(array $files, $remoteTmpStaging, $projectName, OutputInterface $output)
