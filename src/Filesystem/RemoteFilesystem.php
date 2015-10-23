@@ -103,6 +103,8 @@ class RemoteFilesystem
 
     /**
      * @param  string $dir
+     *
+     * @return bool
      */
     public function remove($filepath)
     {
@@ -126,6 +128,8 @@ class RemoteFilesystem
 
     /**
      * @param  string $dir
+     *
+     * @return bool
      */
     public function mkdir($dir)
     {
@@ -188,6 +192,7 @@ class RemoteFilesystem
      * @param bool   $override   Whether to override an existing file or not
      *
      * @throws FileNotFoundException When originFile doesn't exist
+     *
      * @return exit code
      */
     public function copy($originFile, $targetFile, $override = false)
@@ -208,7 +213,7 @@ class RemoteFilesystem
             !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $originFile, $targetFile));
         }
 
-        return $this->sshExec->getLastReturnStatus() === 0;
+        return $this->sshExec->getLastReturnStatus();
     }
 
     /**
@@ -221,6 +226,7 @@ class RemoteFilesystem
      * @param string $localFile The local filename
      *
      * @throws FileNotFoundException When localFile doesn't exist
+     *
      * @return exit code
      */
     public function copyRemoteFileToLocal($remoteFile, $localFile)
@@ -245,7 +251,7 @@ class RemoteFilesystem
             !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $remoteFile, $localFile));
         }
 
-        return $this->exec->getLastReturnStatus() === 0;
+        return $this->exec->getLastReturnStatus();
     }
 
     /**
@@ -257,6 +263,7 @@ class RemoteFilesystem
      * @param string $remoteFile The remote filename
      *
      * @throws FileNotFoundException When localFile doesn't exist
+     *
      * @return exit code
      */
     public function copyLocalFileToRemote($localFile, $remoteFile)
@@ -277,7 +284,7 @@ class RemoteFilesystem
             !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $localFile, $remoteFile));
         }
 
-        return $this->exec->getLastReturnStatus() === 0;
+        return $this->exec->getLastReturnStatus();
     }
 
     /**
@@ -295,9 +302,10 @@ class RemoteFilesystem
     public function syncRemoteToLocal($remoteDir, $localDir, $options = array())
     {
         $commandLine = strtr(
-            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
+            'rsync %delete% --recursive --checksum --compress %dry_run% %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
+                '%dry_run%' => isset($options['dry_run']) && $options['dry_run'] ? '--dry-run' : '',
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
@@ -317,7 +325,7 @@ class RemoteFilesystem
             ));
         }
 
-        return $this->exec->getLastReturnStatus() === 0;
+        return $this->exec->getLastReturnStatus();
     }
 
     /**
@@ -341,7 +349,7 @@ class RemoteFilesystem
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
-                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->getOption('ssh_identity_file') : '',
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
                 '%extra_rsync_options%' => '--verbose --human-readable --progress',
                 '%remote_dir%' => $remoteDir,
                 '%local_dir%' => $localDir
@@ -356,7 +364,7 @@ class RemoteFilesystem
             ));
         }
 
-        return $this->exec->getLastReturnStatus() === 0;
+        return $this->exec->getLastReturnStatus();
     }
 
     /**
