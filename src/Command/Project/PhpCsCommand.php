@@ -36,7 +36,6 @@ class PhpCsCommand extends BaseBuildCommand
 
         $this->addOption('fix', null, InputOption::VALUE_NONE, 'Tries to fix as much coding standards problems as possible.');
         $this->addOption('level', null, InputOption::VALUE_REQUIRED, 'The level of fixes (can be psr0, psr1, psr2, or symfony (formerly all))', 'symfony');
-        $this->addOption('self-update', null, InputOption::VALUE_NONE, 'Self update php coding fixer');
 
         parent::configure();
     }
@@ -48,9 +47,6 @@ class PhpCsCommand extends BaseBuildCommand
     {
         $this->fixCodingStandardProblems = $input->getOption('fix');
         $this->level = $input->getOption('level');
-        if ($input->getOption('self-update')) {
-            $this->getPhpCsFixer()->selfUpdate();
-        }
     }
 
     /**

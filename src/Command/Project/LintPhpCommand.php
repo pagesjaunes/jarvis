@@ -42,9 +42,9 @@ class LintPhpCommand extends BaseBuildCommand
         ));
 
         if (strpos($projectName, 'bundle') === false) {
-            $commandLine = 'parallel-lint -e php -j 10 %project_dir%/app %project_dir%/src %project_dir%/web --exclude %project_dir%/vendor';
+            $commandLine = 'php-parallel-lint -e php -j 10 %project_dir%/app %project_dir%/src %project_dir%/web --exclude %project_dir%/vendor';
         } else {
-            $commandLine = 'parallel-lint -e php -j 10 %project_dir%/src';
+            $commandLine = 'php-parallel-lint -e php -j 10 %project_dir%/src';
         }
 
         $this->getSshExec()->run(

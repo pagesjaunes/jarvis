@@ -18,6 +18,7 @@ namespace Jarvis\Command\Project;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
 use Jarvis\Project\ProjectConfiguration;
 
 class PhpMetricsCommand extends BaseBuildCommand
@@ -39,8 +40,6 @@ class PhpMetricsCommand extends BaseBuildCommand
     {
         $this->setDescription('Gives metrics about PHP project and classes for to one or all projects');
 
-        $this->addOption('self-update', null, InputOption::VALUE_NONE, 'Self update phpmetrics');
-
         parent::configure();
     }
 
@@ -49,17 +48,6 @@ class PhpMetricsCommand extends BaseBuildCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('self-update')) {
-            $this->getSshExec()->exec('wget https://github.com/Halleck45/PhpMetrics/raw/master/build/phpmetrics.phar && chmod +x phpmetrics.phar && mv phpmetrics.phar /usr/local/bin/phpmetrics');
-
-            return;
-        }
-
-        // Check already installed
-        $this->getSshExec()->exec(
-            'test -f /usr/local/bin/phpmetrics || (wget https://github.com/Halleck45/PhpMetrics/raw/master/build/phpmetrics.phar && chmod +x phpmetrics.phar && mv phpmetrics.phar /usr/local/bin/phpmetrics)'
-        );
-
         $this->remoteBuildDir = sprintf('%s/metrics', $this->getRemoteBuildDir());
         $this->localBuildDir = sprintf('%s/metrics', $this->getLocalBuildDir());
 

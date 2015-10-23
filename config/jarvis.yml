@@ -14,7 +14,6 @@ imports:
     - { resource: "services/command.project.xml" }
     - { resource: "services/command.vagrant.xml" }
     - { resource: "services/command.vm.xml" }
-    - { resource: "services/command.vm.blackfire.xml" }
     - { resource: "services/services.xml" }
 
 parameters:
@@ -50,6 +49,44 @@ parameters:
 
     git_hooks_skeleton_dir: "%jarvis_dir%/skeleton/git_hooks"
     php_cs_fixer_skeleton_dir: "%jarvis_dir%/skeleton/php_cs_fixer"
+
+    command.vm.php_tools:
+        composer:
+            url: 'https://getcomposer.org/composer.phar'
+            dest: '/usr/local/bin/composer'
+            version_option: '--version'
+            update_command: '{{dest}} self-update'
+        box:
+            url: 'https://github.com/box-project/box2/releases/download/2.6.0/box-2.6.0.phar'
+            dest: '/usr/local/bin/box'
+            version_option: '--version'
+            #install_command: 'curl -LSs http://box-project.github.io/box2/installer.php | php'
+            #update_command: '{{dest}} update'
+        phpspec:
+            url: 'https://github.com/phpspec/phpspec/releases/download/2.2.1/phpspec.phar'
+            dest: '/usr/local/bin/phpspec'
+            version_option: '--version'
+        phpunit:
+            url: 'https://phar.phpunit.de/phpunit-4.8.9.phar'
+            dest: '/usr/local/bin/phpunit'
+            version_option: '--version'
+        php-cs-fixer:
+            url: 'http://get.sensiolabs.org/php-cs-fixer.phar'
+            dest: '/usr/local/bin/php-cs-fixer'
+            version_option: '--version'
+        phpcs:
+            url: 'https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar'
+            dest: '/usr/local/bin/phpcs'
+            version_option: '--version'
+        php-parallel-lint:
+            url: 'https://github.com/JakubOnderka/PHP-Parallel-Lint.git'
+            dest: '/usr/local/bin/php-parallel-lint'
+            version_command: '{{dest}} --help | awk ''/version/'''
+            install_command: 'rm -fr /tmp/{{name}} && git clone {{url}} /tmp/{{name}} && cd /tmp/{{name}} && COMPOSER_HOME=. composer install -vvv && box build -vvv && sudo mv parallel-lint.phar {{dest}}'
+        php-metrics:
+            url: 'https://github.com/Halleck45/PhpMetrics/raw/master/build/phpmetrics.phar'
+            dest: '/usr/local/bin/phpmetrics'
+            version_option: '--version'
 
     command.project.enabled: true
     command.editor.enabled: true
