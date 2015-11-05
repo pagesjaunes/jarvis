@@ -215,7 +215,6 @@ class PhpToolsCommand extends BaseCommand
             $default
         );
         $question->setMultiselect(true);
-        $question->setAutocompleterValues($allToolsNames);
 
         $names = $helper->ask($input, $output, $question);
 
