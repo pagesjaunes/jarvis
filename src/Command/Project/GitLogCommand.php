@@ -25,7 +25,6 @@ class GitLogCommand extends BaseGitCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-
         $this->gitCommand = 'log --graph --pretty=tformat:\'%Cred%h%Creset -%C(cyan)%d %Creset%s %Cgreen(%an %cr)%Creset\' --abbrev-commit --date=relative';
 
         parent::executeCommandByProject($projectName, $projectConfig, $output);
