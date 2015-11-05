@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5d2497f6ca314e76d27d5bbb64c8954c",
+    "hash": "36dde5b3fafb8e43d6d60b2463f1fb41",
+    "content-hash": "ab3a23a67da7022455e6af88e1c39a6a",
     "packages": [
         {
             "name": "clue/graph",
@@ -160,12 +161,12 @@
             "version": "1.0.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/herrera-io/php-json.git",
+                "url": "https://github.com/kherge-abandoned/php-json.git",
                 "reference": "60c696c9370a1e5136816ca557c17f82a6fa83f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/herrera-io/php-json/zipball/60c696c9370a1e5136816ca557c17f82a6fa83f1",
+                "url": "https://api.github.com/repos/kherge-abandoned/php-json/zipball/60c696c9370a1e5136816ca557c17f82a6fa83f1",
                 "reference": "60c696c9370a1e5136816ca557c17f82a6fa83f1",
                 "shasum": ""
             },
@@ -221,12 +222,12 @@
             "version": "2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/herrera-io/php-phar-update.git",
+                "url": "https://github.com/kherge-abandoned/php-phar-update.git",
                 "reference": "15643c90d3d43620a4f45c910e6afb7a0ad4b488"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/herrera-io/php-phar-update/zipball/15643c90d3d43620a4f45c910e6afb7a0ad4b488",
+                "url": "https://api.github.com/repos/kherge-abandoned/php-phar-update/zipball/15643c90d3d43620a4f45c910e6afb7a0ad4b488",
                 "reference": "15643c90d3d43620a4f45c910e6afb7a0ad4b488",
                 "shasum": ""
             },
@@ -279,12 +280,12 @@
             "version": "1.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/herrera-io/php-version.git",
+                "url": "https://github.com/kherge-abandoned/php-version.git",
                 "reference": "d39d9642b92a04d8b8a28b871b797a35a2545e85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/herrera-io/php-version/zipball/d39d9642b92a04d8b8a28b871b797a35a2545e85",
+                "url": "https://api.github.com/repos/kherge-abandoned/php-version/zipball/d39d9642b92a04d8b8a28b871b797a35a2545e85",
                 "reference": "d39d9642b92a04d8b8a28b871b797a35a2545e85",
                 "shasum": ""
             },
@@ -325,6 +326,262 @@
                 "version"
             ],
             "time": "2014-05-27 05:29:25"
+        },
+        {
+            "name": "hoa/console",
+            "version": "2.15.07.27",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Console.git",
+                "reference": "3b871f5f1059a3664acb5380ebadd988daa7a0db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Console/zipball/3b871f5f1059a3664acb5380ebadd988daa7a0db",
+                "reference": "3b871f5f1059a3664acb5380ebadd988daa7a0db",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0",
+                "hoa/stream": "~0.0",
+                "hoa/ustring": "~3.0"
+            },
+            "require-dev": {
+                "hoa/test": "~1.0"
+            },
+            "suggest": {
+                "ext-pcntl": "To enable hoa://Event/Console/Window:resize.",
+                "hoa/dispatcher": "To use the console kit.",
+                "hoa/router": "To use the console kit."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hoa\\Console\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Console library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "autocompletion",
+                "chrome",
+                "cli",
+                "console",
+                "cursor",
+                "getoption",
+                "library",
+                "option",
+                "parser",
+                "processus",
+                "readline",
+                "terminfo",
+                "tput",
+                "window"
+            ],
+            "time": "2015-07-27 07:52:10"
+        },
+        {
+            "name": "hoa/core",
+            "version": "2.15.09.03",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Core.git",
+                "reference": "305a881847478d635f3cf565fd5e8ef382c21a70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Core/zipball/305a881847478d635f3cf565fd5e8ef382c21a70",
+                "reference": "305a881847478d635f3cf565fd5e8ef382c21a70",
+                "shasum": ""
+            },
+            "require": {
+                "ext-spl": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "hoa/test": "~1.0"
+            },
+            "suggest": {
+                "ext-mbstring": "ext/mbstring must be present (or a third implementation).",
+                "hoa/cli": "To use the `hoa` script."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hoa\\Core\\": "."
+                },
+                "files": [
+                    "Core.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Core library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "consistency",
+                "core",
+                "data",
+                "event",
+                "library",
+                "listener",
+                "parameter",
+                "protocol"
+            ],
+            "time": "2015-09-03 08:28:53"
+        },
+        {
+            "name": "hoa/stream",
+            "version": "0.15.10.26",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Stream.git",
+                "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Stream/zipball/011ab91d942f1d7096deade4c8a10fe57d51c5b3",
+                "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hoa\\Stream\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Stream library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "Context",
+                "bucket",
+                "composite",
+                "filter",
+                "in",
+                "library",
+                "out",
+                "protocol",
+                "stream",
+                "wrapper"
+            ],
+            "time": "2015-10-22 06:30:43"
+        },
+        {
+            "name": "hoa/ustring",
+            "version": "3.15.08.03",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hoaproject/Ustring.git",
+                "reference": "261d5bfc53df8e895793d330f0fb96929fca355d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hoaproject/Ustring/zipball/261d5bfc53df8e895793d330f0fb96929fca355d",
+                "reference": "261d5bfc53df8e895793d330f0fb96929fca355d",
+                "shasum": ""
+            },
+            "require": {
+                "hoa/core": "~2.0"
+            },
+            "require-dev": {
+                "hoa/test": "~1.0"
+            },
+            "suggest": {
+                "ext-iconv": "ext/iconv must be present (or a third implementation) to use Hoa\\Ustring::transcode().",
+                "ext-intl": "To get a better Hoa\\Ustring::toAscii() and Hoa\\Ustring::compareTo()."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hoa\\Ustring\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Enderlin",
+                    "email": "ivan.enderlin@hoa-project.net"
+                },
+                {
+                    "name": "Hoa community",
+                    "homepage": "http://hoa-project.net/"
+                }
+            ],
+            "description": "The Hoa\\Ustring library.",
+            "homepage": "http://hoa-project.net/",
+            "keywords": [
+                "library",
+                "search",
+                "string",
+                "unicode"
+            ],
+            "time": "2015-08-03 07:49:50"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -450,16 +707,16 @@
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "1.4.2",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "7dfe4f1db8a62be3dd35710efce663537d515653"
+                "reference": "a4bee9f4b344b66e0a0d96c7afae1e92edf385fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/7dfe4f1db8a62be3dd35710efce663537d515653",
-                "reference": "7dfe4f1db8a62be3dd35710efce663537d515653",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/a4bee9f4b344b66e0a0d96c7afae1e92edf385fe",
+                "reference": "a4bee9f4b344b66e0a0d96c7afae1e92edf385fe",
                 "shasum": ""
             },
             "require": {
@@ -480,8 +737,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "JsonSchema": "src/"
+                "psr-4": {
+                    "JsonSchema\\": "src/JsonSchema/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -512,7 +769,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2015-06-14 20:01:28"
+            "time": "2015-09-08 22:28:04"
         },
         {
             "name": "kherge/amend",
@@ -571,16 +828,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.14.0",
+            "version": "1.17.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "b287fbbe1ca27847064beff2bad7fb6920bf08cc"
+                "reference": "bee7f0dc9c3e0b69a6039697533dca1e845c8c24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b287fbbe1ca27847064beff2bad7fb6920bf08cc",
-                "reference": "b287fbbe1ca27847064beff2bad7fb6920bf08cc",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bee7f0dc9c3e0b69a6039697533dca1e845c8c24",
+                "reference": "bee7f0dc9c3e0b69a6039697533dca1e845c8c24",
                 "shasum": ""
             },
             "require": {
@@ -594,10 +851,11 @@
                 "aws/aws-sdk-php": "^2.4.9",
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
+                "jakub-onderka/php-parallel-lint": "0.9",
                 "php-console/php-console": "^3.1.3",
                 "phpunit/phpunit": "~4.5",
                 "phpunit/phpunit-mock-objects": "2.3.0",
-                "raven/raven": "~0.8",
+                "raven/raven": "^0.13",
                 "ruflin/elastica": ">=0.90 <3.0",
                 "swiftmailer/swiftmailer": "~5.3",
                 "videlalvaro/php-amqplib": "~2.4"
@@ -617,7 +875,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.14.x-dev"
+                    "dev-master": "1.16.x-dev"
                 }
             },
             "autoload": {
@@ -643,7 +901,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-06-19 13:29:54"
+            "time": "2015-10-14 12:51:02"
         },
         {
             "name": "psr/log",
@@ -685,16 +943,16 @@
         },
         {
             "name": "react/promise",
-            "version": "v2.2.0",
+            "version": "v2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "365fcee430dfa4ace1fbc75737ca60ceea7eeeef"
+                "reference": "3b6fca09c7d56321057fa8867c8dbe1abf648627"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/365fcee430dfa4ace1fbc75737ca60ceea7eeeef",
-                "reference": "365fcee430dfa4ace1fbc75737ca60ceea7eeeef",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/3b6fca09c7d56321057fa8867c8dbe1abf648627",
+                "reference": "3b6fca09c7d56321057fa8867c8dbe1abf648627",
                 "shasum": ""
             },
             "require": {
@@ -721,11 +979,11 @@
             "authors": [
                 {
                     "name": "Jan Sorgalla",
-                    "email": "jsorgalla@googlemail.com"
+                    "email": "jsorgalla@gmail.com"
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2014-12-30 13:32:42"
+            "time": "2015-07-03 13:48:55"
         },
         {
             "name": "seld/jsonlint",
@@ -775,24 +1033,21 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Config.git",
-                "reference": "58ded81f1f582a87c528ef3dae9a859f78b5f374"
+                "url": "https://github.com/symfony/config.git",
+                "reference": "831f88908b51b9ce945f5e6f402931d1ac544423"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/58ded81f1f582a87c528ef3dae9a859f78b5f374",
-                "reference": "58ded81f1f582a87c528ef3dae9a859f78b5f374",
+                "url": "https://api.github.com/repos/symfony/config/zipball/831f88908b51b9ce945f5e6f402931d1ac544423",
+                "reference": "831f88908b51b9ce945f5e6f402931d1ac544423",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9",
                 "symfony/filesystem": "~2.3"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -821,20 +1076,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-11 14:06:56"
+            "time": "2015-10-11 09:39:48"
         },
         {
             "name": "symfony/console",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Console.git",
-                "reference": "564398bc1f33faf92fc2ec86859983d30eb81806"
+                "url": "https://github.com/symfony/console.git",
+                "reference": "5efd632294c8320ea52492db22292ff853a43766"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/564398bc1f33faf92fc2ec86859983d30eb81806",
-                "reference": "564398bc1f33faf92fc2ec86859983d30eb81806",
+                "url": "https://api.github.com/repos/symfony/console/zipball/5efd632294c8320ea52492db22292ff853a43766",
+                "reference": "5efd632294c8320ea52492db22292ff853a43766",
                 "shasum": ""
             },
             "require": {
@@ -843,7 +1098,6 @@
             "require-dev": {
                 "psr/log": "~1.0",
                 "symfony/event-dispatcher": "~2.1",
-                "symfony/phpunit-bridge": "~2.7",
                 "symfony/process": "~2.1"
             },
             "suggest": {
@@ -878,20 +1132,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-10 15:30:22"
+            "time": "2015-10-20 14:38:46"
         },
         {
             "name": "symfony/debug",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Debug.git",
-                "reference": "075070230c5bbc65abde8241191655bbce0716e2"
+                "url": "https://github.com/symfony/debug.git",
+                "reference": "fb9e6887db716939f41af0ba8ef38a1582eb501b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Debug/zipball/075070230c5bbc65abde8241191655bbce0716e2",
-                "reference": "075070230c5bbc65abde8241191655bbce0716e2",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/fb9e6887db716939f41af0ba8ef38a1582eb501b",
+                "reference": "fb9e6887db716939f41af0ba8ef38a1582eb501b",
                 "shasum": ""
             },
             "require": {
@@ -903,13 +1157,7 @@
             },
             "require-dev": {
                 "symfony/class-loader": "~2.2",
-                "symfony/http-foundation": "~2.1",
-                "symfony/http-kernel": "~2.3.24|~2.5.9|~2.6,>=2.6.2",
-                "symfony/phpunit-bridge": "~2.7"
-            },
-            "suggest": {
-                "symfony/http-foundation": "",
-                "symfony/http-kernel": ""
+                "symfony/http-kernel": "~2.3.24|~2.5.9|~2.6,>=2.6.2"
             },
             "type": "library",
             "extra": {
@@ -938,20 +1186,20 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-11 09:39:48"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "1a409e52a38ec891de0a7a61a191d1c62080b69d"
+                "url": "https://github.com/symfony/dependency-injection.git",
+                "reference": "af284e795ec8a08c80d1fc47518fd23004b89847"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/1a409e52a38ec891de0a7a61a191d1c62080b69d",
-                "reference": "1a409e52a38ec891de0a7a61a191d1c62080b69d",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/af284e795ec8a08c80d1fc47518fd23004b89847",
+                "reference": "af284e795ec8a08c80d1fc47518fd23004b89847",
                 "shasum": ""
             },
             "require": {
@@ -963,7 +1211,6 @@
             "require-dev": {
                 "symfony/config": "~2.2",
                 "symfony/expression-language": "~2.6",
-                "symfony/phpunit-bridge": "~2.7",
                 "symfony/yaml": "~2.1"
             },
             "suggest": {
@@ -998,20 +1245,20 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-11 19:13:11"
+            "time": "2015-10-27 15:38:06"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "be3c5ff8d503c46768aeb78ce6333051aa6f26d9"
+                "url": "https://github.com/symfony/event-dispatcher.git",
+                "reference": "87a5db5ea887763fa3a31a5471b512ff1596d9b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/be3c5ff8d503c46768aeb78ce6333051aa6f26d9",
-                "reference": "be3c5ff8d503c46768aeb78ce6333051aa6f26d9",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/87a5db5ea887763fa3a31a5471b512ff1596d9b8",
+                "reference": "87a5db5ea887763fa3a31a5471b512ff1596d9b8",
                 "shasum": ""
             },
             "require": {
@@ -1022,7 +1269,6 @@
                 "symfony/config": "~2.0,>=2.0.5",
                 "symfony/dependency-injection": "~2.6",
                 "symfony/expression-language": "~2.6",
-                "symfony/phpunit-bridge": "~2.7",
                 "symfony/stopwatch": "~2.3"
             },
             "suggest": {
@@ -1056,27 +1302,24 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-11 09:39:48"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "a0d43eb3e17d4f4c6990289805a488a0482a07f3"
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "56fd6df73be859323ff97418d97edc1d756df6df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/a0d43eb3e17d4f4c6990289805a488a0482a07f3",
-                "reference": "a0d43eb3e17d4f4c6990289805a488a0482a07f3",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/56fd6df73be859323ff97418d97edc1d756df6df",
+                "reference": "56fd6df73be859323ff97418d97edc1d756df6df",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -1105,27 +1348,24 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-18 20:23:18"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Finder.git",
-                "reference": "c13a40d638aeede1e8400f8c956c7f9246c05f75"
+                "url": "https://github.com/symfony/finder.git",
+                "reference": "2ffb4e9598db3c48eb6d0ae73b04bbf09280c59d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/c13a40d638aeede1e8400f8c956c7f9246c05f75",
-                "reference": "c13a40d638aeede1e8400f8c956c7f9246c05f75",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/2ffb4e9598db3c48eb6d0ae73b04bbf09280c59d",
+                "reference": "2ffb4e9598db3c48eb6d0ae73b04bbf09280c59d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -1154,20 +1394,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-04 20:11:48"
+            "time": "2015-10-11 09:39:48"
         },
         {
             "name": "symfony/monolog-bridge",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/MonologBridge.git",
-                "reference": "529eb4023517ae5e111ac54f0aa7d597b0579d95"
+                "url": "https://github.com/symfony/monolog-bridge.git",
+                "reference": "9fdb08c4b0885d502aa8c0d0b4cdb71bfb13864c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/MonologBridge/zipball/529eb4023517ae5e111ac54f0aa7d597b0579d95",
-                "reference": "529eb4023517ae5e111ac54f0aa7d597b0579d95",
+                "url": "https://api.github.com/repos/symfony/monolog-bridge/zipball/9fdb08c4b0885d502aa8c0d0b4cdb71bfb13864c",
+                "reference": "9fdb08c4b0885d502aa8c0d0b4cdb71bfb13864c",
                 "shasum": ""
             },
             "require": {
@@ -1177,8 +1417,7 @@
             "require-dev": {
                 "symfony/console": "~2.4",
                 "symfony/event-dispatcher": "~2.2",
-                "symfony/http-kernel": "~2.4",
-                "symfony/phpunit-bridge": "~2.7"
+                "symfony/http-kernel": "~2.4"
             },
             "suggest": {
                 "symfony/console": "For the possibility to show log messages in console commands depending on verbosity settings. You need version ~2.3 of the console for it.",
@@ -1212,27 +1451,24 @@
             ],
             "description": "Symfony Monolog Bridge",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-11 09:39:48"
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/OptionsResolver.git",
-                "reference": "00aad418f1dcfca84260a63b6876211a443ed072"
+                "url": "https://github.com/symfony/options-resolver.git",
+                "reference": "85fd10e551677d3c9a4632def78b8ec4670b247d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/OptionsResolver/zipball/00aad418f1dcfca84260a63b6876211a443ed072",
-                "reference": "00aad418f1dcfca84260a63b6876211a443ed072",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/85fd10e551677d3c9a4632def78b8ec4670b247d",
+                "reference": "85fd10e551677d3c9a4632def78b8ec4670b247d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -1266,27 +1502,24 @@
                 "configuration",
                 "options"
             ],
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-11 09:39:48"
         },
         {
             "name": "symfony/process",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Process.git",
-                "reference": "552d8efdc80980cbcca50b28d626ac8e36e3cdd1"
+                "url": "https://github.com/symfony/process.git",
+                "reference": "4a959dd4e19c2c5d7512689413921e0a74386ec7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/552d8efdc80980cbcca50b28d626ac8e36e3cdd1",
-                "reference": "552d8efdc80980cbcca50b28d626ac8e36e3cdd1",
+                "url": "https://api.github.com/repos/symfony/process/zipball/4a959dd4e19c2c5d7512689413921e0a74386ec7",
+                "reference": "4a959dd4e19c2c5d7512689413921e0a74386ec7",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -1315,27 +1548,24 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-23 14:47:27"
         },
         {
             "name": "symfony/property-access",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/PropertyAccess.git",
-                "reference": "c30871f355c311b33bd0b9be7d07514f920f2f8d"
+                "url": "https://github.com/symfony/property-access.git",
+                "reference": "368b784738fa932e6d86866038312b03e073a824"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/c30871f355c311b33bd0b9be7d07514f920f2f8d",
-                "reference": "c30871f355c311b33bd0b9be7d07514f920f2f8d",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/368b784738fa932e6d86866038312b03e073a824",
+                "reference": "368b784738fa932e6d86866038312b03e073a824",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -1375,27 +1605,24 @@
                 "property path",
                 "reflection"
             ],
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-23 14:47:27"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "c509921f260353bf07b257f84017777c8b0aa4bc"
+                "reference": "eb033050050916b6bfa51be71009ef67b16046c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/c509921f260353bf07b257f84017777c8b0aa4bc",
-                "reference": "c509921f260353bf07b257f84017777c8b0aa4bc",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/eb033050050916b6bfa51be71009ef67b16046c9",
+                "reference": "eb033050050916b6bfa51be71009ef67b16046c9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "suggest": {
                 "ext-symfony_debug": ""
@@ -1434,27 +1661,24 @@
                 "debug",
                 "dump"
             ],
-            "time": "2015-06-08 09:37:21"
+            "time": "2015-10-25 17:17:38"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.7.1",
+            "version": "v2.7.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Yaml.git",
-                "reference": "9808e75c609a14f6db02f70fccf4ca4aab53c160"
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "eca9019c88fbe250164affd107bc8057771f3f4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/9808e75c609a14f6db02f70fccf4ca4aab53c160",
-                "reference": "9808e75c609a14f6db02f70fccf4ca4aab53c160",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/eca9019c88fbe250164affd107bc8057771f3f4d",
+                "reference": "eca9019c88fbe250164affd107bc8057771f3f4d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9"
-            },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
             },
             "type": "library",
             "extra": {
@@ -1483,7 +1707,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-10 15:30:22"
+            "time": "2015-10-11 09:39:48"
         }
     ],
     "packages-dev": [],
