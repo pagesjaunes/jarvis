@@ -118,7 +118,7 @@
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
-            <argument>vm:service:stack-web:restart</argument>
+            <argument>vm:stack-web:restart</argument>
 
             <call method="setServicesName">
                 <argument type="collection">
