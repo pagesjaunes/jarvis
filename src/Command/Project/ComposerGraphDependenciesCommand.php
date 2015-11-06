@@ -22,6 +22,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Composer\DependencyAnalyzer;
 use Jarvis\Project\ProjectConfiguration;
+use Fhaculty\Graph\Exception\UnexpectedValueException;
 
 class ComposerGraphDependenciesCommand extends BaseBuildCommand
 {
