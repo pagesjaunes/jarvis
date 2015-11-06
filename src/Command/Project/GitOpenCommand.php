@@ -99,7 +99,7 @@ class GitOpenCommand extends BaseGitCommand
             $giturl = str_replace('.git', '', $giturl);
         }
 
-        $branchName = null == $this->branchName ?
+        $branchName = null === $this->branchName ?
             $this->getCurrentBranch($projectConfig)
             :
             $this->branchName;
