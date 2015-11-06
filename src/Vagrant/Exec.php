@@ -56,13 +56,16 @@ class Exec
      * Execute a command using vagrant.
      *
      * @param  string $commandLine
+     * @param  array $options
      *
      * @return array  The array will be filled with every line of output from the command
      */
-    public function exec($commandLine)
+    public function exec($commandLine, array $options = [])
     {
         $commandLine = sprintf('vagrant %s', escapeshellcmd($commandLine));
-
+        foreach ($options as $name => $value) {
+            $commandLine .= sprintf(' --%s=%s', $name, $value);
+        }
         $previousCwd = getcwd();
 
         $cwd = realpath($this->cwd);

@@ -17,12 +17,24 @@ set_time_limit(0);
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-//  It's use case should be a dist file in upstream repo, and an optional user file with always extends the dist.
-if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
-    system('composer install --optimize-autoloader --no-dev --no-interaction --ansi --no-progress');
+function includeIfExists($file)
+{
+    if (file_exists($file)) {
+        return include $file;
+    }
 }
 
-$loader = require __DIR__.'/../vendor/autoload.php';
+if (
+    (!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php'))
+    &&
+    (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))
+) {
+    die(
+        'You must set up the project dependencies, run the following commands:'.PHP_EOL.
+        'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
+        'php composer.phar install'.PHP_EOL
+    );
+}
 
 $input = new ArgvInput();
 $debug = getenv('JARVIS_CLI_DEBUG') === '1';

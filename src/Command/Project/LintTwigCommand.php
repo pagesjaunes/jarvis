@@ -50,7 +50,7 @@ class LintTwigCommand extends BaseSymfonyCommand
         $this->getSymfonyRemoteConsoleExec()->run(
             $projectConfig->getRemoteSymfonyConsolePath(),
             strtr(
-                'twig:lint %project_dir%/src',
+                'lint:twig %project_dir%/src',
                 [
                 '%project_dir%' => $projectConfig->getRemoteWebappDir(),
             ]),

@@ -21,8 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BlackfireInstallCommand extends BaseCommand
 {
-    use \Jarvis\Ssh\SshExecAwareTrait;
-
     /**
      * {@inheritdoc}
      */

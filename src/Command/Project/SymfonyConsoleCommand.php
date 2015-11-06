@@ -48,7 +48,12 @@ class SymfonyConsoleCommand extends BaseSymfonyCommand
         }
 
         if (!$this->getDefinition()->hasOption('project-name')) {
-            $this->addOption('project-name', null, InputOption::VALUE_OPTIONAL);
+            $this->addOption(
+                'project-name',
+                'p',
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'The project name or many project names'
+            );
         }
 
         $this->addOption('symfony-env', null, InputOption::VALUE_REQUIRED, 'The Symfony Environment name.', 'dev');
@@ -73,8 +78,6 @@ class SymfonyConsoleCommand extends BaseSymfonyCommand
     /**
      * @{inheritdoc}
      */
-    // protected function execute(InputInterface $input, OutputInterface $output)
-    // {
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         $commandLine = strtr(

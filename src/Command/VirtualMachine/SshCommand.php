@@ -15,17 +15,24 @@
 
 namespace Jarvis\Command\VirtualMachine;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RestartWebServicesCommand extends BaseCommand
+class SshCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setDescription('Restarts Nginx in virtual machine');
+        $this->setName('vm:ssh');
+        $this->setDescription('Connects to machine via SSH');
+
+        $this->addArgument('remote_command', InputArgument::OPTIONAL, 'Execute an SSH command directly');
+
+        $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Vagrant virtual machine name', 'default');
     }
 
     /**
@@ -33,19 +40,6 @@ class RestartWebServicesCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->executeCommand('vm:service', [
-            'service_name' => 'varnish',
-            'command_name' => 'restart'
-        ], $output);
-
-        $this->getApplication()->executeCommand('vm:service', [
-            'service_name' => 'php5-fpm',
-            'command_name' => 'restart'
-        ], $output);
-
-        $this->getApplication()->executeCommand('vm:service', [
-            'service_name' => 'nginx',
-            'command_name' => 'restart'
-        ], $output);
+        $this->getSshExec()->exec($input->getArgument('remote_command'));
     }
 }

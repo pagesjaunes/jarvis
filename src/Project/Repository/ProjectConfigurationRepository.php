@@ -19,6 +19,8 @@ use Jarvis\Project\ProjectConfiguration;
 
 interface ProjectConfigurationRepository
 {
+    public function count();
+
     public function has($projectName);
 
     public function find($projectName);

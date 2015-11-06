@@ -19,6 +19,8 @@ use Symfony\Component\Console\Command\Command;
 
 class BaseCommand extends Command
 {
+    use \Jarvis\Ssh\SshExecAwareTrait;
+
     /**
      * @var bool
      */

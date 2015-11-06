@@ -47,6 +47,21 @@ class RemoteFilesystem
     }
 
     /**
+     * Returns the home directory for ssh user.
+     *
+     * @return string
+     */
+    public function getHomeDirectory()
+    {
+        return strtr(
+            '/home/%ssh_username%',
+            [
+                '%ssh_username%' => $this->sshExec->getOption('ssh_user')
+            ]
+        );
+    }
+
+    /**
      * Checks the existence of files or directories.
      *
      * @param string|array|\Traversable $files A filename, an array of files, or a \Traversable instance to check
@@ -88,6 +103,8 @@ class RemoteFilesystem
 
     /**
      * @param  string $dir
+     *
+     * @return bool
      */
     public function remove($filepath)
     {
@@ -111,6 +128,8 @@ class RemoteFilesystem
 
     /**
      * @param  string $dir
+     *
+     * @return bool
      */
     public function mkdir($dir)
     {
@@ -173,6 +192,7 @@ class RemoteFilesystem
      * @param bool   $override   Whether to override an existing file or not
      *
      * @throws FileNotFoundException When originFile doesn't exist
+     *
      * @return exit code
      */
     public function copy($originFile, $targetFile, $override = false)
@@ -193,7 +213,78 @@ class RemoteFilesystem
             !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $originFile, $targetFile));
         }
 
-        return $this->sshExec->getLastReturnStatus() === 0;
+        return $this->sshExec->getLastReturnStatus();
+    }
+
+    /**
+     * Copies a file.
+     *
+     * This method only copies the file if the local file is newer than the target file.
+     *
+     *
+     * @param string $remoteFile The remote filename
+     * @param string $localFile The local filename
+     *
+     * @throws FileNotFoundException When localFile doesn't exist
+     *
+     * @return exit code
+     */
+    public function copyRemoteFileToLocal($remoteFile, $localFile)
+    {
+        if (!$this->isFileExist($remoteFile)) {
+            throw new FileNotFoundException(sprintf('Failed to copy "%s" because file does not exist.', $remoteFile), 0, null, $remoteFile);
+        }
+
+        $this->exec->run(strtr(
+            'scp -P %ssh_port% %ssh_identity_file_option% %ssh_username%@%ssh_host%:%remoteFile% %localFile%',
+            [
+                '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
+                '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
+                '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
+                '%remoteFile%' => $remoteFile,
+                '%localFile%' => $localFile,
+            ]
+        ));
+
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $remoteFile, $localFile));
+        }
+
+        return $this->exec->getLastReturnStatus();
+    }
+
+    /**
+     * Copies a file.
+     *
+     * This method only copies the file if the local file is newer than the target file.
+     *
+     * @param string $localFile The local filename
+     * @param string $remoteFile The remote filename
+     *
+     * @throws FileNotFoundException When localFile doesn't exist
+     *
+     * @return exit code
+     */
+    public function copyLocalFileToRemote($localFile, $remoteFile)
+    {
+        $this->exec->run(strtr(
+            'test -f %localFile% && scp -P %ssh_port% %ssh_identity_file_option% %localFile% %ssh_username%@%ssh_host%:%remoteFile%',
+            [
+                '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
+                '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
+                '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
+                '%localFile%' => $localFile,
+                '%remoteFile%' => $remoteFile
+            ]
+        ));
+
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf('Error copy %s to %s', $localFile, $remoteFile));
+        }
+
+        return $this->exec->getLastReturnStatus();
     }
 
     /**
@@ -211,19 +302,30 @@ class RemoteFilesystem
     public function syncRemoteToLocal($remoteDir, $localDir, $options = array())
     {
         $commandLine = strtr(
-            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
+            'rsync %delete% --recursive --checksum --compress %dry_run% %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
+                '%dry_run%' => isset($options['dry_run']) && $options['dry_run'] ? '--dry-run' : '',
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
                 '%extra_rsync_options%' => '--verbose --human-readable --progress',
                 '%remote_dir%' => $remoteDir,
                 '%local_dir%' => $localDir
             ]
         );
+        $this->exec->exec($commandLine);
 
-        return $this->exec->run($commandLine) == 0;
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf(
+                'Error sync remote to  %s to local %s',
+                $remoteDir,
+                $localDir
+            ));
+        }
+
+        return $this->exec->getLastReturnStatus();
     }
 
     /**
@@ -240,20 +342,29 @@ class RemoteFilesystem
      */
     public function syncLocalToRemote($localDir, $remoteDir, $options = array())
     {
-        $commandLine = strtr(
-            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port%\' %local_dir%/ %ssh_username%@%ssh_host%:%remote_dir%',
+        $this->exec->run(strtr(
+            'rsync %delete% --recursive --checksum --compress %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %local_dir%/ %ssh_username%@%ssh_host%:%remote_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
                 '%ssh_username%' => $this->sshExec->getOption('ssh_user'),
                 '%ssh_host%' => $this->sshExec->getOption('ssh_host'),
                 '%ssh_port%' => $this->sshExec->getOption('ssh_port'),
+                '%ssh_identity_file_option%' => $this->sshExec->getOption('ssh_identity_file') ? '-i '.$this->sshExec->getOption('ssh_identity_file') : '',
                 '%extra_rsync_options%' => '--verbose --human-readable --progress',
                 '%remote_dir%' => $remoteDir,
                 '%local_dir%' => $localDir
             ]
-        );
+        ));
 
-        return $this->exec->run($commandLine) == 0;
+        if ($this->exec->getLastReturnStatus() !== 0) {
+            !$this->logger ?: $this->logger->error(sprintf(
+                'Error sync local to  %s to remote %s',
+                $localDir,
+                $remoteDir
+            ));
+        }
+
+        return $this->exec->getLastReturnStatus();
     }
 
     /**

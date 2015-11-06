@@ -18,6 +18,7 @@
             <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG -->
             <parameter key="4" type="constant">Monolog\Logger::DEBUG</parameter>
         </parameter>
+        <parameter key="command.vm.php_tools" type="collection"></parameter>
     </parameters>
 
     <services>
@@ -127,5 +128,16 @@
             class="Jarvis\Console\Formatter\OutputFormatter"
             public="false"
         />
+
+        <service
+            id="php_tool.manager"
+            class="Jarvis\PhpTool\PhpToolManager"
+        >
+            <argument>%command.vm.php_tools%</argument>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
+            </call>
+        </service>
     </services>
 </container>

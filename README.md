@@ -15,6 +15,7 @@ What is it?
 The Jarvis simplifies the developing Symfony Application with vagrant virtual machine.
 
 Out of the box, the application can do many great things:
+
 **composer:**
 
 * composer:self-update
@@ -252,6 +253,23 @@ Alias
 Example:
 
 alias example-jarvis="/usr/local/bin/jarvis --working-dir=/path/to/projects/socle"
+
+Autocompletion
+--------------
+
+Enable auto completion of commands and options in the *~ / .bashrc* using the *core:autocomplete* command:
+
+Note that the argument to pass the *core:autocomplete* to specify which alias to enable autocompletion. In addition, the autocompletion is different depending on the working directory used.
+
+```bash
+source $(/usr/local/bin/jarvis core:autocomplete jarvis)
+```
+
+or
+
+```bash
+source $(/usr/local/bin/jarvis core:autocomplete --working-dir=/path/to/projects/socle example-jarvis)
+```
 
 License
 -------

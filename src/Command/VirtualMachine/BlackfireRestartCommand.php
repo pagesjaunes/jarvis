@@ -20,8 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BlackfireRestartCommand extends BaseCommand
 {
-    use \Jarvis\Ssh\SshExecAwareTrait;
-
     /**
      * {@inheritdoc}
      */

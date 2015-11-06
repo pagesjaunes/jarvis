@@ -48,7 +48,6 @@ class ComposerCommand extends BaseCommand
         parent::configure();
     }
 
-
     /**
      * @{inheritdoc}
      */
@@ -65,6 +64,7 @@ class ComposerCommand extends BaseCommand
             $this->commandOptions['no-dev'] = '--no-dev';
         }
     }
+
     /**
      * @{inheritdoc}
      */
@@ -95,10 +95,10 @@ class ComposerCommand extends BaseCommand
     }
 
     /**
-     * @param  ProjectConfiguration $projectConfig
-     * @param  OutputInterface      $output
+     * @param ProjectConfiguration $projectConfig
+     * @param OutputInterface      $output
      *
-     * @return integer Exit code
+     * @return int Exit code
      */
     protected function createRemoteVendorDir(ProjectConfiguration $projectConfig, OutputInterface $output)
     {
@@ -134,7 +134,7 @@ class ComposerCommand extends BaseCommand
             strtr(
                 'test -d %composer_vendor_dir% || mkdir -p %composer_vendor_dir%',
                 [
-                    '%composer_vendor_dir%' => $projectConfig->getRemoteVendorDir()
+                    '%composer_vendor_dir%' => $projectConfig->getRemoteVendorDir(),
                 ]
             )
         );
@@ -147,11 +147,11 @@ class ComposerCommand extends BaseCommand
     }
 
     /**
-     * @param  string               $commandName
-     * @param  ProjectConfiguration $projectConfig
-     * @param  OutputInterface      $output
+     * @param string               $commandName
+     * @param ProjectConfiguration $projectConfig
+     * @param OutputInterface      $output
      *
-     * @return integer Exit code
+     * @return int Exit code
      */
     protected function executeComposerCommandOnRemoteServer($commandName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
@@ -164,7 +164,7 @@ class ComposerCommand extends BaseCommand
                     '%COMPOSER_VENDOR_DIR%' => $projectConfig->getRemoteVendorDir(),
                     '%command_name%' => $commandName,
                     '%command_options%' => is_array($this->commandOptions) ? implode(' ', $this->commandOptions) : null,
-                    '%project_dir%' => $projectConfig->getRemoteWebappDir()
+                    '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]
             ),
             $output,
@@ -175,10 +175,10 @@ class ComposerCommand extends BaseCommand
     }
 
     /**
-     * @param  ProjectConfiguration $projectConfig
-     * @param  OutputInterface      $output
+     * @param ProjectConfiguration $projectConfig
+     * @param OutputInterface      $output
      *
-     * @return integer Exit code
+     * @return int Exit code
      */
     protected function synchronizeRemoteProjectVendorToLocal(ProjectConfiguration $projectConfig, OutputInterface $output)
     {

@@ -21,12 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ServiceCommand extends BaseCommand
 {
-    use \Jarvis\Ssh\SshExecAwareTrait;
-
     /**
      * @var string
      */
-    private $serviceName;
+    private $servicesName = [];
 
     /**
      * @var string
@@ -34,15 +32,29 @@ class ServiceCommand extends BaseCommand
     private $serviceCommandName;
 
     /**
-     * Sets the value of serviceName.
+     * Sets the value of servicesName.
      *
-     * @param string $serviceName the service name
+     * @param string $servicesName the service name
      *
      * @return self
      */
-    public function setServiceName($serviceName)
+    public function setServiceName($servicesName)
     {
-        $this->serviceName = $serviceName;
+        $this->servicesName = [$servicesName];
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of servicesName.
+     *
+     * @param array $servicesNames Many services names
+     *
+     * @return self
+     */
+    public function setServicesName(array $servicesNames)
+    {
+        $this->servicesName = $servicesNames;
 
         return $this;
     }
@@ -72,7 +84,7 @@ class ServiceCommand extends BaseCommand
             $this->addArgument(
                 'service_name',
                 InputArgument::REQUIRED,
-                'Service name'
+                'Service name or many service name separated by a comma (eg. nginx,php_fpm,varnish)'
             );
 
             $this->addArgument(
@@ -89,7 +101,7 @@ class ServiceCommand extends BaseCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         if ($input->hasArgument('service_name')) {
-            $this->serviceName = $input->getArgument('service_name');
+            $this->servicesName = array_map('trim', explode(',', $input->getArgument('service_name')));
         }
 
         if ($input->hasArgument('command_name')) {
@@ -102,50 +114,56 @@ class ServiceCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ('status' == $this->serviceCommandName) {
-            $this->getSshExec()->exec(
+        foreach ($this->servicesName as $serviceName) {
+            if ('status' == $this->serviceCommandName) {
+                $this->getSshExec()->exec(
+                    sprintf(
+                        'sudo service %s %s',
+                        $serviceName,
+                        $this->serviceCommandName
+                    )
+                );
+
+                return $this->getSshExec()->getLastReturnStatus();
+            }
+
+            $this->getSshExec()->run(
                 sprintf(
                     'sudo service %s %s',
-                    $this->serviceName,
+                    $serviceName,
                     $this->serviceCommandName
-                )
+                ),
+                $output
             );
 
-            return $this->getSshExec()->getLastReturnStatus();
-        }
-
-        $this->getSshExec()->run(
-            sprintf(
-                'sudo service %s %s',
-                $this->serviceName,
-                $this->serviceCommandName
-            ),
-            $output
-        );
-
-        if ($this->getSshExec()->getLastReturnStatus() == 0) { // EXIT_SUCCESS
-            switch ($this->serviceCommandName) {
-                case 'start':
-                    $output->writeln(sprintf(
-                        '<info>Service "<comment>%s</comment>" is started in virtual machine</info>',
-                        $this->serviceName
-                    ));
-                    break;
-                case 'stop':
-                    $output->writeln(sprintf(
-                        '<info>Service "<comment>%s</comment>" is stopped in virtual machine</info>',
-                        $this->serviceName
-                    ));
-                    break;
-                case 'restart':
-                    $output->writeln(sprintf(
-                        '<info>Service "<comment>%s</comment>" is restarted in virtual machine</info>',
-                        $this->serviceName
-                    ));
-                    break;
-                default:
-                    # code...
-                    break;
+            if ($this->getSshExec()->getLastReturnStatus() == 0) { // EXIT_SUCCESS
+                switch ($this->serviceCommandName) {
+                    case 'start':
+                        $output->writeln(sprintf(
+                            '<info>Service "<comment>%s</comment>" is started in virtual machine</info>',
+                            $serviceName
+                        ));
+                        break;
+                    case 'stop':
+                        $output->writeln(sprintf(
+                            '<info>Service "<comment>%s</comment>" is stopped in virtual machine</info>',
+                            $serviceName
+                        ));
+                        break;
+                    case 'restart':
+                        $output->writeln(sprintf(
+                            '<info>Service "<comment>%s</comment>" is restarted in virtual machine</info>',
+                            $serviceName
+                        ));
+                        break;
+                    default:
+                        $output->writeln(sprintf(
+                            '<info>The command <comment>%s</comment> is called for the service "<comment>%s</comment>" in virtual machine</info>',
+                            $this->serviceCommandName,
+                            $serviceName
+                        ));
+                        break;
+                }
             }
         }
 

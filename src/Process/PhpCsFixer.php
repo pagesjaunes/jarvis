@@ -61,11 +61,6 @@ class PhpCsFixer
         return $this;
     }
 
-    public function selfUpdate()
-    {
-        return $this->getSshExec()->exec('composer global require fabpot/php-cs-fixer squizlabs/php_codesniffer');
-    }
-
     public function fixRemoteDir($remoteDir, OutputInterface $output, array $options = [])
     {
         $resolver = new OptionsResolver();

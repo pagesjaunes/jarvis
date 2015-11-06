@@ -22,6 +22,15 @@ use Jarvis\Project\ProjectConfiguration;
 
 class PhpMetricsCommand extends BaseBuildCommand
 {
+    /**
+     * @var string
+     */
+    private $remoteBuildDir;
+
+    /**
+     * @var string
+     */
+    private $localBuildDir;
 
     /**
      * @{inheritdoc}
@@ -29,8 +38,6 @@ class PhpMetricsCommand extends BaseBuildCommand
     protected function configure()
     {
         $this->setDescription('Gives metrics about PHP project and classes for to one or all projects');
-
-        $this->addOption('self-update', null, InputOption::VALUE_NONE, 'Self update phpmetrics');
 
         parent::configure();
     }
@@ -40,9 +47,11 @@ class PhpMetricsCommand extends BaseBuildCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('self-update')) {
-            $this->getSshExec()->exec('composer global require halleck45/phpmetrics');
-        }
+        $this->remoteBuildDir = sprintf('%s/metrics', $this->getRemoteBuildDir());
+        $this->localBuildDir = sprintf('%s/metrics', $this->getLocalBuildDir());
+
+        $this->getRemoteFilesystem()->mkdir($this->remoteBuildDir);
+        $this->getLocalFilesystem()->mkdir($this->localBuildDir);
     }
 
     /**
@@ -50,37 +59,34 @@ class PhpMetricsCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $remoteBuildDir = sprintf('%s/metrics', $this->getRemoteBuildDir());
-        $localBuildDir = sprintf('%s/metrics', $this->getLocalBuildDir());
-
-        $reportFile = strtr('%build_dir%/phpmetrics/%project_name%.html', [
+        $remoteReportFilePath = strtr('%build_dir%/%project_name%.html', [
             '%project_name%' => $projectConfig->getProjectName(),
-            '%build_dir%' => $remoteBuildDir
+            '%build_dir%' => $this->remoteBuildDir
         ]);
 
-        $this->getSshExec()->run(
+        // Analyse source project code
+        $this->getSshExec()->exec(
             strtr(
-                'mkdir -p %build_dir% && php-metrics --level=0 --report-html=%report_file% %project_dir%/src'.($output->isDebug() ? ' --verbose' : ''),
+                'mkdir -p %build_dir% && /usr/local/bin/phpmetrics --level=0 --report-html=%report_file% %project_dir%/src'.($output->isDebug() ? ' --verbose' : ''),
                 [
-                    '%report_file%' => $reportFile,
-                    '%build_dir%' => $remoteBuildDir,
+                    '%report_file%' => $remoteReportFilePath,
+                    '%build_dir%' => $this->remoteBuildDir,
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]
-            ),
-            $output,
-            OutputInterface::VERBOSITY_NORMAL
+            )
         );
 
-        $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir, ['delete' => true]);
-
-        if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $reportFile = strtr('%build_dir%/phpmetrics/%project_name%.html', [
-                '%project_name%' => $projectConfig->getProjectName(),
-                '%build_dir%' => $localBuildDir
-            ]);
-            if (file_exists($reportFile)) {
-                $this->openFile($reportFile);
-            }
+        $localReportFilePath = str_replace(
+            $this->remoteBuildDir,
+            $this->localBuildDir,
+            $remoteReportFilePath
+        );
+        $this->getRemoteFilesystem()->copyRemoteFileToLocal(
+            $remoteReportFilePath,
+            $localReportFilePath
+        );
+        if ($this->getLocalFilesystem()->exists($localReportFilePath)) {
+            $this->openFile($localReportFilePath);
         }
 
         return $this->getSshExec()->getLastReturnStatus();

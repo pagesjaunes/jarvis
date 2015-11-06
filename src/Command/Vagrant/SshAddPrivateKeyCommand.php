@@ -18,18 +18,17 @@ namespace Jarvis\Command\Vagrant;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Jarvis\Vagrant\Configuration\SshConfiguration;
 
-class RestartCommand extends BaseCommand
+class SshAddPrivateKeyCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('vagrant:restart');
-        $this->setDescription('Restarts vagrant machine, loads new Vagrantfile configuration');
-
-        $this->addOption('provider', null, InputOption::VALUE_REQUIRED, 'Vagrant provider', 'virtualbox');
+        $this->setName('vagrant:ssh-add-private-key');
+        $this->setDescription('Add private ssh key');
         $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Vagrant virtual machine name', 'default');
     }
 
@@ -38,10 +37,18 @@ class RestartCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getApplication()->executeCommand('vagrant:stop', [], $output);
+        if (!$this->isVirtualMachineRunning($input->getOption('name'))) {
+            $output->writeln('<info>The virtual machine not already started</info>');
 
-        $this->getApplication()->executeCommand('vagrant:start', [
-            '--provider' => $input->getOption('provider'),
-        ], $output);
+            return;
+        }
+
+        $configuration = new SshConfiguration($this->getVagrantExec());
+        if ($configuration->has('IdentityFile')) {
+            $this->getExec()->run(sprintf(
+                'ssh-add %s',
+                $configuration->get('IdentityFile')
+            ), $output);
+        }
     }
 }

@@ -5,9 +5,14 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-
         <service
-            id="command.cache.clear"
+            id="command.core.version"
+            class="Jarvis\Command\Core\VersionCommand"
+        >
+            <tag name="console.command" />
+        </service>
+        <service
+            id="command.core.cache.clear"
             class="Jarvis\Command\Core\CacheClearCommand"
         >
             <call method="setContainer">
@@ -17,7 +22,7 @@
             <tag name="console.command" />
         </service>
         <service
-            id="command.container.debug"
+            id="command.core.container.debug"
             class="Jarvis\Command\Core\ContainerDebugCommand"
         >
             <call method="setContainer">
@@ -27,7 +32,7 @@
             <tag name="console.command" />
         </service>
         <service
-            id="command.container.self_update"
+            id="command.core.container.self_update"
             class="Jarvis\Command\Core\SelfUpdateCommand"
         >
             <call method="setPharUpdateManifestUrl">

@@ -29,7 +29,7 @@ class UpgradeCommand extends BaseCommand
         $this->setName('vagrant:upgrade');
         $this->setDescription('Updates the box that is in use in the current Vagrant environment.');
 
-        $this->addOption('provider', null, InputOption::VALUE_REQUIRED, 'Vagrant provider', 'virtualbox');
+        $this->addOption('provider', null, InputOption::VALUE_REQUIRED, 'Vagrant provider');
         $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Vagrant virtual machine name', 'default');
     }
 
@@ -40,18 +40,14 @@ class UpgradeCommand extends BaseCommand
     {
         $this->getApplication()->executeCommand('vagrant:stop', [], $output);
 
-        $this->getVagrantExec()->exec(sprintf(
-            'box update --provider=%s',
-            $input->getOption('provider')
-        ), $output);
+        $options = [];
+        if (null !== $input->getOption('provider')) {
+            $options['provider'] = $input->getOption('provider');
+        }
+        $this->getVagrantExec()->exec('box update', $options);
 
-        $this->getVagrantExec()->exec(sprintf(
-            'destroy --provider=%s',
-            $input->getOption('provider')
-        ), $output);
+        $this->getVagrantExec()->exec('destroy');
 
-        $this->getApplication()->executeCommand('vagrant:start', [
-            '--provider' => $input->getOption('provider'),
-        ], $output);
+        $this->getApplication()->executeCommand('vagrant:start', $options, $output);
     }
 }

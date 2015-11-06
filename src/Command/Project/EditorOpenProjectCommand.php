@@ -68,7 +68,7 @@ class EditorOpenProjectCommand extends BaseCommand
         $this->setDescription('Open project in editor');
 
         $this->addOption('editor', null, InputOption::VALUE_REQUIRED, 'Which editor to use', 'subl');
-        $this->addOption('force', null, InputOption::VALUE_NONE, 'Rewrites project config file');
+        $this->addOption('no-rewrite', null, InputOption::VALUE_NONE, 'No rewrites project config file');
 
         parent::configure();
     }
@@ -79,7 +79,7 @@ class EditorOpenProjectCommand extends BaseCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->editor = $input->getOption('editor');
-        $this->rewritesConfigFile = $input->getOption('force');
+        $this->rewritesConfigFile = !$input->getOption('no-rewrite');
     }
 
     /**

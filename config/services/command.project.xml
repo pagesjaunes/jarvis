@@ -41,7 +41,24 @@
             <argument>project:install-dependencies-and-assets</argument>
 
             <call method="setEnabled">
-                 <argument>%command.project.build.enabled%</argument>
+                 <argument>%command.project.enabled%</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+        <service
+            id="command.project.ssh"
+            class="Jarvis\Command\Project\SshCommand"
+            parent="command.project"
+        >
+            <argument>project:ssh</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.enabled%</argument>
+            </call>
+
+            <call method="setSshExec">
+                 <argument type="service" id="ssh.exec" />
             </call>
 
             <tag name="console.command" />

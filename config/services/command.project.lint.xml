@@ -72,12 +72,12 @@
         <service
             id="command.project.lint.scss"
             class="Jarvis\Command\Project\LintScssCommand"
-            parent="command.project"
+            parent="command.project.build"
         >
             <argument>project:lint:scss</argument>
 
-            <call method="setSshExec">
-                 <argument type="service" id="ssh.exec" />
+            <call method="setWorkingDir">
+                 <argument>%working_dir%</argument>
             </call>
 
             <call method="setEnabled">

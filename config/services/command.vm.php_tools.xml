@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="command.vm.php_tools.enabled">true</parameter>
+    </parameters>
+
+    <services>
+        <service
+            id="command.vm.php_tools.install"
+            class="Jarvis\Command\VirtualMachine\PhpToolsCommand"
+            parent="command.vm"
+        >
+            <argument>vm:php_tools:install</argument>
+
+            <call method="setAction">
+                <argument>install</argument>
+            </call>
+
+            <call method="setPhpToolManager">
+                 <argument type="service" id="php_tool.manager"/>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.php_tools.update"
+            class="Jarvis\Command\VirtualMachine\PhpToolsCommand"
+            parent="command.vm"
+        >
+            <argument>vm:php_tools:update</argument>
+
+            <call method="setAction">
+                <argument>update</argument>
+            </call>
+
+            <call method="setPhpToolManager">
+                 <argument type="service" id="php_tool.manager"/>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.php_tools.version"
+            class="Jarvis\Command\VirtualMachine\PhpToolsCommand"
+            parent="command.vm"
+        >
+            <argument>vm:php_tools:version</argument>
+
+            <call method="setAction">
+                <argument>version</argument>
+            </call>
+
+            <call method="setPhpToolManager">
+                 <argument type="service" id="php_tool.manager"/>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.php_tools.status"
+            class="Jarvis\Command\VirtualMachine\PhpToolsCommand"
+            parent="command.vm"
+        >
+            <argument>vm:php_tools:status</argument>
+
+            <call method="setAction">
+                <argument>status</argument>
+            </call>
+
+            <call method="setPhpToolManager">
+                 <argument type="service" id="php_tool.manager"/>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

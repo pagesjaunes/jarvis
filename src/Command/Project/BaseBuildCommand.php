@@ -17,13 +17,12 @@ namespace Jarvis\Command\Project;
 
 abstract class BaseBuildCommand extends BaseCommand
 {
-
-use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
+    use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
     use \Jarvis\Filesystem\RemoteFilesystemAwareTrait;
     use \Jarvis\Process\ExecAwareTrait;
     use \Jarvis\Ssh\SshExecAwareTrait;
 
-/**
+    /**
      * @var string
      */
     private $remoteBuildDir;
@@ -68,6 +67,10 @@ use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
      */
     public function getRemoteBuildDir()
     {
+        if (null === $this->remoteBuildDir) {
+            throw new \LogicException('Local build directory is not defined');
+        }
+
         return $this->remoteBuildDir;
     }
 
@@ -78,12 +81,16 @@ use \Jarvis\Filesystem\LocalFilesystemAwareTrait;
      */
     public function getLocalBuildDir()
     {
+        if (null === $this->localBuildDir) {
+            throw new \LogicException('Local build directory is not defined');
+        }
+
         return $this->localBuildDir;
     }
 
     public function openFile($filepath)
     {
-        $this->getExec()->passthru(strtr(
+        $this->getExec()->exec(strtr(
             'which xdg-open && xdg-open %file% || which open && open %file%',
             [
                 '%file%' => $filepath

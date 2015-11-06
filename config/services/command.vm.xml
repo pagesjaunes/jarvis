@@ -4,6 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <imports>
+        <import resource="services/command.vm.blackfire.xml"/>
+        <import resource="services/command.vm.php_tools.xml"/>
+    </imports>
+
     <parameters>
         <parameter key="command.vm.enabled">false</parameter>
     </parameters>
@@ -55,16 +60,7 @@
         </service>
 
         <service
-            id="command.vm.service.web_services"
-            class="Jarvis\Command\VirtualMachine\RestartWebServicesCommand"
-        >
-            <argument>vm:service:web-services:restart</argument>
-
-            <tag name="console.command" />
-        </service>
-
-        <service
-            id="command.vm.service.varnish"
+            id="command.vm.service.varnish.restart"
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
@@ -82,7 +78,7 @@
         </service>
 
         <service
-            id="command.vm.service.nginx"
+            id="command.vm.service.nginx.restart"
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
@@ -100,11 +96,11 @@
         </service>
 
         <service
-            id="command.vm.service.php_fpm"
+            id="command.vm.service.php_fpm.restart"
             class="Jarvis\Command\VirtualMachine\ServiceCommand"
             parent="command.vm"
         >
-            <argument>vm:service:php_fpm:restart</argument>
+            <argument>vm:service:php-fpm:restart</argument>
 
             <call method="setServiceName">
                 <argument>php5-fpm</argument>
@@ -116,5 +112,56 @@
 
             <tag name="console.command" />
         </service>
+
+        <service
+            id="command.vm.service.stack_web.restart"
+            class="Jarvis\Command\VirtualMachine\ServiceCommand"
+            parent="command.vm"
+        >
+            <argument>vm:stack-web:restart</argument>
+
+            <call method="setServicesName">
+                <argument type="collection">
+                    <argument>php5-fpm</argument>
+                    <argument>nginx</argument>
+                    <argument>varnish</argument>
+                </argument>
+            </call>
+
+            <call method="setServiceCommandName">
+                <argument>restart</argument>
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.ssh"
+            class="Jarvis\Command\VirtualMachine\SshCommand"
+            parent="command.vm"
+        >
+            <argument>vm:ssh</argument>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.vm.sync.remote_to_local"
+            class="Jarvis\Command\VirtualMachine\SyncRemoteToLocalCommand"
+            parent="command.vm"
+        >
+            <argument>vm:sync:remote_to_local</argument>
+
+            <call method="setLocalFilesystem">
+                 <argument type="service" id="local.filesystem" />
+            </call>
+
+            <call method="setRemoteFilesystem">
+                 <argument type="service" id="remote.filesystem" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
+
     </services>
 </container>
