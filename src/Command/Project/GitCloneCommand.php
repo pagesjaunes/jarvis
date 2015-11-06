@@ -67,21 +67,6 @@ class GitCloneCommand extends BaseGitCommand
     }
 
     /**
-     * @{inheritdoc}
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        if (false === $input->getOption('project-name')) {
-            $projectName = $this->askProjectName(
-                $output,
-                $this->getAllProjectNames(),
-                $this->getProjectNamesToExclude()
-            );
-        }
-    }
-
-
-    /**
      * {@inheritdoc}
      */
     public function isEnabled()

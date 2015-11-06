@@ -15,6 +15,7 @@
 
 namespace Jarvis\Command\Project;
 
+use Fhaculty\Graph\Exception\UnexpectedValueException;
 use Fhaculty\Graph\Graph;
 use Fhaculty\Graph\GraphViz;
 use Symfony\Component\Console\Input\InputInterface;
