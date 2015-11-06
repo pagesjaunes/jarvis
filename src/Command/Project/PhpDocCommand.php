@@ -16,13 +16,12 @@
 namespace Jarvis\Command\Project;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Jarvis\Project\ProjectConfiguration;
 
 class PhpDocCommand extends BaseBuildCommand
 {
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -32,7 +31,7 @@ class PhpDocCommand extends BaseBuildCommand
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
@@ -58,7 +57,7 @@ class PhpDocCommand extends BaseBuildCommand
             '%build_dir%/index.html',
             [
                 '%project_name%' => $projectConfig->getProjectName(),
-                '%build_dir%' => $localBuildDir
+                '%build_dir%' => $localBuildDir,
             ]
         );
 

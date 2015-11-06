@@ -15,6 +15,7 @@
 
 namespace Jarvis\Command\Project;
 
+use Fhaculty\Graph\Exception\UnexpectedValueException;
 use Fhaculty\Graph\Graph;
 use Fhaculty\Graph\GraphViz;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +23,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Composer\DependencyAnalyzer;
 use Jarvis\Project\ProjectConfiguration;
-use Fhaculty\Graph\Exception\UnexpectedValueException;
 
 class ComposerGraphDependenciesCommand extends BaseBuildCommand
 {
