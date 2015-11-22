@@ -285,6 +285,8 @@ You can contribute in one of three ways:
 - Answer questions or fix bugs on the issue tracker.
 - Contribute new features or update the wiki.
 
+All pull requests should be made to the develop branch, so they can be tested before being merged into the master branch.
+
 The code contribution process is not very formal. You just need to make sure that you follow the symfony coding guidelines. Any new code contributions must be accompanied by unit tests where applicable.
 
 Builds Statuses
