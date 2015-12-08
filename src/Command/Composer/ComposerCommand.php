@@ -129,6 +129,7 @@ class ComposerCommand extends Command
                 case 'working-dir':
                 case 'project-name':
                 case 'cache-dir':
+                case 'jarvis-extension-autoload-dir':
                     break;
                 default:
                     if ($value === true) {
