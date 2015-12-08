@@ -34,6 +34,8 @@
         >
             <argument>project:git:clone</argument>
 
+            <call method="setDescription"><argument>Clones to one or all projects (git clone, updates, removes or installs all the dependencies and build assets)</argument></call>
+
             <call method="setComposerInstallCommand">
                 <argument type="service" id="command.project.composer.install" />
             </call>
@@ -47,10 +49,13 @@
 
         <service
             id="command.project.git.status"
-            class="Jarvis\Command\Project\GitStatusCommand"
+            class="Jarvis\Command\Project\BaseGitCommand"
             parent="command.project.git"
         >
             <argument>project:git:status</argument>
+            <call method="setDescription"><argument>Git status for to one or all projects</argument></call>
+            <call method="setGitCommand"><argument>status</argument></call>
+            <call method="enableColorsConsoleOutput" />
 
             <tag name="console.command" />
         </service>
@@ -61,6 +66,8 @@
             parent="command.project.git"
         >
             <argument>project:git:log</argument>
+
+            <call method="setDescription"><argument>Git log for to one or all projects</argument></call>
 
             <tag name="console.command" />
         </service>
@@ -77,10 +84,13 @@
 
         <service
             id="command.project.git.mergetool"
-            class="Jarvis\Command\Project\GitMergeToolCommand"
+            class="Jarvis\Command\Project\BaseGitCommand"
             parent="command.project.git"
         >
             <argument>project:git:mergetool</argument>
+            <call method="setGitCommand"><argument>mergetool</argument></call>
+
+            <call method="setDescription"><argument>Run merge conflict resolution tools to resolve merge conflicts</argument></call>
 
             <tag name="console.command" />
         </service>
@@ -155,20 +165,24 @@
 
         <service
             id="command.project.git.commit"
-            class="Jarvis\Command\Project\GitCommitCommand"
+            class="Jarvis\Command\Project\BaseGitCommand"
             parent="command.project.git"
         >
             <argument>project:git:commit</argument>
+            <call method="setDescription"><argument>Git commit to one or all projects with show diff in commit message template</argument></call>
+            <call method="setGitCommand"><argument>commit -v</argument></call>
 
             <tag name="console.command" />
         </service>
 
         <service
             id="command.project.git.push"
-            class="Jarvis\Command\Project\GitPushCommand"
+            class="Jarvis\Command\Project\BaseGitCommand"
             parent="command.project.git"
         >
             <argument>project:git:push</argument>
+            <call method="setDescription"><argument>Git push for to one or all projects</argument></call>
+            <call method="setGitCommand"><argument>push</argument></call>
 
             <tag name="console.command" />
         </service>
@@ -196,6 +210,19 @@
             parent="command.project.git"
         >
             <argument>project:git:summary</argument>
+
+            <tag name="console.command" />
+        </service>
+
+        <service
+            id="command.project.git.diff"
+            class="Jarvis\Command\Project\BaseGitCommand"
+            parent="command.project.git"
+        >
+            <argument>project:git:diff</argument>
+            <call method="setDescription"><argument>Git diff for to one or all projects</argument></call>
+            <call method="setGitCommand"><argument>diff</argument></call>
+            <call method="enableColorsConsoleOutput" />
 
             <tag name="console.command" />
         </service>

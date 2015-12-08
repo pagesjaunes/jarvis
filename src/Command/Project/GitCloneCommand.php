@@ -59,16 +59,6 @@ class GitCloneCommand extends BaseGitCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this->setDescription('Clones to one or all projects (git clone, updates, removes or installs all the dependencies and build assets)');
-
-        parent::configure();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function isEnabled()
     {
         return $this->enabled && count($this->getProjectConfigurationRepository()->getProjectNames());

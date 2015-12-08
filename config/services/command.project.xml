@@ -10,6 +10,25 @@
 
     <services>
         <service
+            id="project_configuration.factory"
+            class="Jarvis\Project\ProjectConfigurationFactory"
+        >
+            <argument>%local_projects_root_dir%</argument>
+            <argument>%remote_projects_root_dir%</argument>
+            <argument>%local_vendor_root_dir%</argument>
+            <argument>%local_cdn_root_dir%</argument>
+            <argument>%remote_vendor_root_dir%</argument>
+        </service>
+
+        <service
+            id="repository.project_configuration"
+            class="Jarvis\Project\Repository\JsonProjectConfigurationRepository"
+        >
+            <argument>%projects_config_file_path%</argument>
+            <argument type="service" id="project_configuration.factory" />
+        </service>
+
+        <service
             id="command.project.list"
             class="Jarvis\Command\Project\ListCommand"
         >
@@ -59,6 +78,19 @@
 
             <call method="setSshExec">
                  <argument type="service" id="ssh.exec" />
+            </call>
+
+            <tag name="console.command" />
+        </service>
+        <service
+            id="command.project.config.show_local_directory"
+            class="Jarvis\Command\Project\ShowLocalDirectoryCommand"
+            parent="command.project"
+        >
+            <argument>project:directory</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.enabled%</argument>
             </call>
 
             <tag name="console.command" />

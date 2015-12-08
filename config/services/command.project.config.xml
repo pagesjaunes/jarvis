@@ -7,34 +7,14 @@
     <services>
 
         <service
-            id="project_configuration.factory"
-            class="Jarvis\Project\ProjectConfigurationFactory"
-        >
-            <argument>%local_projects_root_dir%</argument>
-            <argument>%remote_projects_root_dir%</argument>
-            <argument>%local_vendor_root_dir%</argument>
-            <argument>%local_cdn_root_dir%</argument>
-            <argument>%remote_vendor_root_dir%</argument>
-        </service>
-
-        <service
-            id="local.filesystem"
-            class="Symfony\Component\Filesystem\Filesystem"
-        />
-
-        <service
-            id="repository.project_configuration"
-            class="Jarvis\Project\Repository\JsonProjectConfigurationRepository"
-        >
-            <argument>%projects_config_file_path%</argument>
-            <argument type="service" id="project_configuration.factory" />
-        </service>
-
-        <service
             id="command.project.config.add"
             class="Jarvis\Command\Project\ConfigAddCommand"
         >
             <argument>project:config:add</argument>
+
+            <call method="setEnabled">
+                 <argument>%command.project.enabled%</argument>
+            </call>
 
             <call method="setProjectConfigurationRepository">
                  <argument type="service" id="repository.project_configuration" />
@@ -50,11 +30,12 @@
         <service
             id="command.project.config.show"
             class="Jarvis\Command\Project\ConfigShowCommand"
+            parent="command.project"
         >
             <argument>project:config:show</argument>
 
-            <call method="setProjectConfigurationRepository">
-                 <argument type="service" id="repository.project_configuration" />
+            <call method="setEnabled">
+                 <argument>%command.project.enabled%</argument>
             </call>
 
             <tag name="console.command" />

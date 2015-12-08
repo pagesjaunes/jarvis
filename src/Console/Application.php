@@ -174,6 +174,7 @@ class Application extends BaseApplication
         $definition->addOption(new InputOption('--profile', null, InputOption::VALUE_NONE, 'Display timing and memory usage information'));
         $definition->addOption(new InputOption('--working-dir', '-d', InputOption::VALUE_REQUIRED, 'If specified, use the given directory as working directory.'));
         $definition->addOption(new InputOption('--cache-dir', null, InputOption::VALUE_REQUIRED, 'If specified, use the given directory as cache directory for service container.'));
+        $definition->addOption(new InputOption('--jarvis-extension-autoload-dir', null, InputOption::VALUE_REQUIRED, 'If specified, use the given directory as Jarvis extension directory for autoload new commands classes outside Jarvis project.'));
 
         return $definition;
     }

@@ -70,10 +70,21 @@ if (!is_writable($containerCacheDir)) {
     exit(1);
 }
 
-$workingJarvisDir = $workingDir.'/jarvis';
-if (file_exists($workingJarvisDir.'/autoload.json')) {
+$autoloadJarvisExtensionDir = $input->getParameterOption(['--jarvis-extension-autoload-dir', '-d']);
+if (empty($autoloadJarvisExtensionDir)) {
+    $autoloadJarvisExtensionDir = $workingDir.'/jarvis';
+}
+if (file_exists($autoloadJarvisExtensionDir.'/autoload.json')) {
+    /**
+     * Example autoload.json file content:
+     * {
+     *     "psr4": {
+     *         "PagesJaunes\\": "src/PagesJaunes"
+     *     }
+     * }
+     */
     $config = \json_decode(
-        \file_get_contents($workingJarvisDir.'/autoload.json'),
+        \file_get_contents($autoloadJarvisExtensionDir.'/autoload.json'),
         true
     );
 
@@ -82,7 +93,7 @@ if (file_exists($workingJarvisDir.'/autoload.json')) {
     if (isset($config['psr0'])) {
         foreach ($config['psr0'] as $namespace => $rootPath) {
             if (strpos($rootPath, '/') !== 0) {
-                $rootPath = $workingJarvisDir.'/'.$rootPath;
+                $rootPath = $autoloadJarvisExtensionDir.'/'.$rootPath;
             }
             $loader->set($namespace, [$rootPath]);
             foreach ($classMap as $classNamespace => $classPath) {
@@ -96,7 +107,7 @@ if (file_exists($workingJarvisDir.'/autoload.json')) {
     if (isset($config['psr4'])) {
         foreach ($config['psr4'] as $namespace => $rootPath) {
             if (strpos($rootPath, '/') !== 0) {
-                $rootPath = $workingJarvisDir.'/'.$rootPath;
+                $rootPath = $autoloadJarvisExtensionDir.'/'.$rootPath;
             }
             $loader->setPsr4($namespace, [$rootPath]);
             foreach ($classMap as $classNamespace => $classPath) {

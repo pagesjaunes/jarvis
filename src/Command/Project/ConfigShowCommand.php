@@ -2,7 +2,6 @@
 
 namespace Jarvis\Command\Project;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,7 +13,7 @@ use Jarvis\Command\Project\AskProjectNameTrait;
 use Jarvis\Project\ProjectConfiguration;
 use Jarvis\Project\Repository\ProjectConfigurationRepositoryAwareTrait;
 
-class ConfigShowCommand extends Command
+class ConfigShowCommand extends BaseCommand
 {
     use ProjectConfigurationRepositoryAwareTrait;
 
@@ -27,41 +26,23 @@ class ConfigShowCommand extends Command
     {
         $this->setDescription('Add project in configuration');
 
-        $this->addArgument('project_name', InputArgument::OPTIONAL, 'Project name');
+        parent::configure();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getProjectNamesToExclude()
     {
         return [];
     }
 
     /**
-     * Gets all project names configured
+     * {@inheritdoc}
      */
-    protected function getAllProjectNames()
-    {
-        return $this->getProjectConfigurationRepository()->getProjectNames();
-    }
-
-    /**
-     * @{inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         $accessor = PropertyAccess::createPropertyAccessor();
-
-        $projectName = $input->getArgument('project_name') ?
-            $input->getArgument('project_name')
-            :
-            $this->askProjectName($output, $this->getAllProjectNames(), $this->getProjectNamesToExclude())
-        ;
-
-        $config = $this->getProjectConfigurationRepository()->find($projectName);
-
-        if (!$config) {
-            $output->writeln(sprintf('<error>No project is found for name %s</error>', $input->getArgument('project_name')));
-            return 1;
-        }
 
         foreach ([
             'project_name',
@@ -76,7 +57,7 @@ class ConfigShowCommand extends Command
             'remote_symfony_console_path',
             'remote_phpunit_configuration_xml_path',
         ] as $propertyPath) {
-            $propertyValue = $accessor->getValue($config, $propertyPath);
+            $propertyValue = $accessor->getValue($projectConfig, $propertyPath);
             if (null !== $propertyValue) {
                 $output->writeln(sprintf(
                     '<comment>%s: <info>%s</info></comment>',
@@ -85,10 +66,5 @@ class ConfigShowCommand extends Command
                 ));
             }
         }
-    }
-
-    protected function getProjectNamesToExclud()
-    {
-        return $this->getProjectConfigurationRepository()->getProjectAlreadyInstalledNames();
     }
 }

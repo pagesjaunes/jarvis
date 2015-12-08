@@ -15,9 +15,32 @@ class ConfigAddCommand extends Command
     use ProjectConfigurationRepositoryAwareTrait;
 
     /**
+     * @var bool
+     */
+    protected $enabled = false;
+
+    /**
      * @var ProjectConfigurationFactory
      */
     private $projectConfigurationFactory;
+
+    /**
+     * @param bool $bool
+     */
+    public function setEnabled($bool)
+    {
+        $this->enabled = $bool;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabled()
+    {
+        return $this->enabled && count($this->getProjectConfigurationRepository()->getProjectInstalledNames());
+    }
 
     /**
      * Sets the value of projectConfigurationFactory.

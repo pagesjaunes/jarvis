@@ -23,32 +23,10 @@ class GitLogCommand extends BaseGitCommand
     /**
      * @{inheritdoc}
      */
-    protected function configure()
-    {
-        $this->setDescription('Git log for to one or all projects');
-
-        parent::configure();
-    }
-
-    /**
-     * @{inheritdoc}
-     */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $output->writeln(
-            sprintf(
-                '<comment>Git log for project "<info>%s</info>"</comment>',
-                $projectName
-            )
-        );
+        $this->gitCommand = 'log --graph --pretty=tformat:\'%Cred%h%Creset -%C(cyan)%d %Creset%s %Cgreen(%an %cr)%Creset\' --abbrev-commit --date=relative';
 
-        if (!is_dir($projectConfig->getLocalGitRepositoryDir())) {
-            throw new \RuntimeException(sprintf('The directory "%s" does not exist', $projectConfig->getLocalGitRepositoryDir()));
-        }
-
-        $this->getExec()->passthru(
-            'git log --graph --pretty=tformat:\'%Cred%h%Creset -%C(cyan)%d %Creset%s %Cgreen(%an %cr)%Creset\' --abbrev-commit --date=relative',
-            $projectConfig->getLocalGitRepositoryDir()
-        );
+        parent::executeCommandByProject($projectName, $projectConfig, $output);
     }
 }
