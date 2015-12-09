@@ -23,9 +23,9 @@ use Jarvis\Project\ProjectConfiguration;
 class InstallDependenciesAndAssetsCommand extends BaseCommand
 {
     /**
-     * @var string
+     * @var array
      */
-    private $symfonyEnv;
+    private $symfonyEnvs;
 
     /**
      * @{inheritdoc}
@@ -34,7 +34,13 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
     {
         $this->setDescription('Install dependencies with composer and build assets.');
 
-        $this->addOption('--symfony-env', null, InputOption::VALUE_REQUIRED, 'The Symfony Environment name.', 'dev');
+        $this->addOption(
+            '--symfony-env',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'The Symfony Environment name.',
+            ['dev']
+        );
 
         parent::configure();
     }
@@ -44,7 +50,7 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->symfonyEnv = $input->getOption('symfony-env');
+        $this->symfonyEnvs = $input->getOption('symfony-env');
     }
 
     /**
@@ -52,45 +58,50 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $returnStatus = $this->composerInstall($projectName, $output);
+        $returnStatus = 0;
+        foreach ($this->symfonyEnvs as $symfonyEnv) {
+            $returnStatus = $this->composerInstall($projectName, $symfonyEnv, $output);
 
-        if (0 == $returnStatus) {
-            $returnStatus = $this->cacheWarmup($projectName, $output);
-        }
+            if (0 == $returnStatus) {
+                $returnStatus = $this->cacheWarmup($projectName, $symfonyEnv, $output);
+            }
 
-        if (0 == $returnStatus) {
-            $returnStatus = $this->buildAssets($projectName, $output);
+            if (0 == $returnStatus) {
+                $returnStatus = $this->buildAssets($projectName, $symfonyEnv, $output);
+            }
         }
 
         return $returnStatus;
     }
 
-    protected function composerInstall($projectName, OutputInterface $output)
+    protected function composerInstall($projectName, $symfonyEnv, OutputInterface $output)
     {
         $parameters = [
             '--project-name' => $projectName
         ];
-        if ($this->symfonyEnv == 'prod') {
+
+        if ($symfonyEnv == 'prod') {
             $parameters['--optimize-autoloader'] = true;
             $parameters['--prefer-dist'] = true;
             $parameters['--no-dev'] = true;
         }
-        $this->getApplication()->executeCommand('project:composer:install', $parameters, $output);
+
+        return $this->getApplication()->executeCommand('project:composer:install', $parameters, $output);
     }
 
-    protected function cacheWarmup($projectName, OutputInterface $output)
+    protected function cacheWarmup($projectName, $symfonyEnv, OutputInterface $output)
     {
         return $this->getApplication()->executeCommand('project:symfony:cache:warmup', [
             '--project-name' => $projectName,
-            '--symfony-env' => $this->symfonyEnv,
+            '--symfony-env' => $symfonyEnv,
         ], $output);
     }
 
-    protected function buildAssets($projectName, OutputInterface $output)
+    protected function buildAssets($projectName, $symfonyEnv, OutputInterface $output)
     {
         return $this->getApplication()->executeCommand('project:assets:build', [
             '--project-name' => $projectName,
-            '--symfony-env' => $this->symfonyEnv,
+            '--symfony-env' => $symfonyEnv,
         ], $output);
     }
 }

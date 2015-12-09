@@ -152,6 +152,11 @@ class GitHookPreCommitCommand extends BaseCommand
             $exitCodeStatus = $this->checkPhpCodeStyle($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
         }
 
+
+        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
+            $exitCodeStatus = $this->checkPhp7Compatibility($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
+        }
+
         if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
             $exitCodeStatus = $this->unitTests($projectConfig, $output);
         }
@@ -201,7 +206,7 @@ class GitHookPreCommitCommand extends BaseCommand
         $this->getRemoteFilesystem()->mkdir($remoteDir);
     }
 
-    protected function synchronizeLocalStagingAreaToRemote($localDir, $remoteDir = null, OutputInterface $output)
+    protected function synchronizeLocalStagingAreaToRemote($localDir, $remoteDir, OutputInterface $output)
     {
         if ($output->isDebug()) {
             $output->writeln(sprintf(
@@ -219,7 +224,7 @@ class GitHookPreCommitCommand extends BaseCommand
         );
     }
 
-    protected function removeTemporaryStagingAreaDirectory($localDir, $remoteDir = null, OutputInterface $output)
+    protected function removeTemporaryStagingAreaDirectory($localDir, $remoteDir, OutputInterface $output)
     {
         if ($output->isDebug()) {
             $output->writeln(sprintf(
@@ -284,25 +289,25 @@ class GitHookPreCommitCommand extends BaseCommand
                     continue;
                 }
 
-            // Copy contents of staged version of files to temporary staging area
-            // because we only want the staged version that will be commited and not
-            // the version in the working directory
-            $targetFile = sprintf('%s/%s', $tmpStaging, $filepath);
+                // Copy contents of staged version of files to temporary staging area
+                // because we only want the staged version that will be commited and not
+                // the version in the working directory
+                $targetFile = sprintf('%s/%s', $tmpStaging, $filepath);
 
                 $this->getLocalFilesystem()->mkdir(dirname($targetFile));
 
                 $this->getExec()->run(
-                strtr(
-                    'git cat-file blob %sha% > "%file%"',
-                    [
-                        '%sha%' => $sha,
-                        '%dir%' => dirname($targetFile),
-                        '%file%' => $targetFile
-                    ]
-                ),
-                $output,
-                $projectConfig->getLocalGitRepositoryDir()
-            );
+                    strtr(
+                        'git cat-file blob %sha% > "%file%"',
+                        [
+                            '%sha%' => $sha,
+                            '%dir%' => dirname($targetFile),
+                            '%file%' => $targetFile
+                        ]
+                    ),
+                    $output,
+                    $projectConfig->getLocalGitRepositoryDir()
+                );
 
                 $files[] = $filepath;
             }
@@ -348,6 +353,7 @@ class GitHookPreCommitCommand extends BaseCommand
 
         return 0;
     }
+
 
     protected function validatePhpSyntaxCheck(array $files, $remoteTmpStaging, $projectName, OutputInterface $output)
     {
@@ -397,7 +403,8 @@ class GitHookPreCommitCommand extends BaseCommand
                 'yaml:lint %dir%',
                 [
                 '%dir%' => $remoteTmpStaging
-            ]),
+                ]
+            ),
             'dev'
         );
         $report = ob_get_clean();
@@ -431,7 +438,8 @@ class GitHookPreCommitCommand extends BaseCommand
                 'twig:lint %dir%', // TODO: manage symfony version >= 2.7 lint:twig
                 [
                 '%dir%' => $remoteTmpStaging
-            ]),
+                ]
+            ),
             'dev'
         );
         $report = ob_get_clean();
@@ -502,6 +510,32 @@ class GitHookPreCommitCommand extends BaseCommand
                 'dry-run' => true
             ]
         );
+    }
+
+    protected function checkPhp7Compatibility(array $files, $remoteTmpStaging, $projectName, OutputInterface $output)
+    {
+        $output->writeln(sprintf(
+            '<comment>%s for project "<info>%s</info>"</comment>',
+            'Checking PHP 7 compatibility',
+            $projectName
+        ));
+
+        ob_start();
+        $this->getSshExec()->exec(
+            strtr(
+                'php7cc %dir%',
+                [
+                    '%dir%' => $remoteTmpStaging,
+                ]
+            )
+        );
+        $report = ob_get_clean();
+        $output->write($report, false, OutputInterface::OUTPUT_RAW);
+        if (false !== strpos($report, 'File:')) {
+            return static::EXIT_ERROR;
+        }
+
+        return $this->getSshExec()->getLastReturnStatus();
     }
 
     protected function unitTests(ProjectConfiguration $projectConfig, OutputInterface $output)

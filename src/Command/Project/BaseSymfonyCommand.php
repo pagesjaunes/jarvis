@@ -25,16 +25,16 @@ abstract class BaseSymfonyCommand extends BaseCommand
     use \Jarvis\Symfony\RemoteConsoleExecAwareTrait;
 
     /**
-     * @var string
+     * @var array
      */
-    private $symfonyEnv;
+    private $symfonyEnvs;
 
     /**
      * @{inheritdoc}
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->symfonyEnv = $input->getOption('symfony-env');
+        $this->symfonyEnvs = $input->getOption('symfony-env');
     }
 
     /**
@@ -42,17 +42,23 @@ abstract class BaseSymfonyCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->addOption('--symfony-env', null, InputOption::VALUE_REQUIRED, 'The Symfony Environment name.', 'dev');
+        $this->addOption(
+            '--symfony-env',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'The Symfony Environment name.',
+            ['dev']
+        );
 
         parent::configure();
     }
 
-    protected function getSymfonyEnv()
+    protected function getSymfonyEnvs()
     {
-        return $this->symfonyEnv;
+        return $this->symfonyEnvs;
     }
 
-    protected function getSymfonyCommandArguments($input)
+    protected function getSymfonyCommandArguments(InputInterface $input)
     {
         $commandArguments = [];
         foreach ($input->getArguments() as $name => $value) {
@@ -68,9 +74,10 @@ abstract class BaseSymfonyCommand extends BaseCommand
         return $commandArguments;
     }
 
-    protected function getSymfonyCommandOptions($input)
+    protected function getSymfonyCommandOptions(InputInterface $input)
     {
         $commandOptions = [];
+
         foreach ($input->getOptions() as $name => $value) {
             if ($value === false) {
                 continue;

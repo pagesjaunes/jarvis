@@ -87,6 +87,10 @@ parameters:
             url: 'https://github.com/Halleck45/PhpMetrics/raw/master/build/phpmetrics.phar'
             dest: '/usr/local/bin/phpmetrics'
             version_option: '--version'
+        php7_compatibility_checker:
+            url: 'https://github.com/sstalle/php7cc/releases/download/1.0.1/php7cc.phar'
+            dest: '/usr/local/bin/php7cc'
+            version_option: '--version'
 
     command.project.enabled: true
     command.editor.enabled: true

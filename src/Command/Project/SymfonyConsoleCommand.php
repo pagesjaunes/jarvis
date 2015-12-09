@@ -56,7 +56,13 @@ class SymfonyConsoleCommand extends BaseSymfonyCommand
             );
         }
 
-        $this->addOption('symfony-env', null, InputOption::VALUE_REQUIRED, 'The Symfony Environment name.', 'dev');
+        $this->addOption(
+            '--symfony-env',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'The Symfony Environment name.',
+            ['dev']
+        );
     }
 
     /**
@@ -80,22 +86,30 @@ class SymfonyConsoleCommand extends BaseSymfonyCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $commandLine = strtr(
-            '%command_name% %command_arguments% %command_options%',
-            [
-                '%command_name%' => $this->symfonyCommandName,
-                '%command_arguments%' => implode(' ', $this->symfonyCommandArguments),
-                '%command_options%' => implode(' ', $this->symfonyCommandOptions),
-            ]
-        );
+        $returnStatus = 0;
 
-        $this->getSymfonyRemoteConsoleExec()->exec(
-            $projectConfig->getRemoteSymfonyConsolePath(),
-            $commandLine,
-            $this->getSymfonyEnv(),
-            $output->getVerbosity()
-        );
+        foreach ($this->getSymfonyEnvs() as $symfonyEnv) {
+            $commandLine = strtr(
+                '%command_name% %command_arguments% %command_options%',
+                [
+                    '%command_name%' => $this->symfonyCommandName,
+                    '%command_arguments%' => implode(' ', $this->symfonyCommandArguments),
+                    '%command_options%' => implode(' ', $this->symfonyCommandOptions),
+                ]
+            );
 
-        return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+            $this->getSymfonyRemoteConsoleExec()->exec(
+                $projectConfig->getRemoteSymfonyConsolePath(),
+                $commandLine,
+                $symfonyEnv,
+                $output->getVerbosity()
+            );
+
+            if (0 == $returnStatus) {
+                $returnStatus = $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+            }
+        }
+
+        return $returnStatus;
     }
 }

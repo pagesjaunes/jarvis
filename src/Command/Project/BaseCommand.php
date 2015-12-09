@@ -28,7 +28,7 @@ abstract class BaseCommand extends Command
     use AskProjectNameTrait;
 
     const EXIT_SUCCESS = 0;
-    const EXIT_ERROR = 0;
+    const EXIT_ERROR = 1;
 
     /**
      * @var bool
