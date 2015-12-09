@@ -1,56 +1,62 @@
 [
-    {
-        "name": "jarvis.phar",
-        "sha1": "63ec2ae5762d1da1b4bbff39eea8a1a5b6f53e51",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.3/jarvis.phar",
-        "version": "0.1.3"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "4093a7e82555e71f3fa0333018ca4b9ed61ba7c2",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.4/jarvis.phar",
-        "version": "0.1.4"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "87c2dcf4a3e61c6d5ef615cde8fc88920951b6bb",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.5/jarvis.phar",
-        "version": "0.1.5"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "bac4b3c3ae33826ffa48024ee9a19fa88242d21c",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.6/jarvis.phar",
-        "version": "0.1.6"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "54affc97fec06157c08cdd76ba14e946b304e3db",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.7/jarvis.phar",
-        "version": "0.1.7"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "a906f2aeef26a96858b0c88808460c4c9ab82847",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.8/jarvis.phar",
-        "version": "0.1.8"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "9bd9132ca3ad4cf15a8702e81036f01f768ff9b2",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.9/jarvis.phar",
-        "version": "0.1.9"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "63de256553fc9331f40acbe096bd752450fb061b",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.2.0/jarvis.phar",
-        "version": "0.2.0"
-    },
-    {
-        "name": "jarvis.phar",
-        "sha1": "43dba90004c4f45d14cab3f187c4176b16277c9d",
-        "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.3.0/jarvis.phar",
-        "version": "0.3.0"
-    }
+  {
+    "name": "jarvis.phar",
+    "sha1": "63ec2ae5762d1da1b4bbff39eea8a1a5b6f53e51",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.3/jarvis.phar",
+    "version": "0.1.3"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "4093a7e82555e71f3fa0333018ca4b9ed61ba7c2",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.4/jarvis.phar",
+    "version": "0.1.4"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "87c2dcf4a3e61c6d5ef615cde8fc88920951b6bb",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.5/jarvis.phar",
+    "version": "0.1.5"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "bac4b3c3ae33826ffa48024ee9a19fa88242d21c",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.6/jarvis.phar",
+    "version": "0.1.6"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "54affc97fec06157c08cdd76ba14e946b304e3db",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.7/jarvis.phar",
+    "version": "0.1.7"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "a906f2aeef26a96858b0c88808460c4c9ab82847",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.8/jarvis.phar",
+    "version": "0.1.8"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "9bd9132ca3ad4cf15a8702e81036f01f768ff9b2",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.1.9/jarvis.phar",
+    "version": "0.1.9"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "63de256553fc9331f40acbe096bd752450fb061b",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.2.0/jarvis.phar",
+    "version": "0.2.0"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "43dba90004c4f45d14cab3f187c4176b16277c9d",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.3.0/jarvis.phar",
+    "version": "0.3.0"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "52c30deb156b33d21a1fa88651242beaa8c3920f",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.3.1/jarvis.phar",
+    "version": "0.3.1"
+  }
 ]
