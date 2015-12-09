@@ -15,51 +15,29 @@
 
 namespace Jarvis\Command\Project;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Jarvis\Project\ProjectConfiguration;
 
-class InstallDependenciesAndAssetsCommand extends BaseCommand
+class InstallDependenciesAndAssetsCommand extends BaseSymfonyCommand
 {
     /**
-     * @var array
-     */
-    private $symfonyEnvs;
-
-    /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setDescription('Install dependencies with composer and build assets.');
-
-        $this->addOption(
-            '--symfony-env',
-            null,
-            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-            'The Symfony Environment name.',
-            ['dev']
-        );
-
         parent::configure();
+
+        $this->setDescription('Install dependencies with composer and build assets.');
     }
 
     /**
-     * @{inheritdoc}
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        $this->symfonyEnvs = $input->getOption('symfony-env');
-    }
-
-    /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
+        dump($this->getSymfonyEnvs());
         $returnStatus = 0;
-        foreach ($this->symfonyEnvs as $symfonyEnv) {
+        foreach ($this->getSymfonyEnvs() as $symfonyEnv) {
             $returnStatus = $this->composerInstall($projectName, $symfonyEnv, $output);
 
             if (0 == $returnStatus) {
@@ -77,7 +55,7 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
     protected function composerInstall($projectName, $symfonyEnv, OutputInterface $output)
     {
         $parameters = [
-            '--project-name' => $projectName
+            '--project-name' => $projectName,
         ];
 
         if ($symfonyEnv == 'prod') {
@@ -93,7 +71,7 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
     {
         return $this->getApplication()->executeCommand('project:symfony:cache:warmup', [
             '--project-name' => $projectName,
-            '--symfony-env' => $symfonyEnv,
+            '--symfony-env' => [$symfonyEnv],
         ], $output);
     }
 
@@ -101,7 +79,7 @@ class InstallDependenciesAndAssetsCommand extends BaseCommand
     {
         return $this->getApplication()->executeCommand('project:assets:build', [
             '--project-name' => $projectName,
-            '--symfony-env' => $symfonyEnv,
+            '--symfony-env' => [$symfonyEnv],
         ], $output);
     }
 }
