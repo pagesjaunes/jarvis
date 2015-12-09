@@ -39,20 +39,30 @@ class SymfonyAssetsBuildCommand extends BaseSymfonyCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $output->writeln(
-            sprintf(
-                '<comment>Installing and building assets for project "<info>%s</info>"</comment>',
-                $projectConfig->getProjectName()
-            )
-        );
+        $returnStatus = 0;
 
-        $this->getSymfonyRemoteConsoleExec()->run(
-            $projectConfig->getRemoteSymfonyConsolePath(),
-            strtr('assets:install %dir%', ['%dir%' => $projectConfig->getRemoteAssetsDir()]),
-            $this->getSymfonyEnv(),
-            $output
-        );
+        foreach ($this->getSymfonyEnvs() as $symfonyEnv) {
+            if (0 !== $returnStatus) {
+                break;
+            }
 
-        return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+            $output->writeln(sprintf(
+                '<comment>%s for project "<info>%s</info>" and env "<info>%s</info>"</comment>',
+                $this->getDescription(),
+                $projectName,
+                $symfonyEnv
+            ));
+
+            $this->getSymfonyRemoteConsoleExec()->run(
+                $projectConfig->getRemoteSymfonyConsolePath(),
+                strtr('assets:install %dir%', ['%dir%' => $projectConfig->getRemoteAssetsDir()]),
+                $symfonyEnv,
+                $output
+            );
+
+            $returnStatus = $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+        }
+
+        return $returnStatus;
     }
 }

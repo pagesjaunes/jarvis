@@ -97,7 +97,7 @@ class TestIntegrationCommand extends BaseCommand
     {
         $this->getApplication()->executeCommand('project:symfony:cache:clear', [
             '--project-name' => $projectName,
-            '--symfony-env' => 'test'
+            '--symfony-env' => ['test']
         ], $output);
 
         $buildReportHtmlPath = !empty($this->remoteBuildDir) ? '--testdox-html '.$this->remoteBuildDir.'/tests/integration.html' : null;

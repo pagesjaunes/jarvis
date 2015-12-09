@@ -35,29 +35,41 @@ class LintTwigCommand extends BaseSymfonyCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $output->writeln(sprintf(
-            '<comment>%s for project "<info>%s</info>"</comment>',
-            $this->getDescription(),
-            $projectName
-        ));
+        $returnStatus = 0;
 
-        if (! file_exists($projectConfig->getLocalVendorDir())) {
-            $this->getApplication()->executeCommand('project:composer:install', [
-                '--project-name' => $projectName,
-            ], $output);
+        foreach ($this->getSymfonyEnvs() as $symfonyEnv) {
+            if (0 !== $returnStatus) {
+                break;
+            }
+
+            $output->writeln(sprintf(
+                '<comment>%s for project "<info>%s</info>" and env "<info>%s</info>"</comment>',
+                $this->getDescription(),
+                $projectName,
+                $symfonyEnv
+            ));
+
+            if (! file_exists($projectConfig->getLocalVendorDir())) {
+                $this->getApplication()->executeCommand('project:composer:install', [
+                    '--project-name' => $projectName,
+                ], $output);
+            }
+
+            $this->getSymfonyRemoteConsoleExec()->run(
+                $projectConfig->getRemoteSymfonyConsolePath(),
+                strtr(
+                    'twig:lint %project_dir%/src',
+                    [
+                        '%project_dir%' => $projectConfig->getRemoteWebappDir(),
+                    ]
+                ),
+                $symfonyEnv,
+                $output
+            );
+
+            $returnStatus = $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
         }
 
-        $this->getSymfonyRemoteConsoleExec()->run(
-            $projectConfig->getRemoteSymfonyConsolePath(),
-            strtr(
-                'lint:twig %project_dir%/src',
-                [
-                '%project_dir%' => $projectConfig->getRemoteWebappDir(),
-            ]),
-            $this->getSymfonyEnv(),
-            $output
-        );
-
-        return $this->getSymfonyRemoteConsoleExec()->getLastReturnStatus();
+        return $returnStatus;
     }
 }
