@@ -35,7 +35,6 @@ class InstallDependenciesAndAssetsCommand extends BaseSymfonyCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        dump($this->getSymfonyEnvs());
         $returnStatus = 0;
         foreach ($this->getSymfonyEnvs() as $symfonyEnv) {
             $returnStatus = $this->composerInstall($projectName, $symfonyEnv, $output);
