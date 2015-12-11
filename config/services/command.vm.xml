@@ -11,6 +11,7 @@
 
     <parameters>
         <parameter key="command.vm.enabled">false</parameter>
+        <parameter key="command.vm.service_name.php_fpm">php5-fpm</parameter>
     </parameters>
 
     <services>
@@ -103,7 +104,7 @@
             <argument>vm:service:php-fpm:restart</argument>
 
             <call method="setServiceName">
-                <argument>php5-fpm</argument>
+                <argument>%command.vm.service_name.php_fpm%</argument>
             </call>
 
             <call method="setServiceCommandName">
@@ -122,7 +123,7 @@
 
             <call method="setServicesName">
                 <argument type="collection">
-                    <argument>php5-fpm</argument>
+                    <argument>%command.vm.service_name.php_fpm%</argument>
                     <argument>nginx</argument>
                     <argument>varnish</argument>
                 </argument>
