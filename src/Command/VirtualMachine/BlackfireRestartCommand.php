@@ -37,7 +37,7 @@ class BlackfireRestartCommand extends BaseCommand
             $this->getSshExec()->run('sudo /etc/init.d/blackfire-agent restart', $output);
         }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $this->getSshExec()->run('sudo service php5-fpm restart', $output);
+            $this->getApplication()->executeCommand('vm:service:php-fpm:restart', [], $output);
         }
 
         return $this->getSshExec()->getLastReturnStatus();

@@ -44,7 +44,7 @@ class DisablePhpExtensionCommand extends BaseCommand
     {
         $this->getSshExec()->run(sprintf('sudo php5dismod %s', $input->getArgument('name')), $output);
 
-        $this->getSshExec()->run('sudo service php5-fpm restart', $output);
+        $this->getApplication()->executeCommand('vm:service:php-fpm:restart', [], $output);
 
         if ($this->getSshExec()->getLastReturnStatus() == 0) { // EXIT_SUCCESS
             $output->writeln(sprintf(
