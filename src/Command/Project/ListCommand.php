@@ -18,9 +18,6 @@ namespace Jarvis\Command\Project;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Jarvis\Project\ProjectConfigurationFactory;
 use Jarvis\Project\Repository\ProjectConfigurationRepositoryAwareTrait;
 
 /**
@@ -31,7 +28,7 @@ class ListCommand extends Command
     use ProjectConfigurationRepositoryAwareTrait;
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -39,7 +36,7 @@ class ListCommand extends Command
     }
 
     /**
-     * @{inheritdoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

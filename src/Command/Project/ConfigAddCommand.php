@@ -3,14 +3,14 @@
 namespace Jarvis\Command\Project;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Jarvis\Project\Repository\ProjectConfigurationRepositoryAwareTrait;
-use Symfony\Component\Console\Input\InputOption;
 use Jarvis\Command\Project\ConfigAddCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Jarvis\Project\Repository\ProjectConfigurationRepositoryAwareTrait;
 
 class ConfigAddCommand extends Command
 {
