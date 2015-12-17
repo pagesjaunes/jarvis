@@ -8,16 +8,6 @@
         <parameter key="name">Jarvis</parameter>
         <parameter key="phar_update_manifest_url">http://pagesjaunes.github.io/jarvis/manifest.json</parameter>
         <parameter key="ssh_identity_file"></parameter>
-        <parameter key="monolog.console_handler.verbosity_Level_map" type="collection">
-            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_NORMAL -->
-            <parameter key="1" type="constant">Monolog\Logger::NOTICE</parameter>
-            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERBOSE -->
-            <parameter key="2" type="constant">Monolog\Logger::INFO</parameter>
-            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE -->
-            <parameter key="3" type="constant">Monolog\Logger::DEBUG</parameter>
-            <!-- Symfony\Component\Console\Output\OutputInterface::VERBOSITY_DEBUG -->
-            <parameter key="4" type="constant">Monolog\Logger::DEBUG</parameter>
-        </parameter>
         <parameter key="command.vm.php_tools" type="collection"></parameter>
     </parameters>
 
@@ -117,7 +107,6 @@
         >
             <argument type="service" id="console.output" />
             <argument key="bubble">true</argument>
-            <argument>%monolog.console_handler.verbosity_Level_map%</argument>
             <call method="setFormatter">
                  <argument type="service" id="console.formatter.output_formatter" />
             </call>
