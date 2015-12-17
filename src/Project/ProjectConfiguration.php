@@ -115,9 +115,52 @@ class ProjectConfiguration
     /**
      * @return array
      */
-    public function getData()
+    public function toArray()
     {
-        return $this->data;
+        return [
+            'project_name' => $this->getProjectName(),
+            'git_repository_url' => $this->getGitRepositoryUrl(),
+            'local_git_repository_dir' => strtr($this->getLocalGitRepositoryDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->localProjectsRootDir => '%local_projects_root_dir%',
+            ]),
+            'remote_git_repository_dir' => strtr($this->getRemoteGitRepositoryDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->remoteProjectsRootDir => '%remote_projects_root_dir%',
+            ]),
+            'git_target_branch' => $this->getGitTargetBranch(),
+            'remote_webapp_dir' => strtr($this->getRemoteWebappDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->remoteProjectsRootDir => '%remote_projects_root_dir%',
+            ]),
+            'local_webapp_dir' => strtr($this->getLocalWebappDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->localProjectsRootDir => '%local_projects_root_dir%',
+            ]),
+            'remote_vendor_dir' => strtr($this->getRemoteVendorDir(), [
+                $this->data['project_name'] => '%project_name%',
+            ]),
+            'local_vendor_dir' => strtr($this->getLocalVendorDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->localVendorRootDir => '%local_vendor_root_dir%',
+            ]),
+            'remote_symfony_console_path' => strtr($this->getRemoteSymfonyConsolePath(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->remoteProjectsRootDir => '%remote_projects_root_dir%',
+            ]),
+            'remote_phpunit_configuration_xml_path' => strtr($this->getRemotePhpunitConfigurationXmlPath(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->remoteProjectsRootDir => '%remote_projects_root_dir%',
+            ]),
+            'remote_assets_dir' => strtr($this->getRemoteAssetsDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->remoteProjectsRootDir => '%remote_projects_root_dir%',
+            ]),
+            'local_assets_dir' => strtr($this->getLocalAssetsDir(), [
+                $this->data['project_name'] => '%project_name%',
+                $this->localCdnRootDir => '%local_cdn_root_dir%',
+            ]),
+        ];
     }
 
     /**

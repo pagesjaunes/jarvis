@@ -7,8 +7,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Jarvis\Project\ProjectConfigurationFactory;
 use Jarvis\Project\Repository\ProjectConfigurationRepositoryAwareTrait;
+use Symfony\Component\Console\Input\InputOption;
+use Jarvis\Command\Project\ConfigAddCommand;
+use Symfony\Component\Console\Input\InputArgument;
 
 class ConfigAddCommand extends Command
 {
@@ -18,11 +20,6 @@ class ConfigAddCommand extends Command
      * @var bool
      */
     protected $enabled = false;
-
-    /**
-     * @var ProjectConfigurationFactory
-     */
-    private $projectConfigurationFactory;
 
     /**
      * @param bool $bool
@@ -43,33 +40,126 @@ class ConfigAddCommand extends Command
     }
 
     /**
-     * Sets the value of projectConfigurationFactory.
-     *
-     * @param ProjectConfigurationFactory $projectConfigurationFactory the project configuration factory
-     *
-     * @return self
-     */
-    public function setProjectConfigurationFactory(ProjectConfigurationFactory $projectConfigurationFactory)
-    {
-        $this->projectConfigurationFactory = $projectConfigurationFactory;
-
-        return $this;
-    }
-
-    /**
      * @{inheritdoc}
      */
     protected function configure()
     {
         $this->setDescription('Add project in configuration');
+
+        $this->addArgument(
+            'project_name',
+            InputArgument::REQUIRED,
+            'Project name (e.g. example-memcached-bundle)'
+        );
+
+        $this->addArgument(
+            'git_repository_url',
+            InputArgument::REQUIRED,
+            'Git repository url (e.g. https://github.com/example/ExampleMemcachedBundle.git)'
+        );
+
+        $this->addOption(
+            'local_git_repository_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Local git repository directory',
+            '%local_projects_root_dir%/%project_name%'
+        );
+
+        $this->addOption(
+            'remote_git_repository_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Remote git repository directory',
+            '%remote_projects_root_dir%/%project_name%'
+        );
+
+        $this->addOption(
+            'git_target_branch',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Git branch',
+            'master'
+        );
+
+        $this->addOption(
+            'remote_webapp_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Remote webapp directory',
+            '%remote_projects_root_dir%/%project_name%'
+        );
+
+        $this->addOption(
+            'local_webapp_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Local webapp directory',
+            '%local_projects_root_dir%/%project_name%'
+        );
+
+        $this->addOption(
+            'remote_vendor_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Remote vendor directory',
+            '/home/vagrant/projects/%project_name%/vendor'
+        );
+
+        $this->addOption(
+            'local_vendor_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Local vendor directory',
+            '%local_vendor_root_dir%/%project_name%'
+        );
+
+        $this->addOption(
+            'remote_symfony_console_path',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Remote symfony console path',
+            '%remote_vendor_root_dir%/app/console'
+        );
+
+        $this->addOption(
+            'remote_phpunit_configuration_xml_path',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Remote phpunit configuration xml path',
+            '%remote_vendor_root_dir%/app/phpunit.xml.dist'
+        );
+
+        $this->addOption(
+            'remote_assets_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Remote assets dir',
+            '/srv/cdn'
+        );
+
+        $this->addOption(
+            'local_assets_dir',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Local assets directory',
+            '%local_cdn_root_dir%/%project_name%'
+        );
     }
 
     /**
      * @{inheritdoc}
      */
-    // protected function initialize(InputInterface $input, OutputInterface $output)
-    // {
-    // }
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        if (null !== $input->getArgument('project_name')) {
+            $this->checkProjectName($input->getArgument('project_name'));
+        }
+
+        if (null !== $input->getArgument('git_repository_url')) {
+            $this->checkGitRepositoryUrl($input->getArgument('git_repository_url'));
+        }
+    }
 
     /**
      * @{inheritdoc}
@@ -79,91 +169,93 @@ class ConfigAddCommand extends Command
         $accessor = PropertyAccess::createPropertyAccessor();
 
         $data = [
-            'project_name' => null,
-            'git_repository_url' => null,
-            'local_git_repository_dir' => '%local_projects_root_dir%/%project_name%', //
-            'remote_git_repository_dir' => '%remote_projects_root_dir%/%project_name%',
-            'git_target_branch' => 'develop',
-            'remote_webapp_dir' => '%remote_projects_root_dir%/%project_name%',
-            'local_webapp_dir' => '%local_projects_root_dir%/%project_name%',
-            'remote_vendor_dir' => '/home/vagrant/projects/%project_name%/vendor',
-            'local_vendor_dir' => '%local_vendor_root_dir%/%project_name%',
-            'remote_symfony_console_path' => '%remote_vendor_root_dir%/app/console',
-            'remote_phpunit_configuration_xml_path' => '%remote_vendor_root_dir%/app/phpunit.xml.dist',
+            'project_name' => $input->getArgument('project_name'),
+            'git_repository_url' => $input->getArgument('git_repository_url'),
+            'local_git_repository_dir' => $input->getOption('local_git_repository_dir'),
+            'remote_git_repository_dir' => $input->getOption('remote_git_repository_dir'),
+            'git_target_branch' => $input->getOption('git_target_branch'),
+            'remote_webapp_dir' => $input->getOption('remote_webapp_dir'),
+            'local_webapp_dir' => $input->getOption('local_webapp_dir'),
+            'remote_vendor_dir' => $input->getOption('remote_vendor_dir'),
+            'local_vendor_dir' => $input->getOption('local_vendor_dir'),
+            'remote_symfony_console_path' => $input->getOption('remote_symfony_console_path'),
+            'remote_phpunit_configuration_xml_path' => $input->getOption('remote_phpunit_configuration_xml_path'),
+            'remote_assets_dir' => $input->getOption('remote_assets_dir'),
+            'local_assets_dir' => $input->getOption('local_assets_dir'),
         ];
 
         $helper = $this->getHelper('question');
 
-        $question = new Question('Please enter the name of the project: ', '');
-        $question->setValidator(function ($answer) {
-            if ($this->getProjectConfigurationRepository()->find($answer)) {
-                throw new \RuntimeException(
-                    'The name of the project already exists'
-                );
+        if (empty($data['project_name'])) {
+            $question = new Question('Please enter the name of the project: ', '');
+            $question->setValidator(function ($answer) {
+                $this->checkProjectName($answer);
+
+                return $answer;
+            });
+
+            $data['project_name'] = $helper->ask($input, $output, $question);
+        }
+
+        if (empty($data['git_repository_url'])) {
+            $question = new Question('Please enter the url of the git repository: ', '');
+            $question->setValidator(function ($answer) {
+                $this->checkGitRepositoryUrl($answer);
+
+                return $answer;
+            });
+
+            $data['git_repository_url'] = $helper->ask($input, $output, $question);
+        }
+
+        foreach ($data as $propertyPath => $propertyValue) {
+            if (!empty($propertyValue)) {
+                continue;
             }
 
-            return $answer;
-        });
-
-        $data['project_name'] = $helper->ask($input, $output, $question);
-
-        $question = new Question('Please enter the url of the git repository: ', '');
-        $question->setValidator(function ($answer) {
-            if (!filter_var($answer, FILTER_VALIDATE_URL)) {
-                throw new \RuntimeException(
-                    'This value is not a valid URL.'
-                );
-            }
-
-            if ($this->getProjectConfigurationRepository()->findBy(['git_repository_url' => $answer])) {
-                throw new \RuntimeException(
-                    'This value already exists.'
-                );
-            }
-
-            return $answer;
-        });
-
-        $data['git_repository_url'] = $helper->ask($input, $output, $question);
-
-        $config = $this->projectConfigurationFactory->create($data);
-
-        foreach (array_keys($data) as $propertyPath) {
             if ($propertyPath == 'project_name' || $propertyPath == 'git_repository_url') {
                 continue;
             }
 
-            $value = $accessor->getValue($config, $propertyPath);
-
-            $question = new Question(sprintf('Please enter the %s (<info>%s</info>): ', $propertyPath, $value), $value);
+            $question = new Question(sprintf('Please enter the %s: ', $propertyPath), '');
             $data[$propertyPath] = $helper->ask($input, $output, $question);
         }
 
-        $config = $this->projectConfigurationFactory->create($data);
-
         $repository = $this->getProjectConfigurationRepository();
-        $repository->add($config);
+        $repository->add($data);
 
         $output->writeln('Add project configuration: ');
 
-        foreach ([
-            'project_name',
-            'git_repository_url',
-            'local_git_repository_dir',
-            'remote_git_repository_dir',
-            'git_target_branch',
-            'remote_webapp_dir',
-            'local_webapp_dir',
-            'remote_vendor_dir',
-            'local_vendor_dir',
-            'remote_symfony_console_path',
-            'remote_phpunit_configuration_xml_path',
-        ] as $propertyPath) {
+        foreach ($repository->find($data['project_name'])->toArray() as $propertyPath => $propertyValue) {
             $output->writeln(sprintf(
                 '<comment>%s: <info>%s</info></comment>',
                 $propertyPath,
-                $accessor->getValue($config, $propertyPath)
+                $propertyValue
             ));
+        }
+    }
+
+    protected function checkProjectName($name)
+    {
+        if ($this->getProjectConfigurationRepository()->find($name)) {
+            throw new \InvalidArgumentException(
+                'The name of the project already exists'
+            );
+        }
+    }
+
+    protected function checkGitRepositoryUrl($url)
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL) && 0 !== strpos($url, 'git@')) {
+            throw new \InvalidArgumentException(
+                sprintf('This value \'%s\' is not a valid URL.', $url)
+            );
+        }
+
+        if ($this->getProjectConfigurationRepository()->findBy(['git_repository_url' => $url])) {
+            throw new \InvalidArgumentException(
+                sprintf('This value \'%s\' already exists.', $url)
+            );
         }
     }
 }

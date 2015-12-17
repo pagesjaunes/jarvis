@@ -27,7 +27,7 @@ interface ProjectConfigurationRepository
 
     public function findAll();
 
-    public function add(ProjectConfiguration $configuration);
+    public function add(array $data);
 
     public function remove(ProjectConfiguration $configuration);
 

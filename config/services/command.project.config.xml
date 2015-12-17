@@ -20,10 +20,6 @@
                  <argument type="service" id="repository.project_configuration" />
             </call>
 
-            <call method="setProjectConfigurationFactory">
-                 <argument type="service" id="project_configuration.factory" />
-            </call>
-
             <tag name="console.command" />
         </service>
 
