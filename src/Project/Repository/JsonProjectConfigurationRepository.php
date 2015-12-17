@@ -23,6 +23,11 @@ use Jarvis\Project\ProjectConfigurationFactory;
 class JsonProjectConfigurationRepository implements ProjectConfigurationRepository
 {
     /**
+     * @var null|array
+     */
+    private $projectConfigs;
+
+    /**
      * @var string
      */
     private $filePath;
@@ -129,20 +134,15 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     /**
      * {@inheritDoc}
      */
-    public function add(ProjectConfiguration $configuration)
+    public function add(array $data)
     {
-        $rows = [];
-        foreach ($this->getProjectConfigurationCollection() as $row) {
-            if ($configuration->getProjectName() == $row->getProjectName()) {
-                continue;
-            }
-
-            $rows[] = $row;
+        $config = $this->projectConfigurationFactory->create((array) $data);
+        $projectName = $config->getProjectName();
+        if (!$this->has($projectName)) {
+            $this->projectConfigs[$projectName] = $config;
         }
 
-        $rows[] = $configuration;
-
-        $this->save($rows);
+        $this->save();
     }
 
     /**
@@ -150,16 +150,13 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
      */
     public function remove(ProjectConfiguration $configuration)
     {
-        $rows = [];
-        foreach ($this->getProjectConfigurationCollection() as $row) {
-            if ($configuration->getProjectName() == $row->getProjectName()) {
-                continue;
-            }
+        $projectName = $config->getProjectName();
 
-            $rows[] = $row;
+        if (isset($this->projectConfigs[$projectName])) {
+            unset($this->projectConfigs[$projectName]);
         }
 
-        $this->save($rows);
+        $this->save();
     }
 
     /**
@@ -224,11 +221,11 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
         return $projectNames;
     }
 
-    protected function save($rows)
+    protected function save()
     {
         $data = ['projects' => []];
-        foreach ($rows as $config) {
-            $data['projects'][] = $config->getData();
+        foreach ($this->projectConfigs as $config) {
+            $data['projects'][] = $config->toArray();
         }
 
         file_put_contents(
@@ -240,26 +237,24 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     /**
      * @return Configuration[]
      */
-    protected function getProjectConfigurationCollection()
+    public function getProjectConfigurationCollection()
     {
-        static $configs;
-        if (null === $configs) {
-            $configs = [];
-
+        if (null === $this->projectConfigs) {
+            $this->projectConfigs = [];
             foreach ($this->parse() as $data) {
                 $config = $this->projectConfigurationFactory->create((array) $data);
                 $projectName = $config->getProjectName();
-                $configs[$projectName] = $config;
+                $this->projectConfigs[$projectName] = $config;
             }
         }
 
-        return $configs;
+        return $this->projectConfigs;
     }
 
     /**
      * @return array
      */
-    private function parse()
+    protected function parse()
     {
         if (file_exists($this->filePath)) {
             $json = new Json();

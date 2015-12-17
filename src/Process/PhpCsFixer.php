@@ -72,7 +72,7 @@ class PhpCsFixer
 
         $options = $resolver->resolve($options);
 
-        $this->getSshExec()->exec(
+        $this->getSshExec()->run(
             strtr(
                 'php-cs-fixer fix %command_options% --level=%level% --no-interaction %dir%',
                 [
@@ -80,7 +80,8 @@ class PhpCsFixer
                     '%dir%' => $remoteDir,
                     '%command_options%' => $options['dry-run'] ? '--dry-run --diff' : ''
                 ]
-            )
+            ),
+            $output
         );
 
         $returnStatus = $this->getSshExec()->getLastReturnStatus();

@@ -36,7 +36,8 @@
         "jms/composer-deps-analyzer": "0.1.*",
         "jakub-onderka/php-console-highlighter": "0.*",
         "guzzlehttp/ringphp": "~1.0",
-        "hoa/console": "~2.0"
+        "hoa/console": "~2.0",
+        "gnugat/redaktilo": "^1.0"
     },
     "minimum-stability": "stable",
     "extra": {
