@@ -150,7 +150,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
      */
     public function remove(ProjectConfiguration $configuration)
     {
-        $projectName = $config->getProjectName();
+        $projectName = $configuration->getProjectName();
 
         if (isset($this->projectConfigs[$projectName])) {
             unset($this->projectConfigs[$projectName]);

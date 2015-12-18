@@ -82,7 +82,7 @@ parameters:
             url: 'https://github.com/JakubOnderka/PHP-Parallel-Lint.git'
             dest: '/usr/local/bin/php-parallel-lint'
             version_command: '{{dest}} --help | awk ''/version/'''
-            install_command: 'rm -fr /tmp/{{name}} && git clone {{url}} /tmp/{{name}} && cd /tmp/{{name}} && COMPOSER_HOME=. composer install -vvv && box build -vvv && sudo mv parallel-lint.phar {{dest}}'
+            install_command: 'rm -fr /tmp/{{name}} && git clone {{url}} /tmp/{{name}} && cd /tmp/{{name}} && COMPOSER_HOME=. composer install -vvv && php -d phar.readonly=0 /usr/local/bin/box build -vvv && sudo mv parallel-lint.phar {{dest}}'
         php-metrics:
             url: 'https://github.com/Halleck45/PhpMetrics/raw/master/build/phpmetrics.phar'
             dest: '/usr/local/bin/phpmetrics'
