@@ -155,7 +155,7 @@ class PhpToolManager
             [
                 '{{dest}}' => $data['dest'],
             ]
-        ), $output);
+        ));
 
         return $this->getSshExec()->getLastReturnStatus() == 0;
     }
