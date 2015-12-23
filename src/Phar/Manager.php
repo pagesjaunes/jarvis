@@ -15,7 +15,6 @@
 
 namespace Jarvis\Phar;
 
-use GuzzleHttp\Ring;
 use Herrera\Phar\Update\Exception\InvalidArgumentException;
 use Herrera\Phar\Update\Update;
 use Herrera\Version\Comparator;
@@ -57,7 +56,7 @@ class Manager
     /**
      * Sets the update manifest.
      *
-     * @param Manifest $manifest The manifest.
+     * @param Manifest   $manifest   The manifest.
      * @param Filesystem $filesystem The filesystem.
      */
     public function __construct(Manifest $manifest, Filesystem $filesystem)
@@ -113,13 +112,14 @@ class Manager
     /**
      * Updates the running Phar if any is available.
      *
-     * @param string|Version $version  The current version.
-     * @param boolean        $major    Lock to current major version?
-     * @param boolean        $pre      Allow pre-releases?
+     * @param string|Version $version The current version.
+     * @param bool           $major   Lock to current major version?
+     * @param bool           $pre     Allow pre-releases?
+     * @param bool           $debug
      *
-     * @return boolean TRUE if an update was performed, FALSE if none available.
+     * @return bool TRUE if an update was performed, FALSE if none available.
      */
-    public function update($version, $major = false, $pre = false, $newVersion = null)
+    public function update($version, $major = false, $pre = false, $newVersion = null, $debug = false)
     {
         if (false === ($version instanceof Version)) {
             $version = Parser::toVersion($version);
@@ -156,7 +156,7 @@ class Manager
         }
 
         if (null === $update) {
-            $this->logger->error(sprintf(
+            $this->logger->warning(sprintf(
                 'You are already using jarvis version "%s".',
                 (string) $version
             ));
@@ -165,7 +165,7 @@ class Manager
         }
 
         if ($update instanceof Update) {
-            if (!$this->downloadFile($update)) {
+            if (!$this->downloadFile($update, $debug)) {
                 return false;
             }
         }
@@ -173,7 +173,13 @@ class Manager
         return true;
     }
 
-    public function downloadFile(Update $update)
+    /**
+     * @param Update $update
+     * @param bool   $debug
+     *
+     * @return bool
+     */
+    public function downloadFile(Update $update, $debug = false)
     {
         $targetFile = $this->getRunningFile();
 
@@ -183,24 +189,10 @@ class Manager
             $targetFile
         ));
 
-        $url = $update->getUrl();
+        $client = new \GuzzleHttp\Client(['debug' => $debug]);
+        $client->request('GET', $update->getUrl(), ['sink' => $targetFile]);
 
-        $handler = new Ring\Client\CurlHandler();
-        $response = $handler([
-            'http_method' => 'GET',
-            'uri'         => sprintf(':%s/%s', parse_url($url, PHP_URL_PORT), parse_url($url, PHP_URL_PATH)),
-            'headers'     => [
-                'scheme' => [parse_url($url, PHP_URL_SCHEME)],
-                'host'  => [parse_url($url, PHP_URL_HOST)],
-            ],
-            'client' => [
-                'save_to' => $targetFile,
-            ]
-        ]);
-
-        $response->wait();
-
-        if (! $this->filesystem->exists($targetFile)) {
+        if (!$this->filesystem->exists($targetFile)) {
             $this->logger->error('The download of the new jarvis version failed for an unexpected reason');
 
             return false;
