@@ -31,6 +31,9 @@ class SelfUpdateCommand extends Command
 
     use \Psr\Log\LoggerAwareTrait;
 
+    const EXIT_SUCCESS = 0;
+    const EXIT_ERROR = 1;
+
     /**
      * @var string
      */
@@ -90,17 +93,17 @@ class SelfUpdateCommand extends Command
 
         if (null === $newVersion) {
             $update = $manifest->findRecent(Version\Parser::toVersion($currentVersion), $major, $pre);
-            if (null !== $update) {
-                $result = $manager->downloadFile($update);
+            if (null !== $update && false === $manager->downloadFile($update)) {
+                return self::EXIT_ERROR;
             }
-        } else {
-            $result = $manager->update($currentVersion, $major, $pre, $newVersion);
+
+            return self::EXIT_SUCCESS;
         }
 
-        if (false === $result) {
-            return 1;
+        if (false === $manager->update($currentVersion, $major, $pre, $newVersion)) {
+            return self::EXIT_ERROR;
         }
 
-        return 0;
+        return self::EXIT_SUCCESS;
     }
 }
