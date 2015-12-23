@@ -252,7 +252,7 @@ abstract class BaseCommand extends Command
 
         $projectName = $this->getCurrentProjectName($input, $output);
         $projectConfig = $this->getProjectConfiguration($projectName, $input, $output);
-dump($projectConfig);
+
         return $this->executeCommandByProject($projectName, $projectConfig, $output);
     }
 
