@@ -19,19 +19,47 @@ use Jarvis\Project\ProjectConfiguration;
 
 interface ProjectConfigurationRepository
 {
+    /**
+     * @return integer
+     */
     public function count();
 
+    /**
+     * @param  string $projectName
+     *
+     * @return boolean
+     */
     public function has($projectName);
 
+    /**
+     * @param  string $projectName
+     *
+     * @return null|ProjectConfiguration
+     */
     public function find($projectName);
 
+    /**
+     * @return []|ProjectConfiguration[]
+     */
     public function findAll();
 
+    /**
+     * @param array $data
+     */
     public function add(array $data);
 
+    /**
+     * @param array $data
+     */
     public function remove(ProjectConfiguration $configuration);
 
+    /**
+     * @return array
+     */
     public function getProjectNames();
 
+   /**
+     * @return array
+     */
     public function getProjectAlreadyInstalledNames();
 }

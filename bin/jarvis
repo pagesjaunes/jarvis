@@ -130,7 +130,7 @@ if ('' != Phar::running(false)) {
     $containerCacheFilename .= '-'.sha1_file(Phar::running(false));
 }
 $containerCacheFilePath = $containerCacheDir.'/'.$containerCacheFilename;
-if ('core:container:cache-clear' == $input->getFirstArgument()) {
+if (in_array($input->getFirstArgument(), ['core:container:cache-clear', 'self-update'])) {
     (new \Symfony\Component\Filesystem\Filesystem())->remove($containerCacheFilePath);
 }
 

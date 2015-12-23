@@ -86,6 +86,7 @@ class ProjectConfiguration
     {
         $resolver->setDefault('local_assets_dir', null);
         $resolver->setDefault('remote_assets_dir', '%remote_webapp_dir%');
+        $resolver->setDefault('tags', []);
 
         $resolver->setRequired([
             'project_name',
@@ -97,15 +98,15 @@ class ProjectConfiguration
             'local_vendor_dir',
             'remote_webapp_dir',
             'remote_vendor_dir',
-            // 'remote_cache_dir',
-            // 'remote_logs_dir',
             'remote_phpunit_configuration_xml_path',
-            'remote_symfony_console_path'
+            'remote_symfony_console_path',
         ]);
+
+        $resolver->setAllowedTypes('tags', 'array');
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isInstalled()
     {
@@ -169,6 +170,14 @@ class ProjectConfiguration
     public function getProjectName()
     {
         return $this->data['project_name'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTags()
+    {
+        return $this->data['tags'];
     }
 
     /**
@@ -304,7 +313,7 @@ class ProjectConfiguration
             '%local_cdn_root_dir%' => $this->localCdnRootDir,
             '%remote_vendor_root_dir%' => $this->remoteVendorRootDir,
             '%remote_projects_root_dir%' => $this->remoteProjectsRootDir,
-            '%remote_webapp_dir%' => isset($this->data['remote_webapp_dir']) ? $this->data['remote_webapp_dir'] : null
+            '%remote_webapp_dir%' => isset($this->data['remote_webapp_dir']) ? $this->data['remote_webapp_dir'] : null,
         ]);
     }
 }
