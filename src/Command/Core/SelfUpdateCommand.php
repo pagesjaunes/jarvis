@@ -84,14 +84,23 @@ class SelfUpdateCommand extends Command
         !$this->logger ?: $manager->setLogger($this->logger);
 
         $currentVersion = $this->getApplication()->getVersion();
-
         $newVersion = (null !== $input->getArgument('version')) ? $input->getArgument('version') : null;
-
         $major = $input->getOption('major'); // Lock to current major version?
-        $pre = true; //Allow pre-releases?
+        $pre = false; //Allow pre-releases?
 
-        $manager->update($currentVersion, $major, $pre, $newVersion);
+        if (null === $newVersion) {
+            $update = $manifest->findRecent(Version\Parser::toVersion($currentVersion), $major, $pre);
+            if (null !== $update) {
+                $result = $manager->downloadFile($update);
+            }
+        } else {
+            $result = $manager->update($currentVersion, $major, $pre, $newVersion);
+        }
 
-        exit(0); // return immediately without use ConsoleTerminateEvent and EventDispatcher
+        if (false === $result) {
+            return 1;
+        }
+
+        return 0;
     }
 }
