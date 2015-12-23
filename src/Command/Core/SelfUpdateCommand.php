@@ -15,7 +15,6 @@
 
 namespace Jarvis\Command\Core;
 
-use GuzzleHttp\Ring;
 use Herrera\Version;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -63,7 +62,7 @@ class SelfUpdateCommand extends Command
             ->setDescription('Updates manifest.phar to the latest version')
             ->setDefinition([
                 new InputArgument('version', InputArgument::OPTIONAL, 'The version to update to'),
-                new InputOption('major', null, InputOption::VALUE_NONE, 'Lock to current major version?')
+                new InputOption('major', null, InputOption::VALUE_NONE, 'Lock to current major version?'),
             ])
         ;
     }
@@ -81,7 +80,7 @@ class SelfUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $manifest = Manifest::download($this->pharUpdateManifestUrl);
+        $manifest = Manifest::download($this->pharUpdateManifestUrl, $output->isDebug());
 
         $manager = new Manager($manifest, $this->getLocalFilesystem());
         !$this->logger ?: $manager->setLogger($this->logger);
@@ -89,18 +88,9 @@ class SelfUpdateCommand extends Command
         $currentVersion = $this->getApplication()->getVersion();
         $newVersion = (null !== $input->getArgument('version')) ? $input->getArgument('version') : null;
         $major = $input->getOption('major'); // Lock to current major version?
-        $pre = false; //Allow pre-releases?
+        $pre = true; //Allow pre-releases?
 
-        if (null === $newVersion) {
-            $update = $manifest->findRecent(Version\Parser::toVersion($currentVersion), $major, $pre);
-            if (null !== $update && false === $manager->downloadFile($update)) {
-                return self::EXIT_ERROR;
-            }
-
-            return self::EXIT_SUCCESS;
-        }
-
-        if (false === $manager->update($currentVersion, $major, $pre, $newVersion)) {
+        if (false === $manager->update($currentVersion, $major, $pre, $newVersion, $output->isDebug())) {
             return self::EXIT_ERROR;
         }
 

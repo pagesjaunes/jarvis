@@ -15,7 +15,6 @@
 
 namespace Jarvis\Phar;
 
-use GuzzleHttp\Ring;
 use Herrera\Phar\Update\Manifest as BaseManifest;
 use Herrera\Version\Version;
 
@@ -28,29 +27,13 @@ class Manifest extends BaseManifest
      *
      * @throws \RuntimeException
      */
-    public static function download($url)
+    public static function download($url, $debug = false)
     {
-        $handler = new Ring\Client\CurlHandler();
-        $response = $handler([
-            'http_method' => 'GET',
-            'uri'         => sprintf(':%s/%s', parse_url($url, PHP_URL_PORT), parse_url($url, PHP_URL_PATH)),
-            'headers'     => [
-                'scheme' => [parse_url($url, PHP_URL_SCHEME)],
-                'host' => [parse_url($url, PHP_URL_HOST)],
-            ],
-        ]);
+        $client = new \GuzzleHttp\Client(['debug' => $debug]);
 
-        $response->wait();
+        $response = $client->request('GET', $url);
 
-        if ($response['status'] != 200) {
-            throw new \RuntimeException(sprintf('%s: %s (%s)',
-                $response['effective_url'],
-                $response['reason'],
-                $response['status']
-            ));
-        }
-
-        $json = Ring\Core::body($response);
+        $json = (string) $response->getBody();
 
         return self::load($json);
     }
