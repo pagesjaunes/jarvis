@@ -35,7 +35,7 @@ class SyncRemoteToLocalCommand extends BaseCommand
         $this->setDescription('Synchronize remote to local directory.');
 
         $this->addArgument('remote_dir', InputArgument::REQUIRED, 'Remote directory');
-        $this->addArgument('local_dir', InputArgument::REQUIRED, 'Remote directory');
+        $this->addArgument('local_dir', InputArgument::REQUIRED, 'Local directory');
 
         $this->addOption('delete', null, InputOption::VALUE_NONE, 'Whether to delete files that are not in the source directory (defaults to false)');
 
