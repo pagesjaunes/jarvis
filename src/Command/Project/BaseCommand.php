@@ -130,10 +130,10 @@ abstract class BaseCommand extends Command
             'Apply the command to all projects'
         );
         $this->addOption(
-            'all-bundles',
+            'tag',
             null,
-            InputOption::VALUE_NONE,
-            'Apply the command to all bundles'
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'The tag to search for one or many projects.'
         );
     }
 
@@ -218,8 +218,8 @@ abstract class BaseCommand extends Command
             return $statusCode;
         }
 
-        if ($input->hasOption('all-bundles') && true === $input->getOption('all-bundles')) {
-            foreach ($this->getAllBundlesProjectConfig() as $projectConfig) {
+        if ($input->hasOption('tag') && null !== $input->getOption('tag')) {
+            foreach ($this->getProjectConfigurationRepository()->findBy(['tags' => $input->getOption('tag')]) as $projectConfig) {
                 $statusCode += $this->executeCommandByProject(
                     $projectConfig->getProjectName(),
                     $projectConfig,

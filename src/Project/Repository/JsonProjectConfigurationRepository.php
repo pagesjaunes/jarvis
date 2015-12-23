@@ -44,7 +44,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function has($projectName)
     {
@@ -52,7 +52,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function count()
     {
@@ -60,7 +60,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function find($projectName)
     {
@@ -71,32 +71,31 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findBy(array $criteria)
     {
+        $results = [];
         $accessor = PropertyAccess::createPropertyAccessor();
-
-        foreach ($this->getProjectConfigurationCollection() as $row) {
-            $found = true;
-
-            foreach ($criteria as $name => $value) {
-                if ($value !== $accessor->getValue($row, $name)) {
-                    $found = false;
-                    continue;
+        foreach ($this->getProjectConfigurationCollection() as $projectConfig) {
+            foreach ($criteria as $criterionName => $criterionValue) {
+                $criterionValueArray = !is_array($criterionValue) ? [$criterionValue] : $criterionValue;
+                $propertyValue = $accessor->getValue($projectConfig, $criterionName);
+                $propertyValueArray = !is_array($propertyValue) ? [$propertyValue] : $propertyValue;
+                foreach ($criterionValueArray as $criterionValue) {
+                    if (in_array($criterionValue, $propertyValueArray, true)) {
+                        // return $projectConfig;
+                        $results[$projectConfig->getProjectName()] = $projectConfig;
+                    }
                 }
-            }
-
-            if ($found) {
-                return $row;
             }
         }
 
-        return null;
+        return $results;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findAll()
     {
@@ -104,7 +103,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findNotInstalled()
     {
@@ -114,11 +113,12 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
                 $configs[] = $config;
             }
         }
+
         return $configs;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findInstalled()
     {
@@ -128,11 +128,12 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
                 $configs[] = $config;
             }
         }
+
         return $configs;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function add(array $data)
     {
@@ -146,7 +147,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function remove(ProjectConfiguration $configuration)
     {
@@ -160,7 +161,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getProjectNames()
     {
@@ -174,7 +175,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getProjectInstalledNames()
     {
@@ -190,7 +191,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getProjectAlreadyInstalledNames()
     {
@@ -206,7 +207,7 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getProjectNotAlreadyInstalledNames()
     {
