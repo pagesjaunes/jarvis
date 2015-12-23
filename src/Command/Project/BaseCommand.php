@@ -219,7 +219,7 @@ abstract class BaseCommand extends Command
             return $statusCode;
         }
 
-        if ($input->hasOption('tag') && null !== $input->getOption('tag')) {
+        if ($input->hasOption('tag') &&  count($input->getOption('tag')) > 1) {
             foreach ($this->getProjectConfigurationRepository()->findBy([
                 'tags' => $input->getOption('tag')
             ]) as $projectConfig) {
@@ -252,7 +252,7 @@ abstract class BaseCommand extends Command
 
         $projectName = $this->getCurrentProjectName($input, $output);
         $projectConfig = $this->getProjectConfiguration($projectName, $input, $output);
-
+dump($projectConfig);
         return $this->executeCommandByProject($projectName, $projectConfig, $output);
     }
 
