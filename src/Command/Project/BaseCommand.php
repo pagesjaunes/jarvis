@@ -79,9 +79,9 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * @param  string $projectName
-     * @param  OutputInterface $output
-     * @param  InputInterface $input
+     * @param string          $projectName
+     * @param OutputInterface $output
+     * @param InputInterface  $input
      *
      * @return Jarvis\Project\ProjectConfiguration
      */
@@ -204,7 +204,7 @@ abstract class BaseCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $statusCode = 0;
+        $statusCode = self::EXIT_SUCCESS;
 
         if ($input->hasOption('all-projects') && true === $input->getOption('all-projects')) {
             foreach ($this->getAllProjectsConfig() as $projectConfig) {
@@ -213,18 +213,22 @@ abstract class BaseCommand extends Command
                     $projectConfig,
                     $output
                 );
+                $output->writeln('');
             }
 
             return $statusCode;
         }
 
         if ($input->hasOption('tag') && null !== $input->getOption('tag')) {
-            foreach ($this->getProjectConfigurationRepository()->findBy(['tags' => $input->getOption('tag')]) as $projectConfig) {
+            foreach ($this->getProjectConfigurationRepository()->findBy([
+                'tags' => $input->getOption('tag')
+            ]) as $projectConfig) {
                 $statusCode += $this->executeCommandByProject(
                     $projectConfig->getProjectName(),
                     $projectConfig,
                     $output
                 );
+                $output->writeln('');
             }
 
             return $statusCode;
@@ -240,6 +244,7 @@ abstract class BaseCommand extends Command
                     $projectConfig,
                     $output
                 );
+                $output->writeln('');
             }
 
             return $statusCode;
@@ -294,7 +299,7 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * @param  string $input
+     * @param string $input
      *
      * @return array
      */
@@ -302,7 +307,7 @@ abstract class BaseCommand extends Command
     {
         $alternatives = [];
 
-        $search = new \Jarvis\Ustring\Search;
+        $search = new \Jarvis\Ustring\Search();
         foreach ($search->fuzzy($this->getProjectNames(), $input) as $result) {
             $alternatives[] = $result['match'];
         }
@@ -311,9 +316,9 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * @param  string $input
-     * @param  InputInterface $input
-     * @param  OutputInterface $output
+     * @param string          $input
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
      * @return null|string
      */
