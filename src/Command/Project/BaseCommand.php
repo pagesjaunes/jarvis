@@ -219,7 +219,8 @@ abstract class BaseCommand extends Command
             return $statusCode;
         }
 
-        if ($input->hasOption('tag') &&  count($input->getOption('tag')) > 1) {
+        if ($input->hasOption('tag') &&  count($input->getOption('tag')) >= 1) {
+
             foreach ($this->getProjectConfigurationRepository()->findBy([
                 'tags' => $input->getOption('tag')
             ]) as $projectConfig) {
