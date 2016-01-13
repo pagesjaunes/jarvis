@@ -79,14 +79,22 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
         $accessor = PropertyAccess::createPropertyAccessor();
         foreach ($this->getProjectConfigurationCollection() as $projectConfig) {
             foreach ($criteria as $criterionName => $criterionValue) {
+                if ('installed' == $criterionName) {
+                    continue;
+                }
                 $criterionValueArray = !is_array($criterionValue) ? [$criterionValue] : $criterionValue;
                 $propertyValue = $accessor->getValue($projectConfig, $criterionName);
                 $propertyValueArray = !is_array($propertyValue) ? [$propertyValue] : $propertyValue;
                 foreach ($criterionValueArray as $criterionValue) {
                     if (in_array($criterionValue, $propertyValueArray, true)) {
-                        // return $projectConfig;
                         $results[$projectConfig->getProjectName()] = $projectConfig;
                     }
+                }
+            }
+
+            foreach ($criteria as $criterionName => $criterionValue) {
+                if ('installed' == $criterionName && $criterionValue !== $projectConfig->isInstalled()) {
+                    unset($results[$projectConfig->getProjectName()]);
                 }
             }
         }
