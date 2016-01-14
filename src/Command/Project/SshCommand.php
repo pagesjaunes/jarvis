@@ -62,7 +62,7 @@ class SshCommand extends BaseCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $this->getSshExec()->exec(
+        $this->getSshExec()->passthru(
             strtr(
                 'cd %project_dir%;%command_name%',
                 [

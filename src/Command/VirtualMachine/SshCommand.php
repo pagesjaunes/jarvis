@@ -40,6 +40,6 @@ class SshCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getSshExec()->exec($input->getArgument('remote_command'));
+        $this->getSshExec()->passthru($input->getArgument('remote_command'));
     }
 }

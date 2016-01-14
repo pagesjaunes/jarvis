@@ -36,6 +36,28 @@ class RemoteConsoleExec
      * @param  string $symfonyConsolePath
      * @param  string $commandAndOptions Command name and options
      * @param  OutputInterface|null $output
+     */
+    public function passthru($symfonyConsolePath, $commandNameAndOptions, $env, $verbosity = OutputInterface::VERBOSITY_VERY_VERBOSE)
+    {
+        $commandLine = strtr(
+            'php %symfony_console_path% %command_name_and_options% --env=%env% %verbosity_option%',
+            [
+                '%symfony_console_path%' => $symfonyConsolePath,
+                '%command_name_and_options%' => $commandNameAndOptions,
+                '%env%' => $env,
+                '%verbosity_option%' => $this->getVerbosityOption($verbosity)
+            ]
+        );
+
+        $this->sshExec->passthru($commandLine);
+    }
+
+    /**
+     * Executes without output buffering symfony console using ssh .
+     *
+     * @param  string $symfonyConsolePath
+     * @param  string $commandAndOptions Command name and options
+     * @param  OutputInterface|null $output
      *
      * @return string
      */

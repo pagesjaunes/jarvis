@@ -116,7 +116,7 @@ class ServiceCommand extends BaseCommand
     {
         foreach ($this->servicesName as $serviceName) {
             if ('status' == $this->serviceCommandName) {
-                $this->getSshExec()->exec(
+                $this->getSshExec()->passthru(
                     sprintf(
                         'sudo service %s %s',
                         $serviceName,

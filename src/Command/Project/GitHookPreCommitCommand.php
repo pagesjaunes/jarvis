@@ -363,8 +363,7 @@ class GitHookPreCommitCommand extends BaseCommand
             $projectName
         ));
 
-        ob_start();
-        $this->getSshExec()->exec(
+        $report = $this->getSshExec()->exec(
             strtr(
                 'php-parallel-lint -e php -j 10 %dir%', // TODO: variable command name
                 [
@@ -372,7 +371,6 @@ class GitHookPreCommitCommand extends BaseCommand
                 ]
             )
         );
-        $report = ob_get_clean();
 
         // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
@@ -396,8 +394,7 @@ class GitHookPreCommitCommand extends BaseCommand
             $projectConfig->getProjectName()
         ));
 
-        ob_start();
-        $this->getSymfonyRemoteConsoleExec()->exec(
+        $report = $this->getSymfonyRemoteConsoleExec()->exec(
             $projectConfig->getRemoteSymfonyConsolePath(),
             strtr(
                 'yaml:lint %dir%',
@@ -407,7 +404,6 @@ class GitHookPreCommitCommand extends BaseCommand
             ),
             'dev'
         );
-        $report = ob_get_clean();
 
         // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
@@ -431,8 +427,7 @@ class GitHookPreCommitCommand extends BaseCommand
             $projectConfig->getProjectName()
         ));
 
-        ob_start();
-        $this->getSymfonyRemoteConsoleExec()->exec(
+        $report = $this->getSymfonyRemoteConsoleExec()->exec(
             $projectConfig->getRemoteSymfonyConsolePath(),
             strtr(
                 'twig:lint %dir%', // TODO: manage symfony version >= 2.7 lint:twig
@@ -442,7 +437,6 @@ class GitHookPreCommitCommand extends BaseCommand
             ),
             'dev'
         );
-        $report = ob_get_clean();
 
         // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
@@ -466,11 +460,9 @@ class GitHookPreCommitCommand extends BaseCommand
             $projectConfig->getProjectName()
         ));
 
-        ob_start();
-
         $this->getSshExec()->exec('which scss-lint || gem install scss-lint');
 
-        $this->getSshExec()->exec(
+        $report = $this->getSshExec()->exec(
             strtr(
                 'scss-lint %project_dir%/src',
                 [
@@ -478,7 +470,6 @@ class GitHookPreCommitCommand extends BaseCommand
                 ]
             )
         );
-        $report = ob_get_clean();
 
         // clean path without path temporary staging area for files with syntax errors
         foreach ($files as $file) {
@@ -520,8 +511,7 @@ class GitHookPreCommitCommand extends BaseCommand
             $projectName
         ));
 
-        ob_start();
-        $this->getSshExec()->exec(
+        $report = $this->getSshExec()->exec(
             strtr(
                 'php7cc %dir%',
                 [
@@ -529,7 +519,6 @@ class GitHookPreCommitCommand extends BaseCommand
                 ]
             )
         );
-        $report = ob_get_clean();
         $output->write($report, false, OutputInterface::OUTPUT_RAW);
         if (false !== strpos($report, 'File:')) {
             return static::EXIT_ERROR;

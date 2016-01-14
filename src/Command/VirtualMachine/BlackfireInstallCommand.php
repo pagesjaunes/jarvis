@@ -45,16 +45,16 @@ class BlackfireInstallCommand extends BaseCommand
             $this->getSshExec()->run('sudo apt-get install blackfire-agent', $output);
         }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $this->getSshExec()->exec('sudo blackfire-agent -config="/etc/blackfire/agent" -register');
+            $this->getSshExec()->passthru('sudo blackfire-agent -config="/etc/blackfire/agent" -register');
         }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $this->getSshExec()->exec('sudo blackfire-agent  -config="/etc/blackfire/agent" -d');
+            $this->getSshExec()->passthru('sudo blackfire-agent  -config="/etc/blackfire/agent" -d');
         }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
             $this->getSshExec()->run('sudo /etc/init.d/blackfire-agent restart', $output);
         }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
-            $this->getSshExec()->exec('blackfire config');
+            $this->getSshExec()->passthru('blackfire config');
         }
         if ($this->getSshExec()->getLastReturnStatus() == 0) {
             $this->getSshExec()->run('sudo apt-get install blackfire-php', $output);

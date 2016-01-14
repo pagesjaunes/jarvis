@@ -72,7 +72,7 @@ class PhpCsFixer
 
         $options = $resolver->resolve($options);
 
-        $this->getSshExec()->run(
+        $this->getSshExec()->passthru(
             strtr(
                 'php-cs-fixer fix %command_options% --level=%level% --no-interaction %dir%',
                 [
@@ -80,8 +80,7 @@ class PhpCsFixer
                     '%dir%' => $remoteDir,
                     '%command_options%' => $options['dry-run'] ? '--dry-run --diff' : ''
                 ]
-            ),
-            $output
+            )
         );
 
         $returnStatus = $this->getSshExec()->getLastReturnStatus();
@@ -99,8 +98,7 @@ class PhpCsFixer
             ]
         );
 
-        ob_start();
-        $this->getSshExec()->exec(
+        $jsonReport = $this->getSshExec()->exec(
             strtr(
                 'phpcs %dir% --extensions=php --standard=%standard% --warning-severity=%warning-severity% --encoding=utf-8 --report=json',
                 [
@@ -110,7 +108,7 @@ class PhpCsFixer
                 ]
             )
         );
-        $jsonReport = ob_get_clean();
+
         $json = new Json();
 
         try {
@@ -135,10 +133,10 @@ class PhpCsFixer
                         ));
 
                         $fileContent = $this->getRemoteFilesystem()->getRemoteFileContent($filepath);
-                        $output->writeln(
-                            $highlighter->getCodeSnippet($fileContent, $error->line),
-                            OutputInterface::OUTPUT_RAW
-                        );
+                        // $output->writeln(
+                        //     $highlighter->getCodeSnippet($fileContent, $error->line),
+                        //     OutputInterface::OUTPUT_RAW
+                        // );
                     }
                 }
             }

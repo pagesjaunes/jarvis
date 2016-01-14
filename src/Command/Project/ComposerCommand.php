@@ -157,7 +157,7 @@ class ComposerCommand extends BaseCommand
     {
         $output->writeln('<comment>'.$this->getDescription().'</comment>');
 
-        $this->getSshExec()->exec(
+        $this->getSshExec()->passthru(
             strtr(
                 'COMPOSER_VENDOR_DIR=%COMPOSER_VENDOR_DIR% composer %command_name% %command_options% --working-dir=%project_dir% '.($output->isDebug() ? ' -vvv' : ''),
                 [
@@ -166,9 +166,7 @@ class ComposerCommand extends BaseCommand
                     '%command_options%' => is_array($this->commandOptions) ? implode(' ', $this->commandOptions) : null,
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]
-            ),
-            $output,
-            OutputInterface::VERBOSITY_NORMAL
+            )
         );
 
         return $this->getSshExec()->getLastReturnStatus();

@@ -98,7 +98,7 @@ class SymfonyConsoleCommand extends BaseSymfonyCommand
                 ]
             );
 
-            $this->getSymfonyRemoteConsoleExec()->exec(
+            $this->getSymfonyRemoteConsoleExec()->passthru(
                 $projectConfig->getRemoteSymfonyConsolePath(),
                 $commandLine,
                 $symfonyEnv,

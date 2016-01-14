@@ -62,12 +62,10 @@ class GitSummaryCommand  extends BaseGitCommand
      */
     protected function getRepositoryAge($localGitRepositoryDir)
     {
-        $result = $this->getExec()->exec(
+        return $this->getExec()->exec(
             'git log --reverse --pretty=oneline --format="%ar" | head -n 1 | LC_ALL=C sed \'s/ago//\'',
             $localGitRepositoryDir
         );
-
-        return $result[0];
     }
 
     /**
@@ -79,12 +77,10 @@ class GitSummaryCommand  extends BaseGitCommand
      */
     protected function getCommitCount($localGitRepositoryDir)
     {
-        $result = $this->getExec()->exec(
+        return $this->getExec()->exec(
             'git log --oneline | wc -l | tr -d \' \'',
             $localGitRepositoryDir
         );
-
-        return $result[0];
     }
 
     /**

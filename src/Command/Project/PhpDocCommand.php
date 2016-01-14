@@ -35,24 +35,16 @@ class PhpDocCommand extends BaseBuildCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $remoteBuildDir = sprintf('%s/apidoc', $this->getRemoteBuildDir());
-        $localBuildDir = sprintf('%s/apidoc', $this->getLocalBuildDir());
-
-        $this->getSshExec()->run(
+        $this->getSshExec()->passthru(
             strtr(
-                'cd %project_dir% && sami.php update sami_config.php',
+                'cd %project_dir% && /usr/local/bin/sami update sami_config.php'.($output->isDebug() ? ' -v' : ''),
                 [
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]
-            ),
-            $output,
-            OutputInterface::VERBOSITY_NORMAL
+            )
         );
 
-        $this->getRemoteFilesystem()->mkdir($remoteBuildDir);
-        $this->getLocalFilesystem()->mkdir($localBuildDir);
-        $this->getRemoteFilesystem()->syncRemoteToLocal($remoteBuildDir, $localBuildDir, ['delete' => true]);
-
+        $localBuildDir = sprintf('%s/build/apidoc', $projectConfig->getLocalWebappDir());
         $apiDocIndexFilepath = strtr(
             '%build_dir%/index.html',
             [

@@ -98,7 +98,7 @@ class TestUnitCommand extends BaseCommand
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
-        $this->getSshExec()->exec(
+        $this->getSshExec()->passthru(
             strtr(
                 'cd %project_dir% && phpspec run --format=%format% --stop-on-failure '.($output->isDebug() ? ' --verbose' : ''),
                 [
@@ -112,7 +112,7 @@ class TestUnitCommand extends BaseCommand
 
         $this->getRemoteFilesystem()->mkdir($buildDir);
 
-        $report = $this->getSshExec()->run(
+        $report = $this->getSshExec()->exec(
             strtr(
                 'cd %project_dir% && phpspec run --format=html --no-interaction > %build_dir%/unit.html',
                 [
