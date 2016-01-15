@@ -131,7 +131,7 @@ abstract class BaseCommand extends Command
         );
         $this->addOption(
             'project-tag',
-            'pt',
+            't',
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             'The tag to search for one or many projects.'
         );
