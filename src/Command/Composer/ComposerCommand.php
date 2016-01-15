@@ -87,7 +87,7 @@ class ComposerCommand extends Command
             ]
         );
 
-        $report = $this->getSshExec()->run($commandLine);
+        $report = $this->getSshExec()->exec($commandLine);
 
         $report = str_replace('composer', $this->getName(), $report);
 

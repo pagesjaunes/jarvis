@@ -46,7 +46,6 @@ class GitStatusCommand extends BaseGitCommand
             throw new \RuntimeException(sprintf('The directory "%s" does not exist', $projectConfig->getLocalGitRepositoryDir()));
         }
 
-        ob_start();
         $this->getExec()->passthru('git status', $projectConfig->getLocalGitRepositoryDir());
         $output->writeln(
             strtr(

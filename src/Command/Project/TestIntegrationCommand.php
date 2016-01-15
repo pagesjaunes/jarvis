@@ -102,7 +102,7 @@ class TestIntegrationCommand extends BaseCommand
 
         $buildReportHtmlPath = !empty($this->remoteBuildDir) ? '--testdox-html '.$this->remoteBuildDir.'/tests/integration.html' : null;
 
-        $this->getSshExec()->exec(
+        $this->getSshExec()->passthru(
             strtr(
                 'phpunit --configuration %remote_phpunit_configuration_xml_path%  --colors %build_report_html% '.($output->isDebug() ? ' --verbose --debug' : ''),
                 [
@@ -119,9 +119,9 @@ class TestIntegrationCommand extends BaseCommand
                     '<comment>Executes integration tests for project "<info>%s</info>"</comment>: %s',
                     $projectName,
                     $this->getSshExec()->getLastReturnStatus() == 0 ?
-                        ' <info>SUCCESS</info>'
-                        :
-                        ' <error>ERROR</error>'
+                    ' <info>SUCCESS</info>'
+                    :
+                    ' <error>ERROR</error>'
                 )
             );
         }

@@ -27,8 +27,6 @@ class Exec
      *
      * @param  string $commandLine
      * @param null|string $cwd The working directory
-     *
-     * @return array  The array will be filled with every line of output from the command
      */
     public function passthru($commandLine, $cwd = null)
     {
@@ -75,7 +73,7 @@ class Exec
 
         !$previousCwd ?: chdir($previousCwd);
 
-        return $output;
+        return implode(PHP_EOL, $output);
     }
 
     /**

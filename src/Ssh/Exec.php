@@ -106,18 +106,41 @@ class Exec
     public function getStatus()
     {
         $commandLine = strtr(
-            'ssh %user%@%host% -p %port% %identity_file_option% -o BatchMode=yes -o ConnectTimeout=5 echo ok 2>&1', [
-            '%user%' => $this->getOption('ssh_user'),
-            '%host%' => $this->getOption('ssh_host'),
-            '%port%' => $this->getOption('ssh_port'),
-            '%identity_file_option%' => $this->getOption('ssh_identity_file') ? '-i '.$this->getOption('ssh_identity_file') : '',
-        ]);
+            'ssh %user%@%host% -p %port% %identity_file_option% -o BatchMode=yes -o ConnectTimeout=5 echo ok 2>&1',
+            [
+                '%user%' => $this->getOption('ssh_user'),
+                '%host%' => $this->getOption('ssh_host'),
+                '%port%' => $this->getOption('ssh_port'),
+                '%identity_file_option%' => $this->getOption('ssh_identity_file') ? '-i '.$this->getOption('ssh_identity_file') : '',
+            ]
+        );
 
         !$this->logger ?: $this->logger->debug($commandLine);
 
         ob_start();
         passthru($commandLine, $returnStatus);
         return ob_get_clean();
+    }
+
+    /**
+     * Execute an external program
+     *
+     * @param  string $commandLine
+     * @param null|string $cwd The working directory
+     */
+    public function passthru($commandLine, $cwd = null)
+    {
+        $commandLine = $this->getCommandLineWithSsh($commandLine);
+
+        !$this->logger ?: $this->logger->debug($commandLine);
+
+        passthru($commandLine, $returnStatus);
+
+        if ($returnStatus != 0) {
+            $this->checkStatus();
+        }
+
+        $this->lastReturnStatus = $returnStatus;
     }
 
     /**
@@ -133,13 +156,15 @@ class Exec
 
         !$this->logger ?: $this->logger->debug($commandLine);
 
-        passthru($commandLine, $returnStatus);
+        exec($commandLine, $output, $returnStatus);
 
         if ($returnStatus != 0) {
             $this->checkStatus();
         }
 
         $this->lastReturnStatus = $returnStatus;
+
+        return implode(PHP_EOL, $output);
     }
 
     /**

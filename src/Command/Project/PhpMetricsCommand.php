@@ -65,7 +65,7 @@ class PhpMetricsCommand extends BaseBuildCommand
         ]);
 
         // Analyse source project code
-        $this->getSshExec()->exec(
+        $this->getSshExec()->passthru(
             strtr(
                 'mkdir -p %build_dir% && /usr/local/bin/phpmetrics --level=0 --report-html=%report_file% %project_dir%/src'.($output->isDebug() ? ' --verbose' : ''),
                 [

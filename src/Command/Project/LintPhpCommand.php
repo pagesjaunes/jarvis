@@ -47,15 +47,13 @@ class LintPhpCommand extends BaseBuildCommand
             $commandLine = 'php-parallel-lint -e php -j 10 %project_dir%/src';
         }
 
-        $this->getSshExec()->run(
+        $this->getSshExec()->passthru(
             strtr(
                 $commandLine,
                 [
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]
-            ),
-            $output,
-            OutputInterface::VERBOSITY_NORMAL
+            )
         );
 
         return $this->getSshExec()->getLastReturnStatus();

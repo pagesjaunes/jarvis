@@ -130,8 +130,8 @@ abstract class BaseCommand extends Command
             'Apply the command to all projects'
         );
         $this->addOption(
-            'tag',
-            null,
+            'project-tag',
+            'pt',
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             'The tag to search for one or many projects.'
         );
@@ -219,10 +219,9 @@ abstract class BaseCommand extends Command
             return $statusCode;
         }
 
-        if ($input->hasOption('tag') &&  count($input->getOption('tag')) >= 1) {
-
+        if ($input->hasOption('project-tag') &&  count($input->getOption('project-tag')) >= 1) {
             foreach ($this->getProjectConfigurationRepository()->findBy([
-                'tags' => $input->getOption('tag')
+                'tags' => $input->getOption('project-tag')
             ]) as $projectConfig) {
                 $statusCode += $this->executeCommandByProject(
                     $projectConfig->getProjectName(),

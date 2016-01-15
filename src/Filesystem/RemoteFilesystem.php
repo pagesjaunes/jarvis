@@ -98,7 +98,7 @@ class RemoteFilesystem
             ]
         );
 
-        return $this->sshExec->run($commandLine);
+        return $this->sshExec->exec($commandLine);
     }
 
     /**
@@ -133,7 +133,7 @@ class RemoteFilesystem
      */
     public function mkdir($dir)
     {
-        $this->sshExec->run(sprintf('mkdir -p %s', $dir));
+        $this->sshExec->exec(sprintf('mkdir -p %s', $dir));
 
         if ($this->sshExec->getLastReturnStatus() !== 0) {
             !$this->logger ?: $this->logger->error(sprintf('Error make directory %s', $dir));
@@ -156,7 +156,7 @@ class RemoteFilesystem
             ]
         );
 
-        $output = $this->sshExec->run($commandLine);
+        $output = $this->sshExec->exec($commandLine);
 
         return 'exists' == trim($output);
     }
@@ -175,7 +175,7 @@ class RemoteFilesystem
             ]
         );
 
-        $output = $this->sshExec->run($commandLine);
+        $output = $this->sshExec->exec($commandLine);
 
         return 'exists' == trim($output);
     }
@@ -201,7 +201,7 @@ class RemoteFilesystem
             throw new FileNotFoundException(sprintf('Failed to copy "%s" because file does not exist.', $originFile), 0, null, $originFile);
         }
 
-        $this->sshExec->run(strtr(
+        $this->sshExec->exec(strtr(
             'mkdir -p %targetDir% && cp -R %override% %originFile% %targetFile%', [
             '%originFile%' => $originFile,
             '%targetDir%' => dirname($targetFile),

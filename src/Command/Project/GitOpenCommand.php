@@ -80,15 +80,14 @@ class GitOpenCommand extends BaseGitCommand
 
     protected function getGiturl(ProjectConfiguration $projectConfig)
     {
-        $r = $this->getExec()->exec(
+        $giturl = $this->getExec()->exec(
             'git config --get remote.'.$this->remote.'.url',
             $projectConfig->getLocalGitRepositoryDir()
         );
-        if (!isset($r[0])) {
+
+        if ($this->getExec()->getLastReturnStatus() !== 0) {
             throw new \LogicException('Error retrieve git URL');
         }
-
-        $giturl = $r[0];
 
         if (0 === strpos($giturl, 'git@')) {
             $giturl = str_replace(':', '/', $giturl);
@@ -111,16 +110,16 @@ class GitOpenCommand extends BaseGitCommand
 
     protected function getCurrentBranch($projectConfig)
     {
-        $r = $this->getExec()->exec(
+        $giturl = $this->getExec()->exec(
             'git symbolic-ref -q --short HEAD',
             $projectConfig->getLocalGitRepositoryDir()
         );
 
-        if (!isset($r[0])) {
+        if ($this->getExec()->getLastReturnStatus() !== 0) {
             throw new \LogicException('Error retrieve branch name');
         }
 
-        return $r[0];
+        return $giturl;
     }
 
     protected function openUrl($url)
