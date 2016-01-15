@@ -274,8 +274,9 @@ class GitHookPreCommitCommand extends BaseCommand
         );
 
         // copy each committed file in a temporary location
-        if ($result) {
-            foreach ($result as $data) {
+        if ($this->getExec()->getLastReturnStatus() == 0) {
+
+            foreach (explode(PHP_EOL, $result) as $data) {
                 $parts = explode(' ', preg_replace('/\s+/i', ' ', $data));
 
                 $sha = $parts[3];

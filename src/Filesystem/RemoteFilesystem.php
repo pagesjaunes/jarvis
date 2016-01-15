@@ -302,7 +302,7 @@ class RemoteFilesystem
     public function syncRemoteToLocal($remoteDir, $localDir, $options = array())
     {
         $commandLine = strtr(
-            'rsync %delete% --recursive --checksum --compress %dry_run% %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
+            'rsync %delete% --recursive --checksum --archive --compress %dry_run% %extra_rsync_options% --rsh \'ssh -p %ssh_port% %ssh_identity_file_option%\' %ssh_username%@%ssh_host%:%remote_dir%/ %local_dir%',
             [
                 '%delete%' => isset($options['delete']) && $options['delete'] ? '--delete' : '',
                 '%dry_run%' => isset($options['dry_run']) && $options['dry_run'] ? '--dry-run' : '',
