@@ -150,7 +150,7 @@ class PhpToolManager
     {
         $data = $this->getData($name);
 
-        $this->getSshExec()->run(strtr(
+        $this->getSshExec()->exec(strtr(
             'command -v {{dest}} >/dev/null 2>&1',
             [
                 '{{dest}}' => $data['dest'],
