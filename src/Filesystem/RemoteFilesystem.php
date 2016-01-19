@@ -70,17 +70,21 @@ class RemoteFilesystem
      */
     public function exists($files)
     {
-        foreach ($this->toIterator($files) as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION)) {
-                if (!$this->isFileExist($file)) {
-                    return false;
-                }
-            }
+        foreach ($this->toIterator($files) as $filepath) {
+            $commandLine = strtr(
+                'test -e %file_path% && echo exists 2>&1',
+                [
+                    '%file_path%' => $filepath
+                ]
+            );
 
-            if (!$this->isDirExist($file)) {
-                return false;
+            $output = $this->sshExec->exec($commandLine);
+            if ('exists' == trim($output)) {
+                return true;
             }
         }
+        
+        return false;
     }
 
     /**
