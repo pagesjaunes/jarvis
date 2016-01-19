@@ -182,21 +182,11 @@ abstract class BaseCommand extends Command
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    protected function getAllProjectsConfig()
+    protected function isProjectShouldBeInstalled()
     {
-        return $this->getProjectConfigurationRepository()->findInstalled();
-    }
-
-    /**
-     * @return Traversable|array
-     */
-    protected function getAllBundlesProjectConfig()
-    {
-        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findInstalled()), function (ProjectConfiguration $projectConfig) {
-            return (false !== strpos($projectConfig->getProjectName(), '-bundle'));
-        });
+        return true;
     }
 
     /**
@@ -207,7 +197,9 @@ abstract class BaseCommand extends Command
         $statusCode = self::EXIT_SUCCESS;
 
         if ($input->hasOption('all-projects') && true === $input->getOption('all-projects')) {
-            foreach ($this->getAllProjectsConfig() as $projectConfig) {
+            foreach ($this->getProjectConfigurationRepository()->findBy([
+                'installed' => $this->isProjectShouldBeInstalled(),
+            ]) as $projectConfig) {
                 $statusCode += $this->executeCommandByProject(
                     $projectConfig->getProjectName(),
                     $projectConfig,
@@ -221,7 +213,8 @@ abstract class BaseCommand extends Command
 
         if ($input->hasOption('project-tag') &&  count($input->getOption('project-tag')) >= 1) {
             foreach ($this->getProjectConfigurationRepository()->findBy([
-                'tags' => $input->getOption('project-tag')
+                'tags' => $input->getOption('project-tag'),
+                'installed' => true,
             ]) as $projectConfig) {
                 $statusCode += $this->executeCommandByProject(
                     $projectConfig->getProjectName(),
@@ -237,14 +230,18 @@ abstract class BaseCommand extends Command
         // Many projects names given
         if (count($input->getOption('project-name')) > 1) {
             foreach ($input->getOption('project-name') as $projectName) {
-                $projectConfig = $this->getProjectConfiguration($projectName, $input, $output);
+                foreach ($this->getProjectConfigurationRepository()->findBy([
+                    'project_name' => $projectName,
+                    'installed' => $this->isProjectShouldBeInstalled(),
+                ]) as $projectConfig) {
 
-                $statusCode += $this->executeCommandByProject(
-                    $projectName,
-                    $projectConfig,
-                    $output
-                );
-                $output->writeln('');
+                    $statusCode += $this->executeCommandByProject(
+                        $projectName,
+                        $projectConfig,
+                        $output
+                    );
+                    $output->writeln('');
+                }
             }
 
             return $statusCode;
@@ -252,6 +249,9 @@ abstract class BaseCommand extends Command
 
         $projectName = $this->getCurrentProjectName($input, $output);
         $projectConfig = $this->getProjectConfiguration($projectName, $input, $output);
+        if ($this->isProjectShouldBeInstalled() && false === $projectConfig->isInstalled()) {
+            return $statusCode;
+        }
 
         return $this->executeCommandByProject($projectName, $projectConfig, $output);
     }

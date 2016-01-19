@@ -113,36 +113,6 @@ class JsonProjectConfigurationRepository implements ProjectConfigurationReposito
     /**
      * {@inheritdoc}
      */
-    public function findNotInstalled()
-    {
-        $configs = [];
-        foreach ($this->getProjectConfigurationCollection() as $config) {
-            if (false === $config->isInstalled()) {
-                $configs[] = $config;
-            }
-        }
-
-        return $configs;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findInstalled()
-    {
-        $configs = [];
-        foreach ($this->getProjectConfigurationCollection() as $config) {
-            if ($config->isInstalled()) {
-                $configs[] = $config;
-            }
-        }
-
-        return $configs;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function add(array $data)
     {
         $config = $this->projectConfigurationFactory->create((array) $data);
