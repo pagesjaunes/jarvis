@@ -15,10 +15,7 @@
 
 namespace Jarvis\Command\Project;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Jarvis\Command\Project\ComposerCommand;
-use Jarvis\Command\Project\SymfonyAssetsBuildCommand;
 use Jarvis\Project\ProjectConfiguration;
 
 class GitCloneCommand extends BaseGitCommand
@@ -75,23 +72,13 @@ class GitCloneCommand extends BaseGitCommand
     /**
      * {@inheritdoc}
      */
-    protected function getAllProjectsConfig()
+    protected function isProjectShouldBeInstalled()
     {
-        return $this->getProjectConfigurationRepository()->findNotInstalled();
+        return false;
     }
 
     /**
      * {@inheritdoc}
-     */
-    protected function getAllBundlesProjectConfig()
-    {
-        return new \CallbackFilterIterator(new \ArrayIterator($this->getProjectConfigurationRepository()->findNotInstalled()), function (ProjectConfiguration $projectConfig) {
-            return (false !== strpos($projectConfig->getProjectName(), '-bundle'));
-        });
-    }
-
-    /**
-     * @{inheritdoc}
      */
     protected function executeCommandByProject($projectName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
@@ -102,12 +89,12 @@ class GitCloneCommand extends BaseGitCommand
 
         $this->getApplication()->executeCommand($this->composerInstallCommand->getName(), [
             '--project-name' => $projectName,
-            ($output->isDebug() ? ' -vvv' : '-v')
+            ($output->isDebug() ? ' -vvv' : '-v'),
         ], $output);
 
         $this->getApplication()->executeCommand($this->SymfonyAssetsBuildCommand->getName(), [
             '--project-name' => $projectName,
-            ($output->isDebug() ? ' -vvv' : '-v')
+            ($output->isDebug() ? ' -vvv' : '-v'),
         ], $output);
     }
 
@@ -137,7 +124,7 @@ class GitCloneCommand extends BaseGitCommand
             [
                 '%local_git_repository_dir%' => $config->getLocalGitRepositoryDir(),
                 '%git_repository_url%' => $config->getGitRepositoryUrl(),
-                '%git_target_branch%' => $config->getGitTargetBranch()
+                '%git_target_branch%' => $config->getGitTargetBranch(),
             ]
         ), $output);
     }
