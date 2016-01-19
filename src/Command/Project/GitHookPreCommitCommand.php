@@ -83,6 +83,8 @@ class GitHookPreCommitCommand extends BaseCommand
         $localTemporaryCopyStagingAreaDir = $this->localTmpStagingAreaRootDir.'/'.$projectName;
         $remoteTmpStagingAreaRootDir = $this->remoteTmpStagingAreaRootDir.'/'.$projectName;
 
+        $this->composerInstall($projectName, $output);
+
         $this->createTemporaryStagingAreaDirectory(
             $localTemporaryCopyStagingAreaDir,
             $remoteTmpStagingAreaRootDir,
@@ -178,6 +180,13 @@ class GitHookPreCommitCommand extends BaseCommand
         );
 
         return $exitCodeStatus;
+    }
+
+    protected function composerInstall($projectName, OutputInterface $output)
+    {
+        $this->getApplication()->executeCommand('project:composer:install', [
+            '--project-name' => $projectName
+        ], $output);
     }
 
     protected function createTemporaryStagingAreaDirectory($localDir, $remoteDir, OutputInterface $output)
@@ -520,7 +529,7 @@ class GitHookPreCommitCommand extends BaseCommand
                 ]
             )
         );
-        $output->write($report, false, OutputInterface::OUTPUT_RAW);
+        $output->write($report, true, OutputInterface::OUTPUT_RAW);
         if (false !== strpos($report, 'File:')) {
             return static::EXIT_ERROR;
         }
