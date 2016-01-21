@@ -161,6 +161,7 @@ class ProjectConfiguration
                 $this->data['project_name'] => '%project_name%',
                 $this->localCdnRootDir => '%local_cdn_root_dir%',
             ]),
+            'tags' => $this->getTags()
         ];
     }
 
