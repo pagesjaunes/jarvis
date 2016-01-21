@@ -154,5 +154,11 @@
     "sha1": "b0373a217ccf863b6ef09c6dd87d1cd23e883cbb",
     "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.3.17/jarvis.phar",
     "version": "0.3.17"
+  },
+  {
+    "name": "jarvis.phar",
+    "sha1": "e93b4be0d3a975e0bb0859e831b0a4312b76572a",
+    "url": "http://pagesjaunes.github.io/jarvis/releases/download/0.3.18/jarvis.phar",
+    "version": "0.3.18"
   }
 ]
