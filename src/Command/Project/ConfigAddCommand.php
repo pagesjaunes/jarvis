@@ -59,6 +59,13 @@ class ConfigAddCommand extends Command
         );
 
         $this->addOption(
+            'tags',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'The tag to search for one or many projects.'
+        );
+
+        $this->addOption(
             'local_git_repository_dir',
             null,
             InputOption::VALUE_REQUIRED,
@@ -171,6 +178,7 @@ class ConfigAddCommand extends Command
         $data = [
             'project_name' => $input->getArgument('project_name'),
             'git_repository_url' => $input->getArgument('git_repository_url'),
+            'tags' => $input->getOption('tags'),
             'local_git_repository_dir' => $input->getOption('local_git_repository_dir'),
             'remote_git_repository_dir' => $input->getOption('remote_git_repository_dir'),
             'git_target_branch' => $input->getOption('git_target_branch'),
@@ -230,7 +238,7 @@ class ConfigAddCommand extends Command
             $output->writeln(sprintf(
                 '<comment>%s: <info>%s</info></comment>',
                 $propertyPath,
-                $propertyValue
+                is_array($propertyValue) ? implode(', ', $propertyValue) : $propertyValue
             ));
         }
     }
