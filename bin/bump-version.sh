@@ -34,6 +34,9 @@ git checkout master
 git flow release start ${TAG}
 git flow release finish ${TAG}
 
+rm -fr vendor
+composer install
+
 mkdir -p build
 ulimit -Sn 4096
 box build
