@@ -163,9 +163,7 @@ class ComposerCommand extends BaseCommand
     protected function executeComposerCommandOnRemoteServer($commandName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         $output->writeln('<comment>'.$this->getDescription().'</comment>');
-
-        dump(implode(' ', $this->commandArguments));
-
+        
         $this->getSshExec()->passthru(
             strtr(
                 'COMPOSER_VENDOR_DIR=%COMPOSER_VENDOR_DIR% composer %command_name% %command_arguments% %command_options% --working-dir=%project_dir% '.($output->isDebug() ? ' -vvv' : ''),
