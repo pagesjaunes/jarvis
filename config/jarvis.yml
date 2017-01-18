@@ -71,7 +71,7 @@ parameters:
             dest: '/usr/local/bin/phpunit'
             version_option: '--version'
         php-cs-fixer:
-            url: 'http://get.sensiolabs.org/php-cs-fixer.phar'
+            url: 'https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v1.12.3/php-cs-fixer.phar'
             dest: '/usr/local/bin/php-cs-fixer'
             version_option: '--version'
         phpcs:

@@ -1,8 +1,6 @@
 Jarvis
 ================
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/0d176b6e-0050-4288-b24a-49951e8b85ba/big.png)](https://insight.sensiolabs.com/projects/0d176b6e-0050-4288-b24a-49951e8b85ba)
-
 The Ultimate tool to manage php application in virtual machine.
 
 Jarvis is designed to assist you in developping Symfony application, by defining common tasks you run on your remote servers.
