@@ -6,7 +6,7 @@ install:
 
 install-php-tools:
 	@ composer global require "mmoreram/php-formatter"
-	@ composer global require "fabpot/php-cs-fixer"
+	@ composer global require "friendsofphp/php-cs-fixer"
 	@ composer global require "halleck45/phpmetrics"
 
 # Build phar
