@@ -25,7 +25,6 @@ class PhpCsCommand extends BaseBuildCommand
     use \Jarvis\Process\PhpCsFixerAwareTrait;
 
     private $fixCodingStandardProblems = false;
-    private $level;
 
     /**
      * @{inheritdoc}
@@ -33,9 +32,7 @@ class PhpCsCommand extends BaseBuildCommand
     protected function configure()
     {
         $this->setDescription('Check syntax the php files of sourcecode files');
-
         $this->addOption('fix', null, InputOption::VALUE_NONE, 'Tries to fix as much coding standards problems as possible.');
-        $this->addOption('level', null, InputOption::VALUE_REQUIRED, 'The level of fixes (can be psr0, psr1, psr2, or symfony (formerly all))', 'symfony');
 
         parent::configure();
     }
@@ -46,7 +43,6 @@ class PhpCsCommand extends BaseBuildCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->fixCodingStandardProblems = $input->getOption('fix');
-        $this->level = $input->getOption('level');
     }
 
     /**
@@ -64,7 +60,6 @@ class PhpCsCommand extends BaseBuildCommand
             $projectConfig->getRemoteWebappDir(),
             $output,
             [
-                'level' => $this->level,
                 'dry-run' => !$this->fixCodingStandardProblems
             ]
         );

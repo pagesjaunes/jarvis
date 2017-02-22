@@ -66,7 +66,6 @@ class PhpCsFixer
         $resolver = new OptionsResolver();
 
         $resolver->setDefaults([
-            'level' => 'symfony',
             'dry-run' => true
         ]);
 
@@ -74,9 +73,8 @@ class PhpCsFixer
 
         $this->getSshExec()->passthru(
             strtr(
-                'php-cs-fixer fix %command_options% --level=%level% --no-interaction %dir%',
+                'php-cs-fixer fix %command_options% --no-interaction %dir%',
                 [
-                    '%level%' => $options['level'],
                     '%dir%' => $remoteDir,
                     '%command_options%' => $options['dry-run'] ? '--dry-run --diff' : ''
                 ]
