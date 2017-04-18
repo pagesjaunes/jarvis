@@ -507,7 +507,6 @@ class GitHookPreCommitCommand extends BaseCommand
             $remoteTmpStaging,
             $output,
             [
-                'level' => $this->phpCsFixerLevel,
                 'dry-run' => true
             ]
         );
