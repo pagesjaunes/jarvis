@@ -32,7 +32,6 @@ class PhpCsCommand extends BaseBuildCommand
     protected function configure()
     {
         $this->setDescription('Check syntax the php files of sourcecode files');
-
         $this->addOption('fix', null, InputOption::VALUE_NONE, 'Tries to fix as much coding standards problems as possible.');
 
         parent::configure();
