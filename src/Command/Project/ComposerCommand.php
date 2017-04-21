@@ -29,6 +29,7 @@ class ComposerCommand extends BaseCommand
     use \Jarvis\Filesystem\RemoteFilesystemAwareTrait;
 
     private $commandOptions;
+    private $commandArguments;
 
     /**
      * @{inheritdoc}
@@ -62,6 +63,12 @@ class ComposerCommand extends BaseCommand
         }
         if ($input->getOption('no-dev')) {
             $this->commandOptions['no-dev'] = '--no-dev';
+        }
+        if ($input->getArgument('package-name')) {
+            $this->commandArguments['package-name'] = $input->getArgument('package-name');
+        }
+        if ($input->getArgument('package-version')) {
+            $this->commandArguments['package-version'] = $input->getArgument('package-version');
         }
     }
 
@@ -156,13 +163,14 @@ class ComposerCommand extends BaseCommand
     protected function executeComposerCommandOnRemoteServer($commandName, ProjectConfiguration $projectConfig, OutputInterface $output)
     {
         $output->writeln('<comment>'.$this->getDescription().'</comment>');
-
+        
         $this->getSshExec()->passthru(
             strtr(
-                'COMPOSER_VENDOR_DIR=%COMPOSER_VENDOR_DIR% composer %command_name% %command_options% --working-dir=%project_dir% '.($output->isDebug() ? ' -vvv' : ''),
+                'COMPOSER_VENDOR_DIR=%COMPOSER_VENDOR_DIR% composer %command_name% %command_arguments% %command_options% --working-dir=%project_dir% '.($output->isDebug() ? ' -vvv' : ''),
                 [
                     '%COMPOSER_VENDOR_DIR%' => $projectConfig->getRemoteVendorDir(),
                     '%command_name%' => $commandName,
+                    '%command_arguments%' => is_array($this->commandArguments) ? implode(' ', $this->commandArguments) : null,
                     '%command_options%' => is_array($this->commandOptions) ? implode(' ', $this->commandOptions) : null,
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]

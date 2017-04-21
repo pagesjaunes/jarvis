@@ -61,6 +61,20 @@
                 <argument>Updates your dependencies to the latest version according to composer.json, and updates the composer.lock file.</argument>
             </call>
 
+            <call method="addArgument">
+                <argument>package-name</argument>
+                <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                <argument>The package name to update</argument>
+                <argument>null</argument>
+            </call>
+
+            <call method="addArgument">
+                <argument>package-version</argument>
+                <argument type="constant">Symfony\Component\Console\Input\InputArgument::OPTIONAL</argument>
+                <argument>The package version to update</argument>
+                <argument>null</argument>
+            </call>
+
             <tag name="console.command" />
         </service>
 
