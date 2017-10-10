@@ -407,7 +407,7 @@ class GitHookPreCommitCommand extends BaseCommand
         $report = $this->getSymfonyRemoteConsoleExec()->exec(
             $projectConfig->getRemoteSymfonyConsolePath(),
             strtr(
-                'yaml:lint %dir%',
+                'lint:yaml %dir%',
                 [
                 '%dir%' => $remoteTmpStaging
                 ]
