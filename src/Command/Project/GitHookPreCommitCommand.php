@@ -440,7 +440,7 @@ class GitHookPreCommitCommand extends BaseCommand
         $report = $this->getSymfonyRemoteConsoleExec()->exec(
             $projectConfig->getRemoteSymfonyConsolePath(),
             strtr(
-                'twig:lint %dir%', // TODO: manage symfony version >= 2.7 lint:twig
+                'lint:twig %dir%', // TODO: manage symfony version >= 2.7 lint:twig
                 [
                 '%dir%' => $remoteTmpStaging
                 ]
