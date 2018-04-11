@@ -96,52 +96,6 @@ class PhpCsFixer
             ]
         );
 
-        $jsonReport = $this->getSshExec()->exec(
-            strtr(
-                'phpcs %dir% --extensions=php --standard=%standard% --warning-severity=%warning-severity% --encoding=utf-8 --report=json',
-                [
-                    '%dir%' => $remoteDir,
-                    '%standard%' => $this->remotePhpcsStandardDir,
-                    '%warning-severity%' => 0
-                ]
-            )
-        );
-
-        $json = new Json();
-
-        try {
-            $data = $json->decode($jsonReport);
-        } catch (\Seld\JsonLint\ParsingException $e) {
-            $output->writeln(sprintf('<error>%s</error>', $jsonReport));
-            throw $e;
-        }
-
-        if ($data->totals->errors > 0) {
-            $highlighter = new Highlighter(new ConsoleColor());
-
-            $output->writeln(sprintf('<error>%s errors detected</error>', $data->totals->errors));
-            foreach ($data->files as $filepath => $metadata) {
-                if ($metadata->errors > 0) {
-                    foreach ($metadata->messages as $error) {
-                        $output->writeln(sprintf(
-                            '<error>%s in "%s" at line %d</error>',
-                            strtr($error->message, [' use NULL() instead' => '']),
-                            strtr($filepath, [$remoteDir => '']),
-                            $error->line
-                        ));
-
-                        $fileContent = $this->getRemoteFilesystem()->getRemoteFileContent($filepath);
-                        // $output->writeln(
-                        //     $highlighter->getCodeSnippet($fileContent, $error->line),
-                        //     OutputInterface::OUTPUT_RAW
-                        // );
-                    }
-                }
-            }
-
-            $returnStatus += 1;
-        }
-
         return $returnStatus;
     }
 }
