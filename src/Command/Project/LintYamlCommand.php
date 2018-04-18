@@ -58,7 +58,7 @@ class LintYamlCommand extends BaseSymfonyCommand
             $this->getSymfonyRemoteConsoleExec()->run(
                 $projectConfig->getRemoteSymfonyConsolePath(),
                 strtr(
-                    'yaml:lint %project_dir%/src',
+                    'lint:yaml %project_dir%/src',
                     [
                     '%project_dir%' => $projectConfig->getRemoteWebappDir(),
                 ]),
