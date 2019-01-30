@@ -154,11 +154,6 @@ class GitHookPreCommitCommand extends BaseCommand
             $exitCodeStatus = $this->checkPhpCodeStyle($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
         }
 
-
-        if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
-            $exitCodeStatus = $this->checkPhp7Compatibility($files, $remoteTmpStagingAreaRootDir, $projectName, $output);
-        }
-
         if (static::EXIT_SUCCESS == $exitCodeStatus && isset($extensionsFound['php'])) {
             $exitCodeStatus = $this->unitTests($projectConfig, $output);
         }
@@ -510,30 +505,6 @@ class GitHookPreCommitCommand extends BaseCommand
                 'dry-run' => true
             ]
         );
-    }
-
-    protected function checkPhp7Compatibility(array $files, $remoteTmpStaging, $projectName, OutputInterface $output)
-    {
-        $output->writeln(sprintf(
-            '<comment>%s for project "<info>%s</info>"</comment>',
-            'Checking PHP 7 compatibility',
-            $projectName
-        ));
-
-        $report = $this->getSshExec()->exec(
-            strtr(
-                'php7cc %dir%',
-                [
-                    '%dir%' => $remoteTmpStaging,
-                ]
-            )
-        );
-        $output->write($report, true, OutputInterface::OUTPUT_RAW);
-        if (false !== strpos($report, 'File:')) {
-            return static::EXIT_ERROR;
-        }
-
-        return $this->getSshExec()->getLastReturnStatus();
     }
 
     protected function unitTests(ProjectConfiguration $projectConfig, OutputInterface $output)
